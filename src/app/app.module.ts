@@ -5,20 +5,19 @@ import {RouterModule} from '@angular/router';
 import {AppComponent} from './app.component';
 import {HomeComponent} from './home/home.component';
 import {TransferHttpCacheModule} from '@nguniversal/common';
+import { AppRoutingModule } from './app.routing';
+import { FittsTestComponent } from './fitts-test/fitts-test.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
+    FittsTestComponent
   ],
   imports: [
     BrowserModule.withServerTransition({appId: 'my-app'}),
-    RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full'},
-      { path: 'lazy', loadChildren: './lazy/lazy.module#LazyModule'},
-      { path: 'lazy/nested', loadChildren: './lazy/lazy.module#LazyModule'}
-    ]),
-    TransferHttpCacheModule,
+    AppRoutingModule,
+    TransferHttpCacheModule
   ],
   providers: [],
   bootstrap: [AppComponent]

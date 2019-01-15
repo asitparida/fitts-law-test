@@ -7,7 +7,9 @@ import { ngExpressEngine } from '@nguniversal/express-engine';
 import { provideModuleMap } from '@nguniversal/module-map-ngfactory-loader';
 
 import * as express from 'express';
+import * as bodyParser from 'body-parser';
 import { join } from 'path';
+import * as MS from './api/search';
 
 // Faster server renders w/ Prod mode (dev mode never needed)
 enableProdMode();
@@ -31,6 +33,18 @@ app.engine('html', ngExpressEngine({
 
 app.set('view engine', 'html');
 app.set('views', join(DIST_FOLDER, 'browser'));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+app.use(bodyParser.json());
+app.get('/api/getRecords', function (req, res) {
+  const id = req.params.id;
+  MS.connectToDb(function (client) {
+    MS.getPrivacyRatingDistribution(client, id, function (data) {
+      res.json(data);
+    });
+  });
+});
 
 // Example Express Rest API endpoints
 // app.get('/api/**', (req, res) => { });

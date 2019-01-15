@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, HostListener } from '@angular/core';
 import * as d3 from 'd3';
 import * as _ from 'lodash';
+import { AppService } from '../app.service';
 declare var DocumentTouch: any;
 
 export class Coordinate {
@@ -18,6 +19,7 @@ export class DataItem {
     direction: Direction;
     sourceIndex;
     angle: Clock;
+    timestamp: number;
 }
 
 export enum Direction {
@@ -68,14 +70,16 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
     showAllDoneModal = false;
     showModal = true;
     currentPerformanceTick = null;
-    currentDataSet: Array<DataItem> = [];
+    currentDataSet: Array<DataItem | any> = [];
+    overallDataSet: Array<DataItem | any> = [];
     countdownTickCount = -1;
     currentTestCount = -1;
-    maxTests = 2;
-    maxTicks = 3;
+    maxTests = 4;
+    maxTicks = 4;
     countdownTick = this.maxTicks;
     listener = null;
-    constructor() { }
+    userInfo = null;
+    constructor(private appService: AppService) { }
     ngAfterViewInit() {
         this.dim = this.getSquareDimension();
         this.maxRadius = this.dim / 6;
@@ -92,6 +96,7 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
         }
     }
     ngOnInit() {
+        this.userInfo = this.appService.info;
         this.listener = (e: any) => {
             const now = performance.now();
             const dir = this.dir;
@@ -130,6 +135,7 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
         this.showPracticeModal = false;
         this.showCountdownModal = true;
         this.countdownTick = this.maxTicks;
+        this.pickRadius();
         this.layoutCurrentRadiusBox();
         this.layourtCurrentCircles();
         const interval = setInterval(() => {
@@ -145,13 +151,16 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
     processCurrentRadius() {
         const width = this.dim;
         const height = this.dim;
-        this.currentRadius = _.sample(_.range(this.minRadius, this.maxRadius, 10));
-        this.baseRadius = (this.dim - (this.currentRadius * 2)) * 0.5;
+        this.pickRadius();
         this.svgElem = document.getElementById(this.svgAreaId);
         d3.select(this.svgElem).attr('width', width);
         d3.select(this.svgElem).attr('height', height);
         this.layoutCurrentRadiusBox();
         this.layourtCurrentCircles();
+    }
+    pickRadius() {
+        this.currentRadius = _.sample(_.range(this.minRadius, this.maxRadius, 10));
+        this.baseRadius = (this.dim - (this.currentRadius * 2)) * 0.5;
     }
     layoutCurrentRadiusBox() {
         if (this.fittRadiusCircle) {
@@ -225,6 +234,9 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
         this.currentPerformanceTick = null;
         this.showModal = true;
         this.showTestCompleteModal = true;
+        if (!this.isPracticeRun) {
+            this.overallDataSet = this.overallDataSet.concat(this.currentDataSet);
+        }
         this.currentDataSet = [];
     }
     nextStepInTest() {
@@ -246,6 +258,7 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
         this.showActualTestModal = false;
         this.showCountdownModal = true;
         this.countdownTick = this.maxTicks;
+        this.pickRadius();
         this.layoutCurrentRadiusBox();
         this.layourtCurrentCircles();
         const interval = setInterval(() => {
@@ -281,13 +294,15 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
         if (isCorrectClick) {
             direction = this.getHitDirection(lastCircleIndex, dir);
         }
-        const item = {
+        const item: DataItem | any = Object.assign({}, {
             direction: direction,
             sourceIndex: lastCircleIndex,
             ticks: ticks,
             targetHit: isCorrectClick,
-            angle: dir === 1 ? Clock.clockwise : Clock.antiClockwise
-        };
+            angle: dir === 1 ? Clock.clockwise : Clock.antiClockwise,
+            timestamp: (new Date()).getTime(),
+            run: `RUN #${this.currentTestCount}`
+        }, this.userInfo);
         this.currentDataSet.push(item);
         this.currentPerformanceTick = performance.now();
     }
@@ -318,11 +333,14 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
     }
 
     getSquareDimension() {
+        let dim = 0;
         if (window.innerHeight > window.innerWidth) {
-            return window.innerWidth - 60;
+            dim = window.innerWidth - 60;
         } else {
-            return window.innerHeight - 60;
+            dim = window.innerHeight - 60;
         }
+        dim = dim > 500 ? 500 : dim;
+        return dim;
     }
     getMinRadius() {
         const elem = document.getElementById(this.oTesterId);
@@ -334,6 +352,79 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
     }
     toRadians(angle) {
         return angle * (Math.PI / 180);
+    }
+    downloadData() {
+        const saveData = (function () {
+            const a: any = document.createElement('a');
+            document.body.appendChild(a);
+            a.style.display = 'none';
+            return function (data, fileName) {
+                const json = JSON.stringify(data),
+                    blob = new Blob([json], { type: 'octet/stream' }),
+                    url = window.URL.createObjectURL(blob);
+                a.href = url;
+                a.download = fileName;
+                a.click();
+                window.URL.revokeObjectURL(url);
+            };
+        }());
+        const obj = Object.assign({}, {
+            data: this.overallDataSet
+        });
+        saveData(obj, `${this.userInfo.alias}-data-json.json`);
+    }
+    downloadCSVData() {
+        let data, filename, link;
+        let csv = this.convertArrayOfObjectsToCSV({
+            data: this.overallDataSet
+        });
+        if (csv === null) {
+            return;
+        }
+
+        filename = `${this.userInfo.alias}-data-csv.csv`;
+
+        if (!csv.match(/^data:text\/csv/i)) {
+            csv = 'data:text/csv;charset=utf-8,' + csv;
+        }
+        data = encodeURI(csv);
+
+        link = document.createElement('a');
+        link.setAttribute('href', data);
+        link.setAttribute('download', filename);
+        link.click();
+    }
+    convertArrayOfObjectsToCSV(args) {
+        let result, ctr, keys, columnDelimiter, lineDelimiter, data;
+
+        data = args.data || null;
+        if (data == null || !data.length) {
+            return null;
+        }
+
+        columnDelimiter = args.columnDelimiter || ',';
+        lineDelimiter = args.lineDelimiter || '\n';
+
+        keys = Object.keys(data[0]);
+
+        result = '';
+        result += keys.join(columnDelimiter);
+        result += lineDelimiter;
+
+        data.forEach(function (item) {
+            ctr = 0;
+            keys.forEach(function (key) {
+                if (ctr > 0) {
+                    result += columnDelimiter;
+                }
+
+                result += item[key];
+                ctr++;
+            });
+            result += lineDelimiter;
+        });
+
+        return result;
     }
 }
 

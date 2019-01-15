@@ -7,7 +7,9 @@ var express_engine_1 = require("@nguniversal/express-engine");
 // Import module map for lazy loading
 var module_map_ngfactory_loader_1 = require("@nguniversal/module-map-ngfactory-loader");
 var express = require("express");
+var bodyParser = require("body-parser");
 var path_1 = require("path");
+var MS = require("./api/search");
 // Faster server renders w/ Prod mode (dev mode never needed)
 core_1.enableProdMode();
 // Express server
@@ -25,6 +27,18 @@ app.engine('html', express_engine_1.ngExpressEngine({
 }));
 app.set('view engine', 'html');
 app.set('views', path_1.join(DIST_FOLDER, 'browser'));
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(bodyParser.json());
+app.get('/api/getRecords', function (req, res) {
+    var id = req.params.id;
+    MS.connectToDb(function (client) {
+        MS.getPrivacyRatingDistribution(client, id, function (data) {
+            res.json(data);
+        });
+    });
+});
 // Example Express Rest API endpoints
 // app.get('/api/**', (req, res) => { });
 // Server static files from /browser

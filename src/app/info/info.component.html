@@ -1,0 +1,25 @@
+<div class="info-page">
+    <h1>Please fill in the following details</h1>
+    <form #infoForm="ngForm">
+        <div class="form-group">
+            <label for="namde">Your Name</label>
+            <input required type="text" name="name" [(ngModel)]="info.name" class="form-control" id="namde" aria-describedby="emailHelp" placeholder="Enter Name">
+        </div>
+        <div class="form-group">
+            <label for="andrewId">Your Andrew ID</label>
+            <input required type="email" name="alias" [(ngModel)]="info.alias" class="form-control" id="andrewId" aria-describedby="emailHelp" placeholder="Enter ANDREW ID">
+        </div>
+        <div class="form-group">
+            <label for="type">Participant Type</label>
+            <select required class="form-control" [(ngModel)]="info.type" name="type">
+                <option *ngFor="let option of participantTypes" [value]="option.text">{{option.text}}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="device">Device</label>
+            <input required type="email" name="device" [(ngModel)]="info.device" class="form-control" id="device" aria-describedby="emailHelp" placeholder="Enter DEVICE information">
+            <small id="emailHelp" class="form-text text-muted"> (i.e. touchpad, mouse...):</small>
+        </div>
+    </form>
+    <button class="btn-main" [disabled]="!infoForm.valid" (click)="next()">Next</button>
+</div>

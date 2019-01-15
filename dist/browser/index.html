@@ -9,6 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
   <style>
     /* You can add global styles to this file, and also import other style files */
     * {
@@ -47,8 +48,15 @@
       text-align: center;
       cursor: pointer;
     }
+    .btn-main[disabled] {
+      opacity: 0.50;
+      cursor: not-allowed;
+      color: #909090;
+      background: #e0e0e0;
+      border-color: #a0a0a0;
+    }
 
-    .btn-main:hover {
+    .btn-main:not([disabled]):hover {
       background: #000;
       border-color: #000;
       color: #fff;
@@ -56,7 +64,7 @@
     }
 
     .btn-main+.btn-main {
-      margin-left: 15px;
+      margin: 15px 0;
     }
 
     .btn-main.primary {
@@ -82,6 +90,6 @@
 
 <body>
   <app-root></app-root>
-<script type="text/javascript" src="runtime.ec2944dd8b20ec099bf3.js"></script><script type="text/javascript" src="polyfills.39e6cfaf4ba205935ea7.js"></script><script type="text/javascript" src="main.cd473df00947bda0dc81.js"></script></body>
+<script type="text/javascript" src="runtime.ec2944dd8b20ec099bf3.js"></script><script type="text/javascript" src="polyfills.39e6cfaf4ba205935ea7.js"></script><script type="text/javascript" src="main.f7a62d6dfe304ddaeb4c.js"></script></body>
 
 </html>

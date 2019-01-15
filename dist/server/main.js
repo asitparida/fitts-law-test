@@ -227,13 +227,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var router_1 = __webpack_require__(/*! @angular/router */ "@angular/router");
 var home_component_1 = __webpack_require__(/*! ./home/home.component */ "./src/app/home/home.component.ts");
 var fitts_test_component_1 = __webpack_require__(/*! ./fitts-test/fitts-test.component */ "./src/app/fitts-test/fitts-test.component.ts");
-var ɵ0 = { uid: 1000 }, ɵ1 = { uid: 2000 };
+var info_component_1 = __webpack_require__(/*! ./info/info.component */ "./src/app/info/info.component.ts");
+var auth_guard_1 = __webpack_require__(/*! ./auth.guard */ "./src/app/auth.guard.ts");
+var ɵ0 = { uid: 1000 }, ɵ1 = { uid: 2000 }, ɵ2 = { uid: 3000 };
 exports.ɵ0 = ɵ0;
 exports.ɵ1 = ɵ1;
+exports.ɵ2 = ɵ2;
 var appRoutes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
     { path: 'home', component: home_component_1.HomeComponent, data: ɵ0 },
-    { path: 'test', component: fitts_test_component_1.FittsTestComponent, data: ɵ1 },
+    { path: 'test', component: fitts_test_component_1.FittsTestComponent, data: ɵ1, canActivate: [auth_guard_1.AuthGuard] },
+    { path: 'info', component: info_component_1.InfoComponent, data: ɵ2 },
 ];
 var AppRoutingModule = /** @class */ (function () {
     function AppRoutingModule() {
@@ -267,23 +271,28 @@ var i2 = __webpack_require__(/*! ./app.component */ "./src/app/app.component.ts"
 var i3 = __webpack_require__(/*! ../../node_modules/@angular/router/router.ngfactory */ "./node_modules/@angular/router/router.ngfactory.js");
 var i4 = __webpack_require__(/*! ./home/home.component.ngfactory */ "./src/app/home/home.component.ngfactory.js");
 var i5 = __webpack_require__(/*! ./fitts-test/fitts-test.component.ngfactory */ "./src/app/fitts-test/fitts-test.component.ngfactory.js");
-var i6 = __webpack_require__(/*! ./app.component.ngfactory */ "./src/app/app.component.ngfactory.js");
-var i7 = __webpack_require__(/*! @angular/common */ "@angular/common");
-var i8 = __webpack_require__(/*! @angular/platform-browser */ "@angular/platform-browser");
-var i9 = __webpack_require__(/*! @angular/platform-server */ "@angular/platform-server");
-var i10 = __webpack_require__(/*! @angular/animations/browser */ "@angular/animations/browser");
-var i11 = __webpack_require__(/*! @angular/platform-browser/animations */ "@angular/platform-browser/animations");
-var i12 = __webpack_require__(/*! @angular/router */ "@angular/router");
-var i13 = __webpack_require__(/*! @nguniversal/common */ "@nguniversal/common");
-var i14 = __webpack_require__(/*! @angular/common/http */ "@angular/common/http");
-var i15 = __webpack_require__(/*! @angular/http */ "@angular/http");
-var i16 = __webpack_require__(/*! @angular/animations */ "@angular/animations");
-var i17 = __webpack_require__(/*! @nguniversal/module-map-ngfactory-loader */ "@nguniversal/module-map-ngfactory-loader");
-var i18 = __webpack_require__(/*! ./home/home.component */ "./src/app/home/home.component.ts");
-var i19 = __webpack_require__(/*! ./app.routing */ "./src/app/app.routing.ts");
-var i20 = __webpack_require__(/*! ./fitts-test/fitts-test.component */ "./src/app/fitts-test/fitts-test.component.ts");
-var i21 = __webpack_require__(/*! ./app.module */ "./src/app/app.module.ts");
-var AppServerModuleNgFactory = i0.ɵcmf(i1.AppServerModule, [i2.AppComponent], function (_l) { return i0.ɵmod([i0.ɵmpd(512, i0.ComponentFactoryResolver, i0.ɵCodegenComponentFactoryResolver, [[8, [i3.ɵEmptyOutletComponentNgFactory, i4.HomeComponentNgFactory, i5.FittsTestComponentNgFactory, i6.AppComponentNgFactory]], [3, i0.ComponentFactoryResolver], i0.NgModuleRef]), i0.ɵmpd(5120, i0.LOCALE_ID, i0.ɵangular_packages_core_core_o, [[3, i0.LOCALE_ID]]), i0.ɵmpd(4608, i7.NgLocalization, i7.NgLocaleLocalization, [i0.LOCALE_ID, [2, i7.ɵangular_packages_common_common_a]]), i0.ɵmpd(5120, i0.IterableDiffers, i0.ɵangular_packages_core_core_m, []), i0.ɵmpd(5120, i0.KeyValueDiffers, i0.ɵangular_packages_core_core_n, []), i0.ɵmpd(4608, i8.DomSanitizer, i8.ɵDomSanitizerImpl, [i7.DOCUMENT]), i0.ɵmpd(6144, i0.Sanitizer, null, [i8.DomSanitizer]), i0.ɵmpd(4608, i8.HAMMER_GESTURE_CONFIG, i8.HammerGestureConfig, []), i0.ɵmpd(5120, i8.EVENT_MANAGER_PLUGINS, function (p0_0, p0_1, p0_2, p1_0, p2_0, p2_1, p2_2, p2_3, p3_0) { return [new i8.ɵDomEventsPlugin(p0_0, p0_1, p0_2), new i8.ɵKeyEventsPlugin(p1_0), new i8.ɵHammerGesturesPlugin(p2_0, p2_1, p2_2, p2_3), new i9.ɵangular_packages_platform_server_platform_server_d(p3_0)]; }, [i7.DOCUMENT, i0.NgZone, i0.PLATFORM_ID, i7.DOCUMENT, i7.DOCUMENT, i8.HAMMER_GESTURE_CONFIG, i0.ɵConsole, [2, i8.HAMMER_LOADER], i8.DOCUMENT]), i0.ɵmpd(4608, i8.EventManager, i8.EventManager, [i8.EVENT_MANAGER_PLUGINS, i0.NgZone]), i0.ɵmpd(135680, i8.ɵDomSharedStylesHost, i8.ɵDomSharedStylesHost, [i7.DOCUMENT]), i0.ɵmpd(4608, i8.ɵDomRendererFactory2, i8.ɵDomRendererFactory2, [i8.EventManager, i8.ɵDomSharedStylesHost]), i0.ɵmpd(4608, i9.ɵangular_packages_platform_server_platform_server_c, i9.ɵangular_packages_platform_server_platform_server_c, [i8.DOCUMENT, [2, i8.ɵTRANSITION_ID]]), i0.ɵmpd(6144, i8.ɵSharedStylesHost, null, [i9.ɵangular_packages_platform_server_platform_server_c]), i0.ɵmpd(4608, i9.ɵServerRendererFactory2, i9.ɵServerRendererFactory2, [i8.EventManager, i0.NgZone, i8.DOCUMENT, i8.ɵSharedStylesHost]), i0.ɵmpd(4608, i10.AnimationDriver, i10.ɵNoopAnimationDriver, []), i0.ɵmpd(5120, i10.ɵAnimationStyleNormalizer, i11.ɵangular_packages_platform_browser_animations_animations_c, []), i0.ɵmpd(4608, i10.ɵAnimationEngine, i11.ɵangular_packages_platform_browser_animations_animations_a, [i7.DOCUMENT, i10.AnimationDriver, i10.ɵAnimationStyleNormalizer]), i0.ɵmpd(5120, i0.RendererFactory2, i9.ɵangular_packages_platform_server_platform_server_a, [i9.ɵServerRendererFactory2, i10.ɵAnimationEngine, i0.NgZone]), i0.ɵmpd(4352, i0.Testability, null, []), i0.ɵmpd(5120, i12.ActivatedRoute, i12.ɵangular_packages_router_router_g, [i12.Router]), i0.ɵmpd(4608, i12.NoPreloading, i12.NoPreloading, []), i0.ɵmpd(6144, i12.PreloadingStrategy, null, [i12.NoPreloading]), i0.ɵmpd(135680, i12.RouterPreloader, i12.RouterPreloader, [i12.Router, i0.NgModuleFactoryLoader, i0.Compiler, i0.Injector, i12.PreloadingStrategy]), i0.ɵmpd(4608, i12.PreloadAllModules, i12.PreloadAllModules, []), i0.ɵmpd(4608, i7.ViewportScroller, i7.ɵNullViewportScroller, []), i0.ɵmpd(5120, i12.ɵangular_packages_router_router_n, i12.ɵangular_packages_router_router_c, [i12.Router, i7.ViewportScroller, i12.ROUTER_CONFIGURATION]), i0.ɵmpd(5120, i12.ROUTER_INITIALIZER, i12.ɵangular_packages_router_router_j, [i12.ɵangular_packages_router_router_h]), i0.ɵmpd(5120, i0.APP_BOOTSTRAP_LISTENER, function (p0_0) { return [p0_0]; }, [i12.ROUTER_INITIALIZER]), i0.ɵmpd(4608, i8.TransferState, i8.TransferState, []), i0.ɵmpd(4608, i13.ɵnguniversal_modules_common_common_a, i13.ɵnguniversal_modules_common_common_a, [i0.ApplicationRef, i8.TransferState]), i0.ɵmpd(4608, i14.HttpXsrfTokenExtractor, i14.ɵangular_packages_common_http_http_g, [i7.DOCUMENT, i0.PLATFORM_ID, i14.ɵangular_packages_common_http_http_e]), i0.ɵmpd(4608, i14.ɵangular_packages_common_http_http_h, i14.ɵangular_packages_common_http_http_h, [i14.HttpXsrfTokenExtractor, i14.ɵangular_packages_common_http_http_f]), i0.ɵmpd(5120, i14.HTTP_INTERCEPTORS, function (p0_0, p1_0) { return [p0_0, p1_0]; }, [i13.ɵnguniversal_modules_common_common_a, i14.ɵangular_packages_common_http_http_h]), i0.ɵmpd(4608, i15.BrowserXhr, i9.ɵangular_packages_platform_server_platform_server_e, []), i0.ɵmpd(4608, i15.ResponseOptions, i15.BaseResponseOptions, []), i0.ɵmpd(4608, i15.XSRFStrategy, i9.ɵangular_packages_platform_server_platform_server_f, []), i0.ɵmpd(4608, i15.XHRBackend, i15.XHRBackend, [i15.BrowserXhr, i15.ResponseOptions, i15.XSRFStrategy]), i0.ɵmpd(4608, i15.RequestOptions, i15.BaseRequestOptions, []), i0.ɵmpd(5120, i15.Http, i9.ɵangular_packages_platform_server_platform_server_g, [i15.XHRBackend, i15.RequestOptions]), i0.ɵmpd(4608, i14.XhrFactory, i9.ɵangular_packages_platform_server_platform_server_e, []), i0.ɵmpd(4608, i14.HttpXhrBackend, i14.HttpXhrBackend, [i14.XhrFactory]), i0.ɵmpd(6144, i14.HttpBackend, null, [i14.HttpXhrBackend]), i0.ɵmpd(5120, i14.HttpHandler, i9.ɵangular_packages_platform_server_platform_server_h, [i14.HttpBackend, i0.Injector]), i0.ɵmpd(4608, i14.HttpClient, i14.HttpClient, [i14.HttpHandler]), i0.ɵmpd(4608, i14.ɵangular_packages_common_http_http_d, i14.ɵangular_packages_common_http_http_d, []), i0.ɵmpd(4608, i16.AnimationBuilder, i11.ɵBrowserAnimationBuilder, [i0.RendererFactory2, i8.DOCUMENT]), i0.ɵmpd(5120, i9.BEFORE_APP_SERIALIZED, function (p0_0, p0_1, p0_2) { return [i9.ɵangular_packages_platform_server_platform_server_b(p0_0, p0_1, p0_2)]; }, [i8.DOCUMENT, i0.APP_ID, i8.TransferState]), i0.ɵmpd(1073742336, i7.CommonModule, i7.CommonModule, []), i0.ɵmpd(1024, i0.ErrorHandler, i8.ɵangular_packages_platform_browser_platform_browser_a, []), i0.ɵmpd(1024, i0.NgProbeToken, function () { return [i12.ɵangular_packages_router_router_b()]; }, []), i0.ɵmpd(512, i12.ɵangular_packages_router_router_h, i12.ɵangular_packages_router_router_h, [i0.Injector]), i0.ɵmpd(256, i0.APP_ID, "my-app", []), i0.ɵmpd(2048, i8.ɵTRANSITION_ID, null, [i0.APP_ID]), i0.ɵmpd(1024, i0.APP_INITIALIZER, function (p0_0, p1_0, p2_0, p2_1, p2_2) { return [i8.ɵangular_packages_platform_browser_platform_browser_j(p0_0), i12.ɵangular_packages_router_router_i(p1_0), i8.ɵangular_packages_platform_browser_platform_browser_h(p2_0, p2_1, p2_2)]; }, [[2, i0.NgProbeToken], i12.ɵangular_packages_router_router_h, i8.ɵTRANSITION_ID, i7.DOCUMENT, i0.Injector]), i0.ɵmpd(512, i0.ApplicationInitStatus, i0.ApplicationInitStatus, [[2, i0.APP_INITIALIZER]]), i0.ɵmpd(131584, i0.ApplicationRef, i0.ApplicationRef, [i0.NgZone, i0.ɵConsole, i0.Injector, i0.ErrorHandler, i0.ComponentFactoryResolver, i0.ApplicationInitStatus]), i0.ɵmpd(1073742336, i0.ApplicationModule, i0.ApplicationModule, [i0.ApplicationRef]), i0.ɵmpd(1073742336, i8.BrowserModule, i8.BrowserModule, [[3, i8.BrowserModule]]), i0.ɵmpd(1024, i12.ɵangular_packages_router_router_a, i12.ɵangular_packages_router_router_e, [[3, i12.Router]]), i0.ɵmpd(512, i12.UrlSerializer, i12.DefaultUrlSerializer, []), i0.ɵmpd(512, i12.ChildrenOutletContexts, i12.ChildrenOutletContexts, []), i0.ɵmpd(256, i12.ROUTER_CONFIGURATION, {}, []), i0.ɵmpd(1024, i7.LocationStrategy, i12.ɵangular_packages_router_router_d, [i7.PlatformLocation, [2, i7.APP_BASE_HREF], i12.ROUTER_CONFIGURATION]), i0.ɵmpd(512, i7.Location, i7.Location, [i7.LocationStrategy]), i0.ɵmpd(512, i0.Compiler, i0.Compiler, []), i0.ɵmpd(512, i0.NgModuleFactoryLoader, i17.ModuleMapNgFactoryLoader, [i0.Compiler, i17.MODULE_MAP]), i0.ɵmpd(1024, i12.ROUTES, function () { return [[{ path: "", redirectTo: "/home", pathMatch: "full" }, { path: "home", component: i18.HomeComponent, data: i19.ɵ0 }, { path: "test", component: i20.FittsTestComponent, data: i19.ɵ1 }]]; }, []), i0.ɵmpd(1024, i12.Router, i12.ɵangular_packages_router_router_f, [i0.ApplicationRef, i12.UrlSerializer, i12.ChildrenOutletContexts, i7.Location, i0.Injector, i0.NgModuleFactoryLoader, i0.Compiler, i12.ROUTES, i12.ROUTER_CONFIGURATION, [2, i12.UrlHandlingStrategy], [2, i12.RouteReuseStrategy]]), i0.ɵmpd(1073742336, i12.RouterModule, i12.RouterModule, [[2, i12.ɵangular_packages_router_router_a], [2, i12.Router]]), i0.ɵmpd(1073742336, i19.AppRoutingModule, i19.AppRoutingModule, []), i0.ɵmpd(1073742336, i8.BrowserTransferStateModule, i8.BrowserTransferStateModule, []), i0.ɵmpd(1073742336, i13.TransferHttpCacheModule, i13.TransferHttpCacheModule, []), i0.ɵmpd(1073742336, i21.AppModule, i21.AppModule, []), i0.ɵmpd(1073742336, i15.HttpModule, i15.HttpModule, []), i0.ɵmpd(1073742336, i14.HttpClientXsrfModule, i14.HttpClientXsrfModule, []), i0.ɵmpd(1073742336, i14.HttpClientModule, i14.HttpClientModule, []), i0.ɵmpd(1073742336, i11.NoopAnimationsModule, i11.NoopAnimationsModule, []), i0.ɵmpd(1073742336, i9.ServerModule, i9.ServerModule, []), i0.ɵmpd(1073742336, i17.ModuleMapLoaderModule, i17.ModuleMapLoaderModule, []), i0.ɵmpd(1073742336, i9.ServerTransferStateModule, i9.ServerTransferStateModule, []), i0.ɵmpd(1073742336, i1.AppServerModule, i1.AppServerModule, []), i0.ɵmpd(256, i0.ɵAPP_ROOT, true, []), i0.ɵmpd(256, i14.ɵangular_packages_common_http_http_e, "XSRF-TOKEN", []), i0.ɵmpd(256, i14.ɵangular_packages_common_http_http_f, "X-XSRF-TOKEN", []), i0.ɵmpd(256, i11.ANIMATION_MODULE_TYPE, "NoopAnimations", [])]); });
+var i6 = __webpack_require__(/*! ./info/info.component.ngfactory */ "./src/app/info/info.component.ngfactory.js");
+var i7 = __webpack_require__(/*! ./app.component.ngfactory */ "./src/app/app.component.ngfactory.js");
+var i8 = __webpack_require__(/*! @angular/common */ "@angular/common");
+var i9 = __webpack_require__(/*! @angular/platform-browser */ "@angular/platform-browser");
+var i10 = __webpack_require__(/*! @angular/platform-server */ "@angular/platform-server");
+var i11 = __webpack_require__(/*! @angular/animations/browser */ "@angular/animations/browser");
+var i12 = __webpack_require__(/*! @angular/platform-browser/animations */ "@angular/platform-browser/animations");
+var i13 = __webpack_require__(/*! @angular/router */ "@angular/router");
+var i14 = __webpack_require__(/*! @nguniversal/common */ "@nguniversal/common");
+var i15 = __webpack_require__(/*! @angular/common/http */ "@angular/common/http");
+var i16 = __webpack_require__(/*! @angular/forms */ "@angular/forms");
+var i17 = __webpack_require__(/*! ./app.service */ "./src/app/app.service.ts");
+var i18 = __webpack_require__(/*! ./auth.guard */ "./src/app/auth.guard.ts");
+var i19 = __webpack_require__(/*! @angular/http */ "@angular/http");
+var i20 = __webpack_require__(/*! @angular/animations */ "@angular/animations");
+var i21 = __webpack_require__(/*! @nguniversal/module-map-ngfactory-loader */ "@nguniversal/module-map-ngfactory-loader");
+var i22 = __webpack_require__(/*! ./home/home.component */ "./src/app/home/home.component.ts");
+var i23 = __webpack_require__(/*! ./app.routing */ "./src/app/app.routing.ts");
+var i24 = __webpack_require__(/*! ./fitts-test/fitts-test.component */ "./src/app/fitts-test/fitts-test.component.ts");
+var i25 = __webpack_require__(/*! ./info/info.component */ "./src/app/info/info.component.ts");
+var i26 = __webpack_require__(/*! ./app.module */ "./src/app/app.module.ts");
+var AppServerModuleNgFactory = i0.ɵcmf(i1.AppServerModule, [i2.AppComponent], function (_l) { return i0.ɵmod([i0.ɵmpd(512, i0.ComponentFactoryResolver, i0.ɵCodegenComponentFactoryResolver, [[8, [i3.ɵEmptyOutletComponentNgFactory, i4.HomeComponentNgFactory, i5.FittsTestComponentNgFactory, i6.InfoComponentNgFactory, i7.AppComponentNgFactory]], [3, i0.ComponentFactoryResolver], i0.NgModuleRef]), i0.ɵmpd(5120, i0.LOCALE_ID, i0.ɵangular_packages_core_core_o, [[3, i0.LOCALE_ID]]), i0.ɵmpd(4608, i8.NgLocalization, i8.NgLocaleLocalization, [i0.LOCALE_ID, [2, i8.ɵangular_packages_common_common_a]]), i0.ɵmpd(5120, i0.IterableDiffers, i0.ɵangular_packages_core_core_m, []), i0.ɵmpd(5120, i0.KeyValueDiffers, i0.ɵangular_packages_core_core_n, []), i0.ɵmpd(4608, i9.DomSanitizer, i9.ɵDomSanitizerImpl, [i8.DOCUMENT]), i0.ɵmpd(6144, i0.Sanitizer, null, [i9.DomSanitizer]), i0.ɵmpd(4608, i9.HAMMER_GESTURE_CONFIG, i9.HammerGestureConfig, []), i0.ɵmpd(5120, i9.EVENT_MANAGER_PLUGINS, function (p0_0, p0_1, p0_2, p1_0, p2_0, p2_1, p2_2, p2_3, p3_0) { return [new i9.ɵDomEventsPlugin(p0_0, p0_1, p0_2), new i9.ɵKeyEventsPlugin(p1_0), new i9.ɵHammerGesturesPlugin(p2_0, p2_1, p2_2, p2_3), new i10.ɵangular_packages_platform_server_platform_server_d(p3_0)]; }, [i8.DOCUMENT, i0.NgZone, i0.PLATFORM_ID, i8.DOCUMENT, i8.DOCUMENT, i9.HAMMER_GESTURE_CONFIG, i0.ɵConsole, [2, i9.HAMMER_LOADER], i9.DOCUMENT]), i0.ɵmpd(4608, i9.EventManager, i9.EventManager, [i9.EVENT_MANAGER_PLUGINS, i0.NgZone]), i0.ɵmpd(135680, i9.ɵDomSharedStylesHost, i9.ɵDomSharedStylesHost, [i8.DOCUMENT]), i0.ɵmpd(4608, i9.ɵDomRendererFactory2, i9.ɵDomRendererFactory2, [i9.EventManager, i9.ɵDomSharedStylesHost]), i0.ɵmpd(4608, i10.ɵangular_packages_platform_server_platform_server_c, i10.ɵangular_packages_platform_server_platform_server_c, [i9.DOCUMENT, [2, i9.ɵTRANSITION_ID]]), i0.ɵmpd(6144, i9.ɵSharedStylesHost, null, [i10.ɵangular_packages_platform_server_platform_server_c]), i0.ɵmpd(4608, i10.ɵServerRendererFactory2, i10.ɵServerRendererFactory2, [i9.EventManager, i0.NgZone, i9.DOCUMENT, i9.ɵSharedStylesHost]), i0.ɵmpd(4608, i11.AnimationDriver, i11.ɵNoopAnimationDriver, []), i0.ɵmpd(5120, i11.ɵAnimationStyleNormalizer, i12.ɵangular_packages_platform_browser_animations_animations_c, []), i0.ɵmpd(4608, i11.ɵAnimationEngine, i12.ɵangular_packages_platform_browser_animations_animations_a, [i8.DOCUMENT, i11.AnimationDriver, i11.ɵAnimationStyleNormalizer]), i0.ɵmpd(5120, i0.RendererFactory2, i10.ɵangular_packages_platform_server_platform_server_a, [i10.ɵServerRendererFactory2, i11.ɵAnimationEngine, i0.NgZone]), i0.ɵmpd(4352, i0.Testability, null, []), i0.ɵmpd(5120, i13.ActivatedRoute, i13.ɵangular_packages_router_router_g, [i13.Router]), i0.ɵmpd(4608, i13.NoPreloading, i13.NoPreloading, []), i0.ɵmpd(6144, i13.PreloadingStrategy, null, [i13.NoPreloading]), i0.ɵmpd(135680, i13.RouterPreloader, i13.RouterPreloader, [i13.Router, i0.NgModuleFactoryLoader, i0.Compiler, i0.Injector, i13.PreloadingStrategy]), i0.ɵmpd(4608, i13.PreloadAllModules, i13.PreloadAllModules, []), i0.ɵmpd(4608, i8.ViewportScroller, i8.ɵNullViewportScroller, []), i0.ɵmpd(5120, i13.ɵangular_packages_router_router_n, i13.ɵangular_packages_router_router_c, [i13.Router, i8.ViewportScroller, i13.ROUTER_CONFIGURATION]), i0.ɵmpd(5120, i13.ROUTER_INITIALIZER, i13.ɵangular_packages_router_router_j, [i13.ɵangular_packages_router_router_h]), i0.ɵmpd(5120, i0.APP_BOOTSTRAP_LISTENER, function (p0_0) { return [p0_0]; }, [i13.ROUTER_INITIALIZER]), i0.ɵmpd(4608, i9.TransferState, i9.TransferState, []), i0.ɵmpd(4608, i14.ɵnguniversal_modules_common_common_a, i14.ɵnguniversal_modules_common_common_a, [i0.ApplicationRef, i9.TransferState]), i0.ɵmpd(4608, i15.HttpXsrfTokenExtractor, i15.ɵangular_packages_common_http_http_g, [i8.DOCUMENT, i0.PLATFORM_ID, i15.ɵangular_packages_common_http_http_e]), i0.ɵmpd(4608, i15.ɵangular_packages_common_http_http_h, i15.ɵangular_packages_common_http_http_h, [i15.HttpXsrfTokenExtractor, i15.ɵangular_packages_common_http_http_f]), i0.ɵmpd(5120, i15.HTTP_INTERCEPTORS, function (p0_0, p1_0) { return [p0_0, p1_0]; }, [i14.ɵnguniversal_modules_common_common_a, i15.ɵangular_packages_common_http_http_h]), i0.ɵmpd(4608, i16.ɵangular_packages_forms_forms_j, i16.ɵangular_packages_forms_forms_j, []), i0.ɵmpd(4608, i17.AppService, i17.AppService, []), i0.ɵmpd(4608, i18.AuthGuard, i18.AuthGuard, [i17.AppService, i13.Router]), i0.ɵmpd(4608, i19.BrowserXhr, i10.ɵangular_packages_platform_server_platform_server_e, []), i0.ɵmpd(4608, i19.ResponseOptions, i19.BaseResponseOptions, []), i0.ɵmpd(4608, i19.XSRFStrategy, i10.ɵangular_packages_platform_server_platform_server_f, []), i0.ɵmpd(4608, i19.XHRBackend, i19.XHRBackend, [i19.BrowserXhr, i19.ResponseOptions, i19.XSRFStrategy]), i0.ɵmpd(4608, i19.RequestOptions, i19.BaseRequestOptions, []), i0.ɵmpd(5120, i19.Http, i10.ɵangular_packages_platform_server_platform_server_g, [i19.XHRBackend, i19.RequestOptions]), i0.ɵmpd(4608, i15.XhrFactory, i10.ɵangular_packages_platform_server_platform_server_e, []), i0.ɵmpd(4608, i15.HttpXhrBackend, i15.HttpXhrBackend, [i15.XhrFactory]), i0.ɵmpd(6144, i15.HttpBackend, null, [i15.HttpXhrBackend]), i0.ɵmpd(5120, i15.HttpHandler, i10.ɵangular_packages_platform_server_platform_server_h, [i15.HttpBackend, i0.Injector]), i0.ɵmpd(4608, i15.HttpClient, i15.HttpClient, [i15.HttpHandler]), i0.ɵmpd(4608, i15.ɵangular_packages_common_http_http_d, i15.ɵangular_packages_common_http_http_d, []), i0.ɵmpd(4608, i20.AnimationBuilder, i12.ɵBrowserAnimationBuilder, [i0.RendererFactory2, i9.DOCUMENT]), i0.ɵmpd(5120, i10.BEFORE_APP_SERIALIZED, function (p0_0, p0_1, p0_2) { return [i10.ɵangular_packages_platform_server_platform_server_b(p0_0, p0_1, p0_2)]; }, [i9.DOCUMENT, i0.APP_ID, i9.TransferState]), i0.ɵmpd(1073742336, i8.CommonModule, i8.CommonModule, []), i0.ɵmpd(1024, i0.ErrorHandler, i9.ɵangular_packages_platform_browser_platform_browser_a, []), i0.ɵmpd(1024, i0.NgProbeToken, function () { return [i13.ɵangular_packages_router_router_b()]; }, []), i0.ɵmpd(512, i13.ɵangular_packages_router_router_h, i13.ɵangular_packages_router_router_h, [i0.Injector]), i0.ɵmpd(256, i0.APP_ID, "my-app", []), i0.ɵmpd(2048, i9.ɵTRANSITION_ID, null, [i0.APP_ID]), i0.ɵmpd(1024, i0.APP_INITIALIZER, function (p0_0, p1_0, p2_0, p2_1, p2_2) { return [i9.ɵangular_packages_platform_browser_platform_browser_j(p0_0), i13.ɵangular_packages_router_router_i(p1_0), i9.ɵangular_packages_platform_browser_platform_browser_h(p2_0, p2_1, p2_2)]; }, [[2, i0.NgProbeToken], i13.ɵangular_packages_router_router_h, i9.ɵTRANSITION_ID, i8.DOCUMENT, i0.Injector]), i0.ɵmpd(512, i0.ApplicationInitStatus, i0.ApplicationInitStatus, [[2, i0.APP_INITIALIZER]]), i0.ɵmpd(131584, i0.ApplicationRef, i0.ApplicationRef, [i0.NgZone, i0.ɵConsole, i0.Injector, i0.ErrorHandler, i0.ComponentFactoryResolver, i0.ApplicationInitStatus]), i0.ɵmpd(1073742336, i0.ApplicationModule, i0.ApplicationModule, [i0.ApplicationRef]), i0.ɵmpd(1073742336, i9.BrowserModule, i9.BrowserModule, [[3, i9.BrowserModule]]), i0.ɵmpd(1024, i13.ɵangular_packages_router_router_a, i13.ɵangular_packages_router_router_e, [[3, i13.Router]]), i0.ɵmpd(512, i13.UrlSerializer, i13.DefaultUrlSerializer, []), i0.ɵmpd(512, i13.ChildrenOutletContexts, i13.ChildrenOutletContexts, []), i0.ɵmpd(256, i13.ROUTER_CONFIGURATION, {}, []), i0.ɵmpd(1024, i8.LocationStrategy, i13.ɵangular_packages_router_router_d, [i8.PlatformLocation, [2, i8.APP_BASE_HREF], i13.ROUTER_CONFIGURATION]), i0.ɵmpd(512, i8.Location, i8.Location, [i8.LocationStrategy]), i0.ɵmpd(512, i0.Compiler, i0.Compiler, []), i0.ɵmpd(512, i0.NgModuleFactoryLoader, i21.ModuleMapNgFactoryLoader, [i0.Compiler, i21.MODULE_MAP]), i0.ɵmpd(1024, i13.ROUTES, function () { return [[{ path: "", redirectTo: "/home", pathMatch: "full" }, { path: "home", component: i22.HomeComponent, data: i23.ɵ0 }, { path: "test", component: i24.FittsTestComponent, data: i23.ɵ1, canActivate: [i18.AuthGuard] }, { path: "info", component: i25.InfoComponent, data: i23.ɵ2 }]]; }, []), i0.ɵmpd(1024, i13.Router, i13.ɵangular_packages_router_router_f, [i0.ApplicationRef, i13.UrlSerializer, i13.ChildrenOutletContexts, i8.Location, i0.Injector, i0.NgModuleFactoryLoader, i0.Compiler, i13.ROUTES, i13.ROUTER_CONFIGURATION, [2, i13.UrlHandlingStrategy], [2, i13.RouteReuseStrategy]]), i0.ɵmpd(1073742336, i13.RouterModule, i13.RouterModule, [[2, i13.ɵangular_packages_router_router_a], [2, i13.Router]]), i0.ɵmpd(1073742336, i23.AppRoutingModule, i23.AppRoutingModule, []), i0.ɵmpd(1073742336, i9.BrowserTransferStateModule, i9.BrowserTransferStateModule, []), i0.ɵmpd(1073742336, i14.TransferHttpCacheModule, i14.TransferHttpCacheModule, []), i0.ɵmpd(1073742336, i16.ɵangular_packages_forms_forms_bc, i16.ɵangular_packages_forms_forms_bc, []), i0.ɵmpd(1073742336, i16.FormsModule, i16.FormsModule, []), i0.ɵmpd(1073742336, i26.AppModule, i26.AppModule, []), i0.ɵmpd(1073742336, i19.HttpModule, i19.HttpModule, []), i0.ɵmpd(1073742336, i15.HttpClientXsrfModule, i15.HttpClientXsrfModule, []), i0.ɵmpd(1073742336, i15.HttpClientModule, i15.HttpClientModule, []), i0.ɵmpd(1073742336, i12.NoopAnimationsModule, i12.NoopAnimationsModule, []), i0.ɵmpd(1073742336, i10.ServerModule, i10.ServerModule, []), i0.ɵmpd(1073742336, i21.ModuleMapLoaderModule, i21.ModuleMapLoaderModule, []), i0.ɵmpd(1073742336, i10.ServerTransferStateModule, i10.ServerTransferStateModule, []), i0.ɵmpd(1073742336, i1.AppServerModule, i1.AppServerModule, []), i0.ɵmpd(256, i0.ɵAPP_ROOT, true, []), i0.ɵmpd(256, i15.ɵangular_packages_common_http_http_e, "XSRF-TOKEN", []), i0.ɵmpd(256, i15.ɵangular_packages_common_http_http_f, "X-XSRF-TOKEN", []), i0.ɵmpd(256, i12.ANIMATION_MODULE_TYPE, "NoopAnimations", [])]); });
 exports.AppServerModuleNgFactory = AppServerModuleNgFactory;
 
 
@@ -309,6 +318,59 @@ exports.AppServerModule = AppServerModule;
 
 /***/ }),
 
+/***/ "./src/app/app.service.ts":
+/*!********************************!*\
+  !*** ./src/app/app.service.ts ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var AppService = /** @class */ (function () {
+    function AppService() {
+        this.info = null;
+    }
+    return AppService;
+}());
+exports.AppService = AppService;
+
+
+/***/ }),
+
+/***/ "./src/app/auth.guard.ts":
+/*!*******************************!*\
+  !*** ./src/app/auth.guard.ts ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var router_1 = __webpack_require__(/*! @angular/router */ "@angular/router");
+var app_service_1 = __webpack_require__(/*! ./app.service */ "./src/app/app.service.ts");
+var AuthGuard = /** @class */ (function () {
+    function AuthGuard(appService, router) {
+        this.appService = appService;
+        this.router = router;
+    }
+    AuthGuard.prototype.canActivate = function (next, state) {
+        if (this.appService.info) {
+            return true;
+        }
+        else {
+            this.router.navigate(['/home']);
+        }
+    };
+    return AuthGuard;
+}());
+exports.AuthGuard = AuthGuard;
+
+
+/***/ }),
+
 /***/ "./src/app/fitts-test/fitts-test.component.ngfactory.js":
 /*!**************************************************************!*\
   !*** ./src/app/fitts-test/fitts-test.component.ngfactory.js ***!
@@ -329,6 +391,7 @@ var i0 = __webpack_require__(/*! ./fitts-test.component.scss.shim.ngstyle */ "./
 var i1 = __webpack_require__(/*! @angular/core */ "@angular/core");
 var i2 = __webpack_require__(/*! @angular/common */ "@angular/common");
 var i3 = __webpack_require__(/*! ./fitts-test.component */ "./src/app/fitts-test/fitts-test.component.ts");
+var i4 = __webpack_require__(/*! ../app.service */ "./src/app/app.service.ts");
 var styles_FittsTestComponent = [i0.styles];
 var RenderType_FittsTestComponent = i1.ɵcrt({ encapsulation: 0, styles: styles_FittsTestComponent, data: {} });
 exports.RenderType_FittsTestComponent = RenderType_FittsTestComponent;
@@ -344,12 +407,18 @@ function View_FittsTestComponent_4(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0
 function View_FittsTestComponent_5(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 8, "div", [["class", "practice-run-modal"]], null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 1, "h2", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Lets start with actual runs"])), (_l()(), i1.ɵeld(3, 0, null, null, 1, "label", [["class", "count"]], null, null, null, null, null)), (_l()(), i1.ɵted(4, null, ["", " / ", ""])), (_l()(), i1.ɵeld(5, 0, null, null, 1, "p", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["RUN"])), (_l()(), i1.ɵeld(7, 0, null, null, 1, "button", [["class", "btn-main primary"]], null, [[null, "click"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("click" === en)) {
         var pd_0 = (_co.startTest() !== false);
         ad = (pd_0 && ad);
-    } return ad; }, null, null)), (_l()(), i1.ɵted(-1, null, ["Start"]))], null, function (_ck, _v) { var _co = _v.component; var currVal_0 = _co.currentTestCount; var currVal_1 = _co.maxTicks; _ck(_v, 4, 0, currVal_0, currVal_1); }); }
-function View_FittsTestComponent_6(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 3, null, null, null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 2, "div", [["class", "practice-run-modal"]], null, null, null, null, null)), (_l()(), i1.ɵeld(2, 0, null, null, 1, "h2", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Thanks for taking the test !"]))], null, null); }
+    } return ad; }, null, null)), (_l()(), i1.ɵted(-1, null, ["Start"]))], null, function (_ck, _v) { var _co = _v.component; var currVal_0 = _co.currentTestCount; var currVal_1 = _co.maxTests; _ck(_v, 4, 0, currVal_0, currVal_1); }); }
+function View_FittsTestComponent_6(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 7, null, null, null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 6, "div", [["class", "practice-run-modal"]], null, null, null, null, null)), (_l()(), i1.ɵeld(2, 0, null, null, 1, "h2", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Thanks for taking the test !"])), (_l()(), i1.ɵeld(4, 0, null, null, 1, "button", [["class", "btn-main primary"]], null, [[null, "click"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("click" === en)) {
+        var pd_0 = (_co.downloadData() !== false);
+        ad = (pd_0 && ad);
+    } return ad; }, null, null)), (_l()(), i1.ɵted(-1, null, ["Download JSON Data"])), (_l()(), i1.ɵeld(6, 0, null, null, 1, "button", [["class", "btn-main primary"]], null, [[null, "click"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("click" === en)) {
+        var pd_0 = (_co.downloadCSVData() !== false);
+        ad = (pd_0 && ad);
+    } return ad; }, null, null)), (_l()(), i1.ɵted(-1, null, ["Download CSV Data"]))], null, null); }
 function View_FittsTestComponent_1(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 10, "div", [["class", "overlay"]], null, null, null, null, null)), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_2)), i1.ɵdid(2, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_3)), i1.ɵdid(4, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_4)), i1.ɵdid(6, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_5)), i1.ɵdid(8, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_6)), i1.ɵdid(10, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null)], function (_ck, _v) { var _co = _v.component; var currVal_0 = _co.showPracticeModal; _ck(_v, 2, 0, currVal_0); var currVal_1 = _co.showCountdownModal; _ck(_v, 4, 0, currVal_1); var currVal_2 = _co.showTestCompleteModal; _ck(_v, 6, 0, currVal_2); var currVal_3 = _co.showActualTestModal; _ck(_v, 8, 0, currVal_3); var currVal_4 = _co.showAllDoneModal; _ck(_v, 10, 0, currVal_4); }, null); }
 function View_FittsTestComponent_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "div", [["class", "work-area"]], [[1, "id", 0]], null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 0, ":svg:svg", [], [[1, "id", 0]], null, null, null, null)), (_l()(), i1.ɵeld(2, 0, null, null, 1, "span", [["class", "o-tester"]], [[1, "id", 0]], null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["o"])), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_1)), i1.ɵdid(5, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null)], function (_ck, _v) { var _co = _v.component; var currVal_3 = _co.showModal; _ck(_v, 5, 0, currVal_3); }, function (_ck, _v) { var _co = _v.component; var currVal_0 = _co.workAreaId; _ck(_v, 0, 0, currVal_0); var currVal_1 = _co.svgAreaId; _ck(_v, 1, 0, currVal_1); var currVal_2 = _co.oTesterId; _ck(_v, 2, 0, currVal_2); }); }
 exports.View_FittsTestComponent_0 = View_FittsTestComponent_0;
-function View_FittsTestComponent_Host_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "app-fitts-test", [], null, null, null, View_FittsTestComponent_0, RenderType_FittsTestComponent)), i1.ɵdid(1, 4308992, null, 0, i3.FittsTestComponent, [], null, null)], function (_ck, _v) { _ck(_v, 1, 0); }, null); }
+function View_FittsTestComponent_Host_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "app-fitts-test", [], null, null, null, View_FittsTestComponent_0, RenderType_FittsTestComponent)), i1.ɵdid(1, 4308992, null, 0, i3.FittsTestComponent, [i4.AppService], null, null)], function (_ck, _v) { _ck(_v, 1, 0); }, null); }
 exports.View_FittsTestComponent_Host_0 = View_FittsTestComponent_Host_0;
 var FittsTestComponentNgFactory = i1.ɵccf("app-fitts-test", i3.FittsTestComponent, View_FittsTestComponent_Host_0, {}, {}, []);
 exports.FittsTestComponentNgFactory = FittsTestComponentNgFactory;
@@ -392,6 +461,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(/*! @angular/core */ "@angular/core");
 var d3 = __webpack_require__(/*! d3 */ "d3");
 var _ = __webpack_require__(/*! lodash */ "lodash");
+var app_service_1 = __webpack_require__(/*! ../app.service */ "./src/app/app.service.ts");
 var Coordinate = /** @class */ (function () {
     function Coordinate(x, y) {
         this.x = 0;
@@ -422,7 +492,8 @@ var Clock;
     Clock["antiClockwise"] = "Anti-Clockwise";
 })(Clock = exports.Clock || (exports.Clock = {}));
 var FittsTestComponent = /** @class */ (function () {
-    function FittsTestComponent() {
+    function FittsTestComponent(appService) {
+        this.appService = appService;
         this.title = 'fitts-law-tester';
         this.workAreaId = 'work-area' + Math.floor(Math.random() * 10e6);
         this.svgAreaId = 'svg-work-area' + Math.floor(Math.random() * 10e6);
@@ -449,12 +520,14 @@ var FittsTestComponent = /** @class */ (function () {
         this.showModal = true;
         this.currentPerformanceTick = null;
         this.currentDataSet = [];
+        this.overallDataSet = [];
         this.countdownTickCount = -1;
         this.currentTestCount = -1;
-        this.maxTests = 2;
-        this.maxTicks = 3;
+        this.maxTests = 4;
+        this.maxTicks = 4;
         this.countdownTick = this.maxTicks;
         this.listener = null;
+        this.userInfo = null;
     }
     FittsTestComponent.prototype.ngAfterViewInit = function () {
         this.dim = this.getSquareDimension();
@@ -474,6 +547,7 @@ var FittsTestComponent = /** @class */ (function () {
     };
     FittsTestComponent.prototype.ngOnInit = function () {
         var _this = this;
+        this.userInfo = this.appService.info;
         this.listener = function (e) {
             var now = performance.now();
             var dir = _this.dir;
@@ -514,6 +588,7 @@ var FittsTestComponent = /** @class */ (function () {
         this.showPracticeModal = false;
         this.showCountdownModal = true;
         this.countdownTick = this.maxTicks;
+        this.pickRadius();
         this.layoutCurrentRadiusBox();
         this.layourtCurrentCircles();
         var interval = setInterval(function () {
@@ -529,13 +604,16 @@ var FittsTestComponent = /** @class */ (function () {
     FittsTestComponent.prototype.processCurrentRadius = function () {
         var width = this.dim;
         var height = this.dim;
-        this.currentRadius = _.sample(_.range(this.minRadius, this.maxRadius, 10));
-        this.baseRadius = (this.dim - (this.currentRadius * 2)) * 0.5;
+        this.pickRadius();
         this.svgElem = document.getElementById(this.svgAreaId);
         d3.select(this.svgElem).attr('width', width);
         d3.select(this.svgElem).attr('height', height);
         this.layoutCurrentRadiusBox();
         this.layourtCurrentCircles();
+    };
+    FittsTestComponent.prototype.pickRadius = function () {
+        this.currentRadius = _.sample(_.range(this.minRadius, this.maxRadius, 10));
+        this.baseRadius = (this.dim - (this.currentRadius * 2)) * 0.5;
     };
     FittsTestComponent.prototype.layoutCurrentRadiusBox = function () {
         if (this.fittRadiusCircle) {
@@ -607,6 +685,9 @@ var FittsTestComponent = /** @class */ (function () {
         this.currentPerformanceTick = null;
         this.showModal = true;
         this.showTestCompleteModal = true;
+        if (!this.isPracticeRun) {
+            this.overallDataSet = this.overallDataSet.concat(this.currentDataSet);
+        }
         this.currentDataSet = [];
     };
     FittsTestComponent.prototype.nextStepInTest = function () {
@@ -631,6 +712,7 @@ var FittsTestComponent = /** @class */ (function () {
         this.showActualTestModal = false;
         this.showCountdownModal = true;
         this.countdownTick = this.maxTicks;
+        this.pickRadius();
         this.layoutCurrentRadiusBox();
         this.layourtCurrentCircles();
         var interval = setInterval(function () {
@@ -669,13 +751,15 @@ var FittsTestComponent = /** @class */ (function () {
         if (isCorrectClick) {
             direction = this.getHitDirection(lastCircleIndex, dir);
         }
-        var item = {
+        var item = Object.assign({}, {
             direction: direction,
             sourceIndex: lastCircleIndex,
             ticks: ticks,
             targetHit: isCorrectClick,
-            angle: dir === 1 ? Clock.clockwise : Clock.antiClockwise
-        };
+            angle: dir === 1 ? Clock.clockwise : Clock.antiClockwise,
+            timestamp: (new Date()).getTime(),
+            run: "RUN #" + this.currentTestCount
+        }, this.userInfo);
         this.currentDataSet.push(item);
         this.currentPerformanceTick = performance.now();
     };
@@ -748,12 +832,15 @@ var FittsTestComponent = /** @class */ (function () {
         return direction;
     };
     FittsTestComponent.prototype.getSquareDimension = function () {
+        var dim = 0;
         if (window.innerHeight > window.innerWidth) {
-            return window.innerWidth - 60;
+            dim = window.innerWidth - 60;
         }
         else {
-            return window.innerHeight - 60;
+            dim = window.innerHeight - 60;
         }
+        dim = dim > 500 ? 500 : dim;
+        return dim;
     };
     FittsTestComponent.prototype.getMinRadius = function () {
         var elem = document.getElementById(this.oTesterId);
@@ -765,6 +852,67 @@ var FittsTestComponent = /** @class */ (function () {
     };
     FittsTestComponent.prototype.toRadians = function (angle) {
         return angle * (Math.PI / 180);
+    };
+    FittsTestComponent.prototype.downloadData = function () {
+        var saveData = (function () {
+            var a = document.createElement('a');
+            document.body.appendChild(a);
+            a.style.display = 'none';
+            return function (data, fileName) {
+                var json = JSON.stringify(data), blob = new Blob([json], { type: 'octet/stream' }), url = window.URL.createObjectURL(blob);
+                a.href = url;
+                a.download = fileName;
+                a.click();
+                window.URL.revokeObjectURL(url);
+            };
+        }());
+        var obj = Object.assign({}, {
+            data: this.overallDataSet
+        });
+        saveData(obj, this.userInfo.alias + "-data-json.json");
+    };
+    FittsTestComponent.prototype.downloadCSVData = function () {
+        var data, filename, link;
+        var csv = this.convertArrayOfObjectsToCSV({
+            data: this.overallDataSet
+        });
+        if (csv === null) {
+            return;
+        }
+        filename = this.userInfo.alias + "-data-csv.csv";
+        if (!csv.match(/^data:text\/csv/i)) {
+            csv = 'data:text/csv;charset=utf-8,' + csv;
+        }
+        data = encodeURI(csv);
+        link = document.createElement('a');
+        link.setAttribute('href', data);
+        link.setAttribute('download', filename);
+        link.click();
+    };
+    FittsTestComponent.prototype.convertArrayOfObjectsToCSV = function (args) {
+        var result, ctr, keys, columnDelimiter, lineDelimiter, data;
+        data = args.data || null;
+        if (data == null || !data.length) {
+            return null;
+        }
+        columnDelimiter = args.columnDelimiter || ',';
+        lineDelimiter = args.lineDelimiter || '\n';
+        keys = Object.keys(data[0]);
+        result = '';
+        result += keys.join(columnDelimiter);
+        result += lineDelimiter;
+        data.forEach(function (item) {
+            ctr = 0;
+            keys.forEach(function (key) {
+                if (ctr > 0) {
+                    result += columnDelimiter;
+                }
+                result += item[key];
+                ctr++;
+            });
+            result += lineDelimiter;
+        });
+        return result;
     };
     return FittsTestComponent;
 }());
@@ -799,7 +947,7 @@ exports.RenderType_HomeComponent = RenderType_HomeComponent;
 function View_HomeComponent_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 8, "div", [["class", "home-page"]], null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 1, "h1", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Fitts Law Test"])), (_l()(), i1.ɵeld(3, 0, null, null, 1, "p", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."])), (_l()(), i1.ɵeld(5, 0, null, null, 3, "button", [["class", "btn-main primary"]], null, [[null, "click"]], function (_v, en, $event) { var ad = true; if (("click" === en)) {
         var pd_0 = (i1.ɵnov(_v, 6).onClick() !== false);
         ad = (pd_0 && ad);
-    } return ad; }, null, null)), i1.ɵdid(6, 16384, null, 0, i2.RouterLink, [i2.Router, i2.ActivatedRoute, [8, null], i1.Renderer2, i1.ElementRef], { routerLink: [0, "routerLink"] }, null), i1.ɵpad(7, 1), (_l()(), i1.ɵted(-1, null, ["Begin Test"]))], function (_ck, _v) { var currVal_0 = _ck(_v, 7, 0, "/test"); _ck(_v, 6, 0, currVal_0); }, null); }
+    } return ad; }, null, null)), i1.ɵdid(6, 16384, null, 0, i2.RouterLink, [i2.Router, i2.ActivatedRoute, [8, null], i1.Renderer2, i1.ElementRef], { routerLink: [0, "routerLink"] }, null), i1.ɵpad(7, 1), (_l()(), i1.ɵted(-1, null, ["Begin Test"]))], function (_ck, _v) { var currVal_0 = _ck(_v, 7, 0, "/info"); _ck(_v, 6, 0, currVal_0); }, null); }
 exports.View_HomeComponent_0 = View_HomeComponent_0;
 function View_HomeComponent_Host_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "app-home", [], null, null, null, View_HomeComponent_0, RenderType_HomeComponent)), i1.ɵdid(1, 114688, null, 0, i3.HomeComponent, [], null, null)], function (_ck, _v) { _ck(_v, 1, 0); }, null); }
 exports.View_HomeComponent_Host_0 = View_HomeComponent_Host_0;
@@ -850,6 +998,168 @@ var HomeComponent = /** @class */ (function () {
     return HomeComponent;
 }());
 exports.HomeComponent = HomeComponent;
+
+
+/***/ }),
+
+/***/ "./src/app/info/info.component.ngfactory.js":
+/*!**************************************************!*\
+  !*** ./src/app/info/info.component.ngfactory.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * @fileoverview This file was generated by the Angular template compiler. Do not edit.
+ *
+ * @suppress {suspiciousCode,uselessCode,missingProperties,missingOverride,checkTypes}
+ * tslint:disable
+ */ 
+Object.defineProperty(exports, "__esModule", { value: true });
+var i0 = __webpack_require__(/*! ./info.component.scss.shim.ngstyle */ "./src/app/info/info.component.scss.shim.ngstyle.js");
+var i1 = __webpack_require__(/*! @angular/core */ "@angular/core");
+var i2 = __webpack_require__(/*! @angular/forms */ "@angular/forms");
+var i3 = __webpack_require__(/*! @angular/common */ "@angular/common");
+var i4 = __webpack_require__(/*! ./info.component */ "./src/app/info/info.component.ts");
+var i5 = __webpack_require__(/*! ../app.service */ "./src/app/app.service.ts");
+var i6 = __webpack_require__(/*! @angular/router */ "@angular/router");
+var styles_InfoComponent = [i0.styles];
+var RenderType_InfoComponent = i1.ɵcrt({ encapsulation: 0, styles: styles_InfoComponent, data: {} });
+exports.RenderType_InfoComponent = RenderType_InfoComponent;
+function View_InfoComponent_1(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 3, "option", [], null, null, null, null, null)), i1.ɵdid(1, 147456, null, 0, i2.NgSelectOption, [i1.ElementRef, i1.Renderer2, [2, i2.SelectControlValueAccessor]], { value: [0, "value"] }, null), i1.ɵdid(2, 147456, null, 0, i2.ɵangular_packages_forms_forms_s, [i1.ElementRef, i1.Renderer2, [8, null]], { value: [0, "value"] }, null), (_l()(), i1.ɵted(3, null, ["", ""]))], function (_ck, _v) { var currVal_0 = _v.context.$implicit.text; _ck(_v, 1, 0, currVal_0); var currVal_1 = _v.context.$implicit.text; _ck(_v, 2, 0, currVal_1); }, function (_ck, _v) { var currVal_2 = _v.context.$implicit.text; _ck(_v, 3, 0, currVal_2); }); }
+function View_InfoComponent_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 57, "div", [["class", "info-page"]], null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 1, "h1", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Please fill in the following details"])), (_l()(), i1.ɵeld(3, 0, null, null, 52, "form", [["novalidate", ""]], [[2, "ng-untouched", null], [2, "ng-touched", null], [2, "ng-pristine", null], [2, "ng-dirty", null], [2, "ng-valid", null], [2, "ng-invalid", null], [2, "ng-pending", null]], [[null, "submit"], [null, "reset"]], function (_v, en, $event) { var ad = true; if (("submit" === en)) {
+        var pd_0 = (i1.ɵnov(_v, 5).onSubmit($event) !== false);
+        ad = (pd_0 && ad);
+    } if (("reset" === en)) {
+        var pd_1 = (i1.ɵnov(_v, 5).onReset() !== false);
+        ad = (pd_1 && ad);
+    } return ad; }, null, null)), i1.ɵdid(4, 16384, null, 0, i2.ɵangular_packages_forms_forms_bh, [], null, null), i1.ɵdid(5, 4210688, [["infoForm", 4]], 0, i2.NgForm, [[8, null], [8, null]], null, null), i1.ɵprd(2048, null, i2.ControlContainer, null, [i2.NgForm]), i1.ɵdid(7, 16384, null, 0, i2.NgControlStatusGroup, [[4, i2.ControlContainer]], null, null), (_l()(), i1.ɵeld(8, 0, null, null, 10, "div", [["class", "form-group"]], null, null, null, null, null)), (_l()(), i1.ɵeld(9, 0, null, null, 1, "label", [["for", "namde"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Your Name"])), (_l()(), i1.ɵeld(11, 0, null, null, 7, "input", [["aria-describedby", "emailHelp"], ["class", "form-control"], ["id", "namde"], ["name", "name"], ["placeholder", "Enter Name"], ["required", ""], ["type", "text"]], [[1, "required", 0], [2, "ng-untouched", null], [2, "ng-touched", null], [2, "ng-pristine", null], [2, "ng-dirty", null], [2, "ng-valid", null], [2, "ng-invalid", null], [2, "ng-pending", null]], [[null, "ngModelChange"], [null, "input"], [null, "blur"], [null, "compositionstart"], [null, "compositionend"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("input" === en)) {
+        var pd_0 = (i1.ɵnov(_v, 12)._handleInput($event.target.value) !== false);
+        ad = (pd_0 && ad);
+    } if (("blur" === en)) {
+        var pd_1 = (i1.ɵnov(_v, 12).onTouched() !== false);
+        ad = (pd_1 && ad);
+    } if (("compositionstart" === en)) {
+        var pd_2 = (i1.ɵnov(_v, 12)._compositionStart() !== false);
+        ad = (pd_2 && ad);
+    } if (("compositionend" === en)) {
+        var pd_3 = (i1.ɵnov(_v, 12)._compositionEnd($event.target.value) !== false);
+        ad = (pd_3 && ad);
+    } if (("ngModelChange" === en)) {
+        var pd_4 = ((_co.info.name = $event) !== false);
+        ad = (pd_4 && ad);
+    } return ad; }, null, null)), i1.ɵdid(12, 16384, null, 0, i2.DefaultValueAccessor, [i1.Renderer2, i1.ElementRef, [2, i2.COMPOSITION_BUFFER_MODE]], null, null), i1.ɵdid(13, 16384, null, 0, i2.RequiredValidator, [], { required: [0, "required"] }, null), i1.ɵprd(1024, null, i2.NG_VALIDATORS, function (p0_0) { return [p0_0]; }, [i2.RequiredValidator]), i1.ɵprd(1024, null, i2.NG_VALUE_ACCESSOR, function (p0_0) { return [p0_0]; }, [i2.DefaultValueAccessor]), i1.ɵdid(16, 671744, null, 0, i2.NgModel, [[2, i2.ControlContainer], [6, i2.NG_VALIDATORS], [8, null], [6, i2.NG_VALUE_ACCESSOR]], { name: [0, "name"], model: [1, "model"] }, { update: "ngModelChange" }), i1.ɵprd(2048, null, i2.NgControl, null, [i2.NgModel]), i1.ɵdid(18, 16384, null, 0, i2.NgControlStatus, [[4, i2.NgControl]], null, null), (_l()(), i1.ɵeld(19, 0, null, null, 10, "div", [["class", "form-group"]], null, null, null, null, null)), (_l()(), i1.ɵeld(20, 0, null, null, 1, "label", [["for", "andrewId"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Your Andrew ID"])), (_l()(), i1.ɵeld(22, 0, null, null, 7, "input", [["aria-describedby", "emailHelp"], ["class", "form-control"], ["id", "andrewId"], ["name", "alias"], ["placeholder", "Enter ANDREW ID"], ["required", ""], ["type", "email"]], [[1, "required", 0], [2, "ng-untouched", null], [2, "ng-touched", null], [2, "ng-pristine", null], [2, "ng-dirty", null], [2, "ng-valid", null], [2, "ng-invalid", null], [2, "ng-pending", null]], [[null, "ngModelChange"], [null, "input"], [null, "blur"], [null, "compositionstart"], [null, "compositionend"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("input" === en)) {
+        var pd_0 = (i1.ɵnov(_v, 23)._handleInput($event.target.value) !== false);
+        ad = (pd_0 && ad);
+    } if (("blur" === en)) {
+        var pd_1 = (i1.ɵnov(_v, 23).onTouched() !== false);
+        ad = (pd_1 && ad);
+    } if (("compositionstart" === en)) {
+        var pd_2 = (i1.ɵnov(_v, 23)._compositionStart() !== false);
+        ad = (pd_2 && ad);
+    } if (("compositionend" === en)) {
+        var pd_3 = (i1.ɵnov(_v, 23)._compositionEnd($event.target.value) !== false);
+        ad = (pd_3 && ad);
+    } if (("ngModelChange" === en)) {
+        var pd_4 = ((_co.info.alias = $event) !== false);
+        ad = (pd_4 && ad);
+    } return ad; }, null, null)), i1.ɵdid(23, 16384, null, 0, i2.DefaultValueAccessor, [i1.Renderer2, i1.ElementRef, [2, i2.COMPOSITION_BUFFER_MODE]], null, null), i1.ɵdid(24, 16384, null, 0, i2.RequiredValidator, [], { required: [0, "required"] }, null), i1.ɵprd(1024, null, i2.NG_VALIDATORS, function (p0_0) { return [p0_0]; }, [i2.RequiredValidator]), i1.ɵprd(1024, null, i2.NG_VALUE_ACCESSOR, function (p0_0) { return [p0_0]; }, [i2.DefaultValueAccessor]), i1.ɵdid(27, 671744, null, 0, i2.NgModel, [[2, i2.ControlContainer], [6, i2.NG_VALIDATORS], [8, null], [6, i2.NG_VALUE_ACCESSOR]], { name: [0, "name"], model: [1, "model"] }, { update: "ngModelChange" }), i1.ɵprd(2048, null, i2.NgControl, null, [i2.NgModel]), i1.ɵdid(29, 16384, null, 0, i2.NgControlStatus, [[4, i2.NgControl]], null, null), (_l()(), i1.ɵeld(30, 0, null, null, 12, "div", [["class", "form-group"]], null, null, null, null, null)), (_l()(), i1.ɵeld(31, 0, null, null, 1, "label", [["for", "type"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Participant Type"])), (_l()(), i1.ɵeld(33, 0, null, null, 9, "select", [["class", "form-control"], ["name", "type"], ["required", ""]], [[1, "required", 0], [2, "ng-untouched", null], [2, "ng-touched", null], [2, "ng-pristine", null], [2, "ng-dirty", null], [2, "ng-valid", null], [2, "ng-invalid", null], [2, "ng-pending", null]], [[null, "ngModelChange"], [null, "change"], [null, "blur"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("change" === en)) {
+        var pd_0 = (i1.ɵnov(_v, 34).onChange($event.target.value) !== false);
+        ad = (pd_0 && ad);
+    } if (("blur" === en)) {
+        var pd_1 = (i1.ɵnov(_v, 34).onTouched() !== false);
+        ad = (pd_1 && ad);
+    } if (("ngModelChange" === en)) {
+        var pd_2 = ((_co.info.type = $event) !== false);
+        ad = (pd_2 && ad);
+    } return ad; }, null, null)), i1.ɵdid(34, 16384, null, 0, i2.SelectControlValueAccessor, [i1.Renderer2, i1.ElementRef], null, null), i1.ɵdid(35, 16384, null, 0, i2.RequiredValidator, [], { required: [0, "required"] }, null), i1.ɵprd(1024, null, i2.NG_VALIDATORS, function (p0_0) { return [p0_0]; }, [i2.RequiredValidator]), i1.ɵprd(1024, null, i2.NG_VALUE_ACCESSOR, function (p0_0) { return [p0_0]; }, [i2.SelectControlValueAccessor]), i1.ɵdid(38, 671744, null, 0, i2.NgModel, [[2, i2.ControlContainer], [6, i2.NG_VALIDATORS], [8, null], [6, i2.NG_VALUE_ACCESSOR]], { name: [0, "name"], model: [1, "model"] }, { update: "ngModelChange" }), i1.ɵprd(2048, null, i2.NgControl, null, [i2.NgModel]), i1.ɵdid(40, 16384, null, 0, i2.NgControlStatus, [[4, i2.NgControl]], null, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_InfoComponent_1)), i1.ɵdid(42, 278528, null, 0, i3.NgForOf, [i1.ViewContainerRef, i1.TemplateRef, i1.IterableDiffers], { ngForOf: [0, "ngForOf"] }, null), (_l()(), i1.ɵeld(43, 0, null, null, 12, "div", [["class", "form-group"]], null, null, null, null, null)), (_l()(), i1.ɵeld(44, 0, null, null, 1, "label", [["for", "device"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Device"])), (_l()(), i1.ɵeld(46, 0, null, null, 7, "input", [["aria-describedby", "emailHelp"], ["class", "form-control"], ["id", "device"], ["name", "device"], ["placeholder", "Enter DEVICE information"], ["required", ""], ["type", "email"]], [[1, "required", 0], [2, "ng-untouched", null], [2, "ng-touched", null], [2, "ng-pristine", null], [2, "ng-dirty", null], [2, "ng-valid", null], [2, "ng-invalid", null], [2, "ng-pending", null]], [[null, "ngModelChange"], [null, "input"], [null, "blur"], [null, "compositionstart"], [null, "compositionend"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("input" === en)) {
+        var pd_0 = (i1.ɵnov(_v, 47)._handleInput($event.target.value) !== false);
+        ad = (pd_0 && ad);
+    } if (("blur" === en)) {
+        var pd_1 = (i1.ɵnov(_v, 47).onTouched() !== false);
+        ad = (pd_1 && ad);
+    } if (("compositionstart" === en)) {
+        var pd_2 = (i1.ɵnov(_v, 47)._compositionStart() !== false);
+        ad = (pd_2 && ad);
+    } if (("compositionend" === en)) {
+        var pd_3 = (i1.ɵnov(_v, 47)._compositionEnd($event.target.value) !== false);
+        ad = (pd_3 && ad);
+    } if (("ngModelChange" === en)) {
+        var pd_4 = ((_co.info.device = $event) !== false);
+        ad = (pd_4 && ad);
+    } return ad; }, null, null)), i1.ɵdid(47, 16384, null, 0, i2.DefaultValueAccessor, [i1.Renderer2, i1.ElementRef, [2, i2.COMPOSITION_BUFFER_MODE]], null, null), i1.ɵdid(48, 16384, null, 0, i2.RequiredValidator, [], { required: [0, "required"] }, null), i1.ɵprd(1024, null, i2.NG_VALIDATORS, function (p0_0) { return [p0_0]; }, [i2.RequiredValidator]), i1.ɵprd(1024, null, i2.NG_VALUE_ACCESSOR, function (p0_0) { return [p0_0]; }, [i2.DefaultValueAccessor]), i1.ɵdid(51, 671744, null, 0, i2.NgModel, [[2, i2.ControlContainer], [6, i2.NG_VALIDATORS], [8, null], [6, i2.NG_VALUE_ACCESSOR]], { name: [0, "name"], model: [1, "model"] }, { update: "ngModelChange" }), i1.ɵprd(2048, null, i2.NgControl, null, [i2.NgModel]), i1.ɵdid(53, 16384, null, 0, i2.NgControlStatus, [[4, i2.NgControl]], null, null), (_l()(), i1.ɵeld(54, 0, null, null, 1, "small", [["class", "form-text text-muted"], ["id", "emailHelp"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, [" (i.e. touchpad, mouse...):"])), (_l()(), i1.ɵeld(56, 0, null, null, 1, "button", [["class", "btn-main"]], [[8, "disabled", 0]], [[null, "click"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("click" === en)) {
+        var pd_0 = (_co.next() !== false);
+        ad = (pd_0 && ad);
+    } return ad; }, null, null)), (_l()(), i1.ɵted(-1, null, ["Next"]))], function (_ck, _v) { var _co = _v.component; var currVal_15 = ""; _ck(_v, 13, 0, currVal_15); var currVal_16 = "name"; var currVal_17 = _co.info.name; _ck(_v, 16, 0, currVal_16, currVal_17); var currVal_26 = ""; _ck(_v, 24, 0, currVal_26); var currVal_27 = "alias"; var currVal_28 = _co.info.alias; _ck(_v, 27, 0, currVal_27, currVal_28); var currVal_37 = ""; _ck(_v, 35, 0, currVal_37); var currVal_38 = "type"; var currVal_39 = _co.info.type; _ck(_v, 38, 0, currVal_38, currVal_39); var currVal_40 = _co.participantTypes; _ck(_v, 42, 0, currVal_40); var currVal_49 = ""; _ck(_v, 48, 0, currVal_49); var currVal_50 = "device"; var currVal_51 = _co.info.device; _ck(_v, 51, 0, currVal_50, currVal_51); }, function (_ck, _v) { var currVal_0 = i1.ɵnov(_v, 7).ngClassUntouched; var currVal_1 = i1.ɵnov(_v, 7).ngClassTouched; var currVal_2 = i1.ɵnov(_v, 7).ngClassPristine; var currVal_3 = i1.ɵnov(_v, 7).ngClassDirty; var currVal_4 = i1.ɵnov(_v, 7).ngClassValid; var currVal_5 = i1.ɵnov(_v, 7).ngClassInvalid; var currVal_6 = i1.ɵnov(_v, 7).ngClassPending; _ck(_v, 3, 0, currVal_0, currVal_1, currVal_2, currVal_3, currVal_4, currVal_5, currVal_6); var currVal_7 = (i1.ɵnov(_v, 13).required ? "" : null); var currVal_8 = i1.ɵnov(_v, 18).ngClassUntouched; var currVal_9 = i1.ɵnov(_v, 18).ngClassTouched; var currVal_10 = i1.ɵnov(_v, 18).ngClassPristine; var currVal_11 = i1.ɵnov(_v, 18).ngClassDirty; var currVal_12 = i1.ɵnov(_v, 18).ngClassValid; var currVal_13 = i1.ɵnov(_v, 18).ngClassInvalid; var currVal_14 = i1.ɵnov(_v, 18).ngClassPending; _ck(_v, 11, 0, currVal_7, currVal_8, currVal_9, currVal_10, currVal_11, currVal_12, currVal_13, currVal_14); var currVal_18 = (i1.ɵnov(_v, 24).required ? "" : null); var currVal_19 = i1.ɵnov(_v, 29).ngClassUntouched; var currVal_20 = i1.ɵnov(_v, 29).ngClassTouched; var currVal_21 = i1.ɵnov(_v, 29).ngClassPristine; var currVal_22 = i1.ɵnov(_v, 29).ngClassDirty; var currVal_23 = i1.ɵnov(_v, 29).ngClassValid; var currVal_24 = i1.ɵnov(_v, 29).ngClassInvalid; var currVal_25 = i1.ɵnov(_v, 29).ngClassPending; _ck(_v, 22, 0, currVal_18, currVal_19, currVal_20, currVal_21, currVal_22, currVal_23, currVal_24, currVal_25); var currVal_29 = (i1.ɵnov(_v, 35).required ? "" : null); var currVal_30 = i1.ɵnov(_v, 40).ngClassUntouched; var currVal_31 = i1.ɵnov(_v, 40).ngClassTouched; var currVal_32 = i1.ɵnov(_v, 40).ngClassPristine; var currVal_33 = i1.ɵnov(_v, 40).ngClassDirty; var currVal_34 = i1.ɵnov(_v, 40).ngClassValid; var currVal_35 = i1.ɵnov(_v, 40).ngClassInvalid; var currVal_36 = i1.ɵnov(_v, 40).ngClassPending; _ck(_v, 33, 0, currVal_29, currVal_30, currVal_31, currVal_32, currVal_33, currVal_34, currVal_35, currVal_36); var currVal_41 = (i1.ɵnov(_v, 48).required ? "" : null); var currVal_42 = i1.ɵnov(_v, 53).ngClassUntouched; var currVal_43 = i1.ɵnov(_v, 53).ngClassTouched; var currVal_44 = i1.ɵnov(_v, 53).ngClassPristine; var currVal_45 = i1.ɵnov(_v, 53).ngClassDirty; var currVal_46 = i1.ɵnov(_v, 53).ngClassValid; var currVal_47 = i1.ɵnov(_v, 53).ngClassInvalid; var currVal_48 = i1.ɵnov(_v, 53).ngClassPending; _ck(_v, 46, 0, currVal_41, currVal_42, currVal_43, currVal_44, currVal_45, currVal_46, currVal_47, currVal_48); var currVal_52 = !i1.ɵnov(_v, 5).valid; _ck(_v, 56, 0, currVal_52); }); }
+exports.View_InfoComponent_0 = View_InfoComponent_0;
+function View_InfoComponent_Host_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "app-info", [], null, null, null, View_InfoComponent_0, RenderType_InfoComponent)), i1.ɵdid(1, 49152, null, 0, i4.InfoComponent, [i5.AppService, i6.Router], null, null)], null, null); }
+exports.View_InfoComponent_Host_0 = View_InfoComponent_Host_0;
+var InfoComponentNgFactory = i1.ɵccf("app-info", i4.InfoComponent, View_InfoComponent_Host_0, {}, {}, []);
+exports.InfoComponentNgFactory = InfoComponentNgFactory;
+
+
+/***/ }),
+
+/***/ "./src/app/info/info.component.scss.shim.ngstyle.js":
+/*!**********************************************************!*\
+  !*** ./src/app/info/info.component.scss.shim.ngstyle.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * @fileoverview This file was generated by the Angular template compiler. Do not edit.
+ *
+ * @suppress {suspiciousCode,uselessCode,missingProperties,missingOverride,checkTypes}
+ * tslint:disable
+ */ 
+Object.defineProperty(exports, "__esModule", { value: true });
+var styles = [".info-page[_ngcontent-%COMP%] {\n  padding: 30px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  flex-direction: column; }\n  .info-page[_ngcontent-%COMP%]   form[_ngcontent-%COMP%] {\n    width: 100%;\n    max-width: 50vw;\n    padding: 30px 0; }\n  .info-page[_ngcontent-%COMP%]   .form-group[_ngcontent-%COMP%] {\n    width: 100%; }\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9hc2l0cGFyaWRhL0NvZGVzL3RlbXAyL2ZpdHRzLWxhdy10ZXN0LXVuaXYvc3JjL2FwcC9pbmZvL2luZm8uY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxjQUFhO0VBQ2IsY0FBYTtFQUNiLHdCQUF1QjtFQUN2QixvQkFBbUI7RUFDbkIsdUJBQXNCLEVBU3pCO0VBZEQ7SUFPUSxZQUFVO0lBQ1YsZ0JBQWU7SUFDZixnQkFBZSxFQUNsQjtFQVZMO0lBWVEsWUFBVSxFQUNiIiwiZmlsZSI6InNyYy9hcHAvaW5mby9pbmZvLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmluZm8tcGFnZSB7XG4gICAgcGFkZGluZzogMzBweDtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICBmb3JtIHtcbiAgICAgICAgd2lkdGg6MTAwJTtcbiAgICAgICAgbWF4LXdpZHRoOiA1MHZ3O1xuICAgICAgICBwYWRkaW5nOiAzMHB4IDA7XG4gICAgfVxuICAgIC5mb3JtLWdyb3VwIHtcbiAgICAgICAgd2lkdGg6MTAwJTtcbiAgICB9XG59Il19 */"];
+exports.styles = styles;
+
+
+/***/ }),
+
+/***/ "./src/app/info/info.component.ts":
+/*!****************************************!*\
+  !*** ./src/app/info/info.component.ts ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var app_service_1 = __webpack_require__(/*! ../app.service */ "./src/app/app.service.ts");
+var router_1 = __webpack_require__(/*! @angular/router */ "@angular/router");
+var InfoComponent = /** @class */ (function () {
+    function InfoComponent(appService, router) {
+        this.appService = appService;
+        this.router = router;
+        this.participantTypes = [
+            { id: 'yourself', text: 'Yourself' },
+            { id: 'someone-like-you', text: 'Someone like you' },
+            { id: 'someone-like-you', text: 'Someone NOT like you' },
+            { id: 'optional-particpant', text: 'Optional Particpant' }
+        ];
+        this.info = {
+            name: '',
+            type: '',
+            device: '',
+            alias: ''
+        };
+    }
+    InfoComponent.prototype.next = function () {
+        this.appService.info = this.info;
+        this.router.navigate(['/test']);
+    };
+    return InfoComponent;
+}());
+exports.InfoComponent = InfoComponent;
 
 
 /***/ }),
@@ -937,6 +1247,17 @@ module.exports = require("@angular/common/http");
 /***/ (function(module, exports) {
 
 module.exports = require("@angular/core");
+
+/***/ }),
+
+/***/ "@angular/forms":
+/*!*********************************!*\
+  !*** external "@angular/forms" ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("@angular/forms");
 
 /***/ }),
 

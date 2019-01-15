@@ -349,10 +349,7 @@ function View_FittsTestComponent_6(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0
 function View_FittsTestComponent_1(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 10, "div", [["class", "overlay"]], null, null, null, null, null)), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_2)), i1.ɵdid(2, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_3)), i1.ɵdid(4, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_4)), i1.ɵdid(6, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_5)), i1.ɵdid(8, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_6)), i1.ɵdid(10, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null)], function (_ck, _v) { var _co = _v.component; var currVal_0 = _co.showPracticeModal; _ck(_v, 2, 0, currVal_0); var currVal_1 = _co.showCountdownModal; _ck(_v, 4, 0, currVal_1); var currVal_2 = _co.showTestCompleteModal; _ck(_v, 6, 0, currVal_2); var currVal_3 = _co.showActualTestModal; _ck(_v, 8, 0, currVal_3); var currVal_4 = _co.showAllDoneModal; _ck(_v, 10, 0, currVal_4); }, null); }
 function View_FittsTestComponent_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "div", [["class", "work-area"]], [[1, "id", 0]], null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 0, ":svg:svg", [], [[1, "id", 0]], null, null, null, null)), (_l()(), i1.ɵeld(2, 0, null, null, 1, "span", [["class", "o-tester"]], [[1, "id", 0]], null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["o"])), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_1)), i1.ɵdid(5, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null)], function (_ck, _v) { var _co = _v.component; var currVal_3 = _co.showModal; _ck(_v, 5, 0, currVal_3); }, function (_ck, _v) { var _co = _v.component; var currVal_0 = _co.workAreaId; _ck(_v, 0, 0, currVal_0); var currVal_1 = _co.svgAreaId; _ck(_v, 1, 0, currVal_1); var currVal_2 = _co.oTesterId; _ck(_v, 2, 0, currVal_2); }); }
 exports.View_FittsTestComponent_0 = View_FittsTestComponent_0;
-function View_FittsTestComponent_Host_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "app-fitts-test", [], null, [["document", "click"]], function (_v, en, $event) { var ad = true; if (("document:click" === en)) {
-        var pd_0 = (i1.ɵnov(_v, 1).documentClick($event) !== false);
-        ad = (pd_0 && ad);
-    } return ad; }, View_FittsTestComponent_0, RenderType_FittsTestComponent)), i1.ɵdid(1, 4243456, null, 0, i3.FittsTestComponent, [], null, null)], null, null); }
+function View_FittsTestComponent_Host_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "app-fitts-test", [], null, null, null, View_FittsTestComponent_0, RenderType_FittsTestComponent)), i1.ɵdid(1, 4308992, null, 0, i3.FittsTestComponent, [], null, null)], function (_ck, _v) { _ck(_v, 1, 0); }, null); }
 exports.View_FittsTestComponent_Host_0 = View_FittsTestComponent_Host_0;
 var FittsTestComponentNgFactory = i1.ɵccf("app-fitts-test", i3.FittsTestComponent, View_FittsTestComponent_Host_0, {}, {}, []);
 exports.FittsTestComponentNgFactory = FittsTestComponentNgFactory;
@@ -457,6 +454,7 @@ var FittsTestComponent = /** @class */ (function () {
         this.maxTests = 2;
         this.maxTicks = 3;
         this.countdownTick = this.maxTicks;
+        this.listener = null;
     }
     FittsTestComponent.prototype.ngAfterViewInit = function () {
         this.dim = this.getSquareDimension();
@@ -466,6 +464,49 @@ var FittsTestComponent = /** @class */ (function () {
         var height = this.dim;
         this.pageCenter = new Coordinate(width / 2, height / 2);
         this.processCurrentRadius();
+        var supported = this.checkTouchSupport();
+        if (supported) {
+            document.addEventListener('touchstart', this.listener);
+        }
+        else {
+            document.addEventListener('click', this.listener);
+        }
+    };
+    FittsTestComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.listener = function (e) {
+            var now = performance.now();
+            var dir = _this.dir;
+            if (_this.testInProgress) {
+                var lastCircleIndex = _this.currentIndexActive;
+                var correctClick = false;
+                var elem = e.target;
+                if (elem.classList.contains('fitt-circle')) {
+                    correctClick = true;
+                }
+                if (_this.dir === 1 && (_this.currentIndexActive + _this.dir) > _this.fittCircles.length - 1) {
+                    _this.dir = -1;
+                    _this.currentIndexActive += _this.dir;
+                }
+                else if (_this.dir === -1 && (_this.currentIndexActive + _this.dir) < 0) {
+                    _this.dir = 1;
+                    _this.currentIndexActive += _this.dir;
+                }
+                else {
+                    _this.currentIndexActive += _this.dir;
+                }
+                _this.processClick(correctClick, lastCircleIndex, now, dir);
+                _this.activateCircle(_this.currentIndexActive);
+                _this.clickCounter += 1;
+                _this.checkForTestSession();
+            }
+        };
+    };
+    FittsTestComponent.prototype.checkTouchSupport = function () {
+        if (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch) {
+            return true;
+        }
+        return false;
     };
     FittsTestComponent.prototype.beginPractice = function () {
         var _this = this;
@@ -705,33 +746,6 @@ var FittsTestComponent = /** @class */ (function () {
             }
         }
         return direction;
-    };
-    FittsTestComponent.prototype.documentClick = function (e) {
-        var now = performance.now();
-        var dir = this.dir;
-        if (this.testInProgress) {
-            var lastCircleIndex = this.currentIndexActive;
-            var correctClick = false;
-            var elem = e.target;
-            if (elem.classList.contains('fitt-circle')) {
-                correctClick = true;
-            }
-            if (this.dir === 1 && (this.currentIndexActive + this.dir) > this.fittCircles.length - 1) {
-                this.dir = -1;
-                this.currentIndexActive += this.dir;
-            }
-            else if (this.dir === -1 && (this.currentIndexActive + this.dir) < 0) {
-                this.dir = 1;
-                this.currentIndexActive += this.dir;
-            }
-            else {
-                this.currentIndexActive += this.dir;
-            }
-            this.processClick(correctClick, lastCircleIndex, now, dir);
-            this.activateCircle(this.currentIndexActive);
-            this.clickCounter += 1;
-            this.checkForTestSession();
-        }
     };
     FittsTestComponent.prototype.getSquareDimension = function () {
         if (window.innerHeight > window.innerWidth) {

@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, HostListener } from '@angular/core';
 import * as d3 from 'd3';
 import * as _ from 'lodash';
+declare var DocumentTouch: any;
 
 export class Coordinate {
     x = 0;
@@ -37,7 +38,7 @@ export enum Clock {
     templateUrl: './fitts-test.component.html',
     styleUrls: ['./fitts-test.component.scss']
 })
-export class FittsTestComponent implements AfterViewInit {
+export class FittsTestComponent implements AfterViewInit, OnInit {
     title = 'fitts-law-tester';
     workAreaId = 'work-area' + Math.floor(Math.random() * 10e6);
     svgAreaId = 'svg-work-area' + Math.floor(Math.random() * 10e6);
@@ -73,6 +74,7 @@ export class FittsTestComponent implements AfterViewInit {
     maxTests = 2;
     maxTicks = 3;
     countdownTick = this.maxTicks;
+    listener = null;
     constructor() { }
     ngAfterViewInit() {
         this.dim = this.getSquareDimension();
@@ -82,6 +84,46 @@ export class FittsTestComponent implements AfterViewInit {
         const height = this.dim;
         this.pageCenter = new Coordinate(width / 2, height / 2);
         this.processCurrentRadius();
+        const supported = this.checkTouchSupport();
+        if (supported) {
+            document.addEventListener('touchstart', this.listener);
+        } else {
+            document.addEventListener('click', this.listener);
+        }
+    }
+    ngOnInit() {
+        this.listener = (e: any) => {
+            const now = performance.now();
+            const dir = this.dir;
+            if (this.testInProgress) {
+                const lastCircleIndex = this.currentIndexActive;
+                let correctClick = false;
+                const elem = e.target as HTMLElement;
+                if (elem.classList.contains('fitt-circle')) {
+                    correctClick = true;
+                }
+                if (this.dir === 1 && (this.currentIndexActive + this.dir) > this.fittCircles.length - 1) {
+                    this.dir = -1;
+                    this.currentIndexActive += this.dir;
+                } else if (this.dir === -1 && (this.currentIndexActive + this.dir) < 0) {
+                    this.dir = 1;
+                    this.currentIndexActive += this.dir;
+                } else {
+                    this.currentIndexActive += this.dir;
+                }
+                this.processClick(correctClick, lastCircleIndex, now, dir);
+                this.activateCircle(this.currentIndexActive);
+                this.clickCounter += 1;
+                this.checkForTestSession();
+            }
+        };
+
+    }
+    checkTouchSupport() {
+        if (('ontouchstart' in window) || (window as any).DocumentTouch && document instanceof DocumentTouch) {
+            return true;
+        }
+        return false;
     }
     beginPractice() {
         this.isPracticeRun = true;
@@ -233,7 +275,7 @@ export class FittsTestComponent implements AfterViewInit {
             }
         });
     }
-    processClick(isCorrectClick,  lastCircleIndex, now, dir) {
+    processClick(isCorrectClick, lastCircleIndex, now, dir) {
         const ticks = now - this.currentPerformanceTick;
         let direction = Direction.None;
         if (isCorrectClick) {
@@ -253,53 +295,26 @@ export class FittsTestComponent implements AfterViewInit {
         let direction = Direction.Other;
         if (dir === 1) {
             switch (lastCircleIndex) {
-                case 1 : { direction = Direction.Vertical; break; }
-                case 2 : { direction = Direction.Other; break; }
-                case 3 : { direction = Direction.Diagonal; break; }
-                case 4 : { direction = Direction.Other; break; }
-                case 5 : { direction = Direction.Horizontal; break; }
-                case 6 : { direction = Direction.Other; break; }
-                case 7 : { direction = Direction.Diagonal; break; }
+                case 1: { direction = Direction.Vertical; break; }
+                case 2: { direction = Direction.Other; break; }
+                case 3: { direction = Direction.Diagonal; break; }
+                case 4: { direction = Direction.Other; break; }
+                case 5: { direction = Direction.Horizontal; break; }
+                case 6: { direction = Direction.Other; break; }
+                case 7: { direction = Direction.Diagonal; break; }
             }
         } else {
             switch (lastCircleIndex) {
-                case 0 : { direction = Direction.Vertical; break; }
-                case 1 : { direction = Direction.Other; break; }
-                case 2 : { direction = Direction.Diagonal; break; }
-                case 3 : { direction = Direction.Other; break; }
-                case 4 : { direction = Direction.Horizontal; break; }
-                case 5 : { direction = Direction.Other; break; }
-                case 6 : { direction = Direction.Diagonal; break; }
+                case 0: { direction = Direction.Vertical; break; }
+                case 1: { direction = Direction.Other; break; }
+                case 2: { direction = Direction.Diagonal; break; }
+                case 3: { direction = Direction.Other; break; }
+                case 4: { direction = Direction.Horizontal; break; }
+                case 5: { direction = Direction.Other; break; }
+                case 6: { direction = Direction.Diagonal; break; }
             }
         }
         return direction;
-    }
-
-    @HostListener('document:click', ['$event'])
-    documentClick(e: MouseEvent) {
-        const now = performance.now();
-        const dir = this.dir;
-        if (this.testInProgress) {
-            const lastCircleIndex = this.currentIndexActive;
-            let correctClick = false;
-            const elem = e.target as HTMLElement;
-            if (elem.classList.contains('fitt-circle')) {
-                correctClick = true;
-            }
-            if (this.dir === 1 && (this.currentIndexActive + this.dir) > this.fittCircles.length - 1) {
-                this.dir = -1;
-                this.currentIndexActive += this.dir;
-            } else if (this.dir === -1 && (this.currentIndexActive + this.dir) < 0) {
-                this.dir = 1;
-                this.currentIndexActive += this.dir;
-            } else {
-                this.currentIndexActive += this.dir;
-            }
-            this.processClick(correctClick, lastCircleIndex, now, dir);
-            this.activateCircle(this.currentIndexActive);
-            this.clickCounter += 1;
-            this.checkForTestSession();
-        }
     }
 
     getSquareDimension() {

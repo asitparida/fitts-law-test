@@ -14,12 +14,63 @@ export class Coordinate {
 }
 
 export class DataItem {
-    targetHit: boolean;
-    ticks;
     direction: Direction;
-    sourceIndex;
+    sourceIndex: number;
+    ticks: number;
+    targetHit: boolean;
     angle: Clock;
     timestamp: number;
+    run: string;
+    radius: number;
+    distance: number;
+}
+
+export class DataAverage {
+    run: string;
+    radius: number;
+    distance: number;
+    averageTicks: number;
+    averageVerticalTicks: number;
+    averageHorizontalTicks: number;
+    averageOtherTicks: number;
+    hits;
+    misses;
+    verticalHits;
+    verticalMisses;
+    horizontalHits;
+    horizontalMisses;
+    otherHits;
+    otherMisses;
+    hitPercentage;
+    missPercentage;
+    verticalHitPecentage;
+    verticalMissPecentage;
+    horizontalHitPecentage;
+    horizontalMissPecentage;
+    otherDirectionHitPecentage;
+    otherDirectionMissPecentage;
+}
+export class UserAverage {
+    averageTicks: number;
+    averageVerticalTicks: number;
+    averageHorizontalTicks: number;
+    averageOtherTicks: number;
+    hits;
+    misses;
+    verticalHits;
+    verticalMisses;
+    horizontalHits;
+    horizontalMisses;
+    otherHits;
+    otherMisses;
+    hitPercentage;
+    missPercentage;
+    verticalHitPecentage;
+    verticalMissPecentage;
+    horizontalHitPecentage;
+    horizontalMissPecentage;
+    otherDirectionHitPecentage;
+    otherDirectionMissPecentage;
 }
 
 export enum Direction {
@@ -74,9 +125,10 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
     currentPerformanceTick = null;
     currentDataSet: Array<DataItem | any> = [];
     overallDataSet: Array<DataItem | any> = [];
+    overallAverages: Array<DataAverage | any> = [];
     countdownTickCount = -1;
     currentTestCount = -1;
-    maxTests = 4;
+    maxTests = 2;
     maxTicks = 4;
     countdownTick = this.maxTicks;
     listener = null;
@@ -247,9 +299,124 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
         this.showModal = true;
         this.showTestCompleteModal = true;
         if (!this.isPracticeRun) {
+            this.calculateCurrentAverage();
             this.overallDataSet = this.overallDataSet.concat(this.currentDataSet);
         }
         this.currentDataSet = [];
+    }
+    calculateCurrentAverage() {
+        const average = new DataAverage();
+        average.run = (this.currentDataSet as Array<DataItem>)[0].run;
+        average.distance = (this.currentDataSet as Array<DataItem>)[0].distance;
+        average.radius = (this.currentDataSet as Array<DataItem>)[0].radius;
+        const hitTicks = (this.currentDataSet as Array<DataItem>).filter(x => x.targetHit);
+        const missTicks = (this.currentDataSet as Array<DataItem>).filter(x => !x.targetHit);
+        const verticalHits = hitTicks.filter(t => t.direction === Direction.Vertical);
+        const verticalMisses = missTicks.filter(t => t.direction === Direction.Vertical);
+        const horizontalHits = hitTicks.filter(t => t.direction === Direction.Horizontal);
+        const horizontalMisses = missTicks.filter(t => t.direction === Direction.Horizontal);
+        const otherHits = hitTicks.filter(t => t.direction === Direction.Other);
+        const otherMisses = missTicks.filter(t => t.direction === Direction.Other);
+        average.averageTicks = _.mean(hitTicks.map(t => t.ticks));
+        average.averageVerticalTicks = _.mean(verticalHits.map(t => t.ticks));
+        average.averageHorizontalTicks = _.mean(horizontalHits.map(t => t.ticks));
+        average.averageOtherTicks = _.mean(otherHits.map(t => t.ticks));
+        average.hits = hitTicks.length;
+        average.misses = missTicks.length;
+        average.verticalHits = verticalHits.length;
+        average.verticalMisses = verticalMisses.length;
+        average.horizontalHits = horizontalHits.length;
+        average.horizontalMisses = horizontalMisses.length;
+        average.otherHits = otherHits.length;
+        average.otherMisses = otherMisses.length;
+        average.hitPercentage = (hitTicks.length / (hitTicks.length + missTicks.length)) * 100;
+        average.missPercentage = (missTicks.length / (hitTicks.length + missTicks.length)) * 100;
+        average.verticalHitPecentage = (verticalHits.length / (verticalHits.length + verticalMisses.length)) * 100;
+        average.verticalMissPecentage = (verticalMisses.length / (verticalHits.length + verticalMisses.length)) * 100;
+        average.horizontalHitPecentage = (horizontalHits.length / (horizontalHits.length + horizontalMisses.length)) * 100;
+        average.horizontalMissPecentage = (horizontalMisses.length / (horizontalHits.length + horizontalMisses.length)) * 100;
+        average.otherDirectionHitPecentage = (otherHits.length / (otherHits.length + otherMisses.length)) * 100;
+        average.otherDirectionMissPecentage = (otherMisses.length / (otherHits.length + otherMisses.length)) * 100;
+        const averageObj = Object.assign({}, this.userInfo, {
+            run: average.run,
+            radius: average.radius,
+            distance: average.distance,
+            averageTicks: average.averageTicks,
+            averageVerticalTicks: average.averageVerticalTicks,
+            averageHorizontalTicks: average.averageHorizontalTicks,
+            averageOtherTicks: average.averageOtherTicks,
+            hits: average.hits,
+            misses: average.misses,
+            verticalHits: average.verticalHits,
+            verticalMisses: average.verticalMisses,
+            horizontalHits: average.horizontalHits,
+            horizontalMisses: average.horizontalMisses,
+            otherHits: average.otherHits,
+            otherMisses: average.otherMisses,
+            hitPercentage: average.hitPercentage,
+            missPercentage: average.missPercentage,
+            verticalHitPecentage: average.verticalHitPecentage,
+            verticalMissPecentage: average.verticalMissPecentage,
+            horizontalHitPecentage: average.horizontalHitPecentage,
+            horizontalMissPecentage: average.horizontalMissPecentage,
+            otherDirectionHitPecentage: average.otherDirectionHitPecentage,
+            otherDirectionMissPecentage: average.otherDirectionMissPecentage
+        });
+        this.overallAverages.push(averageObj);
+    }
+    calculateOverallUserAverage() {
+        const average = new UserAverage();
+        const hitTicks = (this.overallDataSet as Array<DataItem>).filter(x => x.targetHit);
+        const missTicks = (this.overallDataSet as Array<DataItem>).filter(x => !x.targetHit);
+        const verticalHits = hitTicks.filter(t => t.direction === Direction.Vertical);
+        const verticalMisses = missTicks.filter(t => t.direction === Direction.Vertical);
+        const horizontalHits = hitTicks.filter(t => t.direction === Direction.Horizontal);
+        const horizontalMisses = missTicks.filter(t => t.direction === Direction.Horizontal);
+        const otherHits = hitTicks.filter(t => t.direction === Direction.Other);
+        const otherMisses = missTicks.filter(t => t.direction === Direction.Other);
+        average.averageTicks = _.mean(hitTicks.map(t => t.ticks));
+        average.averageVerticalTicks = _.mean(verticalHits.map(t => t.ticks));
+        average.averageHorizontalTicks = _.mean(horizontalHits.map(t => t.ticks));
+        average.averageOtherTicks = _.mean(otherHits.map(t => t.ticks));
+        average.hits = hitTicks.length;
+        average.misses = missTicks.length;
+        average.verticalHits = verticalHits.length;
+        average.verticalMisses = verticalMisses.length;
+        average.horizontalHits = horizontalHits.length;
+        average.horizontalMisses = horizontalMisses.length;
+        average.otherHits = otherHits.length;
+        average.otherMisses = otherMisses.length;
+        average.hitPercentage = (hitTicks.length / (hitTicks.length + missTicks.length)) * 100;
+        average.missPercentage = (missTicks.length / (hitTicks.length + missTicks.length)) * 100;
+        average.verticalHitPecentage = (verticalHits.length / (verticalHits.length + verticalMisses.length)) * 100;
+        average.verticalMissPecentage = (verticalMisses.length / (verticalHits.length + verticalMisses.length)) * 100;
+        average.horizontalHitPecentage = (horizontalHits.length / (horizontalHits.length + horizontalMisses.length)) * 100;
+        average.horizontalMissPecentage = (horizontalMisses.length / (horizontalHits.length + horizontalMisses.length)) * 100;
+        average.otherDirectionHitPecentage = (otherHits.length / (otherHits.length + otherMisses.length)) * 100;
+        average.otherDirectionMissPecentage = (otherMisses.length / (otherHits.length + otherMisses.length)) * 100;
+        const averageObj = Object.assign({}, this.userInfo, {
+            averageTicks: average.averageTicks,
+            averageVerticalTicks: average.averageVerticalTicks,
+            averageHorizontalTicks: average.averageHorizontalTicks,
+            averageOtherTicks: average.averageOtherTicks,
+            hits: average.hits,
+            misses: average.misses,
+            verticalHits: average.verticalHits,
+            verticalMisses: average.verticalMisses,
+            horizontalHits: average.horizontalHits,
+            horizontalMisses: average.horizontalMisses,
+            otherHits: average.otherHits,
+            otherMisses: average.otherMisses,
+            hitPercentage: average.hitPercentage,
+            missPercentage: average.missPercentage,
+            verticalHitPecentage: average.verticalHitPecentage,
+            verticalMissPecentage: average.verticalMissPecentage,
+            horizontalHitPecentage: average.horizontalHitPecentage,
+            horizontalMissPecentage: average.horizontalMissPecentage,
+            otherDirectionHitPecentage: average.otherDirectionHitPecentage,
+            otherDirectionMissPecentage: average.otherDirectionMissPecentage
+        });
+        return averageObj;
     }
     nextStepInTest() {
         this.showTestCompleteModal = false;
@@ -262,8 +429,13 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
         if (this.currentTestCount <= this.maxTests) {
             this.showActualTestModal = true;
         } else {
-            const data = this.getSheetTransform(this.overallDataSet);
-            this.appService.appendRowsToGoogleSheets(data);
+            const clickData = this.getSheetTransform(this.overallDataSet);
+            const runAverages = this.getSheetTransform(this.overallAverages);
+            const average = this.calculateOverallUserAverage();
+            const userAverage = this.getSheetTransform([average]);
+            this.appService.appendRowsToGoogleSheets(clickData);
+            this.appService.appendRunAveragesRowsToGoogleSheets(runAverages);
+            this.appService.appendUserAveragesRowsToGoogleSheets(userAverage);
             this.showAllDoneModal = true;
         }
     }
@@ -322,16 +494,14 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
         const fitt = this.fittCircles[this.currentIndexActive];
         if (fitt) {
             fitt.attr('fill', '#e74c3c')
-            .transition()
-            .attr('fill', this.color);
+                .transition()
+                .attr('fill', this.color);
         }
     }
     processClick(isCorrectClick, lastCircleIndex, now, dir) {
         const ticks = now - this.currentPerformanceTick;
         let direction = Direction.None;
-        if (isCorrectClick) {
-            direction = this.getHitDirection(lastCircleIndex, dir);
-        }
+        direction = this.getHitDirection(lastCircleIndex, dir);
         const item: DataItem | any = Object.assign({}, this.userInfo, {
             direction: direction,
             sourceIndex: lastCircleIndex,

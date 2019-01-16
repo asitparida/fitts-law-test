@@ -339,19 +339,46 @@ var AppService = /** @class */ (function () {
     AppService.prototype.appendRowsToGoogleSheets = function (data) {
         gapi.client.sheets.spreadsheets.values.append({
             spreadsheetId: '1LN7pXxtIvvF2QgRfmj1i5owC0ygRIi2kqJb1nirk1bA',
-            range: 'Sheet1!A2:K',
+            range: 'Runs!A2:K',
             valueInputOption: 'USER_ENTERED',
             insertDataOption: 'INSERT_ROWS'
         }, {
             majorDimension: 'ROWS',
-            range: 'Sheet1!A2:K',
+            range: 'Runs!A2:K',
             values: data
         }).then(function (response) {
             var range = response.result;
-            console.log(range);
         }, function (response) {
-            console.log(response);
-            // appendPre('Error: ' + response.result.error.message);
+        });
+    };
+    AppService.prototype.appendRunAveragesRowsToGoogleSheets = function (data) {
+        gapi.client.sheets.spreadsheets.values.append({
+            spreadsheetId: '1LN7pXxtIvvF2QgRfmj1i5owC0ygRIi2kqJb1nirk1bA',
+            range: 'RunAverages!A2:AD',
+            valueInputOption: 'USER_ENTERED',
+            insertDataOption: 'INSERT_ROWS'
+        }, {
+            majorDimension: 'ROWS',
+            range: 'RunAverages!A2:AD',
+            values: data
+        }).then(function (response) {
+            var range = response.result;
+        }, function (response) {
+        });
+    };
+    AppService.prototype.appendUserAveragesRowsToGoogleSheets = function (data) {
+        gapi.client.sheets.spreadsheets.values.append({
+            spreadsheetId: '1LN7pXxtIvvF2QgRfmj1i5owC0ygRIi2kqJb1nirk1bA',
+            range: 'UserAverages!A2:AA',
+            valueInputOption: 'USER_ENTERED',
+            insertDataOption: 'INSERT_ROWS'
+        }, {
+            majorDimension: 'ROWS',
+            range: 'UserAverages!A2:AA',
+            values: data
+        }).then(function (response) {
+            var range = response.result;
+        }, function (response) {
         });
     };
     AppService.prototype.isMobile = function () {
@@ -513,6 +540,18 @@ var DataItem = /** @class */ (function () {
     return DataItem;
 }());
 exports.DataItem = DataItem;
+var DataAverage = /** @class */ (function () {
+    function DataAverage() {
+    }
+    return DataAverage;
+}());
+exports.DataAverage = DataAverage;
+var UserAverage = /** @class */ (function () {
+    function UserAverage() {
+    }
+    return UserAverage;
+}());
+exports.UserAverage = UserAverage;
 var Direction;
 (function (Direction) {
     Direction["Horizontal"] = "Horizontal";
@@ -558,9 +597,10 @@ var FittsTestComponent = /** @class */ (function () {
         this.currentPerformanceTick = null;
         this.currentDataSet = [];
         this.overallDataSet = [];
+        this.overallAverages = [];
         this.countdownTickCount = -1;
         this.currentTestCount = -1;
-        this.maxTests = 4;
+        this.maxTests = 2;
         this.maxTicks = 4;
         this.countdownTick = this.maxTicks;
         this.listener = null;
@@ -734,9 +774,124 @@ var FittsTestComponent = /** @class */ (function () {
         this.showModal = true;
         this.showTestCompleteModal = true;
         if (!this.isPracticeRun) {
+            this.calculateCurrentAverage();
             this.overallDataSet = this.overallDataSet.concat(this.currentDataSet);
         }
         this.currentDataSet = [];
+    };
+    FittsTestComponent.prototype.calculateCurrentAverage = function () {
+        var average = new DataAverage();
+        average.run = this.currentDataSet[0].run;
+        average.distance = this.currentDataSet[0].distance;
+        average.radius = this.currentDataSet[0].radius;
+        var hitTicks = this.currentDataSet.filter(function (x) { return x.targetHit; });
+        var missTicks = this.currentDataSet.filter(function (x) { return !x.targetHit; });
+        var verticalHits = hitTicks.filter(function (t) { return t.direction === Direction.Vertical; });
+        var verticalMisses = missTicks.filter(function (t) { return t.direction === Direction.Vertical; });
+        var horizontalHits = hitTicks.filter(function (t) { return t.direction === Direction.Horizontal; });
+        var horizontalMisses = missTicks.filter(function (t) { return t.direction === Direction.Horizontal; });
+        var otherHits = hitTicks.filter(function (t) { return t.direction === Direction.Other; });
+        var otherMisses = missTicks.filter(function (t) { return t.direction === Direction.Other; });
+        average.averageTicks = _.mean(hitTicks.map(function (t) { return t.ticks; }));
+        average.averageVerticalTicks = _.mean(verticalHits.map(function (t) { return t.ticks; }));
+        average.averageHorizontalTicks = _.mean(horizontalHits.map(function (t) { return t.ticks; }));
+        average.averageOtherTicks = _.mean(otherHits.map(function (t) { return t.ticks; }));
+        average.hits = hitTicks.length;
+        average.misses = missTicks.length;
+        average.verticalHits = verticalHits.length;
+        average.verticalMisses = verticalMisses.length;
+        average.horizontalHits = horizontalHits.length;
+        average.horizontalMisses = horizontalMisses.length;
+        average.otherHits = otherHits.length;
+        average.otherMisses = otherMisses.length;
+        average.hitPercentage = (hitTicks.length / (hitTicks.length + missTicks.length)) * 100;
+        average.missPercentage = (missTicks.length / (hitTicks.length + missTicks.length)) * 100;
+        average.verticalHitPecentage = (verticalHits.length / (verticalHits.length + verticalMisses.length)) * 100;
+        average.verticalMissPecentage = (verticalMisses.length / (verticalHits.length + verticalMisses.length)) * 100;
+        average.horizontalHitPecentage = (horizontalHits.length / (horizontalHits.length + horizontalMisses.length)) * 100;
+        average.horizontalMissPecentage = (horizontalMisses.length / (horizontalHits.length + horizontalMisses.length)) * 100;
+        average.otherDirectionHitPecentage = (otherHits.length / (otherHits.length + otherMisses.length)) * 100;
+        average.otherDirectionMissPecentage = (otherMisses.length / (otherHits.length + otherMisses.length)) * 100;
+        var averageObj = Object.assign({}, this.userInfo, {
+            run: average.run,
+            radius: average.radius,
+            distance: average.distance,
+            averageTicks: average.averageTicks,
+            averageVerticalTicks: average.averageVerticalTicks,
+            averageHorizontalTicks: average.averageHorizontalTicks,
+            averageOtherTicks: average.averageOtherTicks,
+            hits: average.hits,
+            misses: average.misses,
+            verticalHits: average.verticalHits,
+            verticalMisses: average.verticalMisses,
+            horizontalHits: average.horizontalHits,
+            horizontalMisses: average.horizontalMisses,
+            otherHits: average.otherHits,
+            otherMisses: average.otherMisses,
+            hitPercentage: average.hitPercentage,
+            missPercentage: average.missPercentage,
+            verticalHitPecentage: average.verticalHitPecentage,
+            verticalMissPecentage: average.verticalMissPecentage,
+            horizontalHitPecentage: average.horizontalHitPecentage,
+            horizontalMissPecentage: average.horizontalMissPecentage,
+            otherDirectionHitPecentage: average.otherDirectionHitPecentage,
+            otherDirectionMissPecentage: average.otherDirectionMissPecentage
+        });
+        this.overallAverages.push(averageObj);
+    };
+    FittsTestComponent.prototype.calculateOverallUserAverage = function () {
+        var average = new UserAverage();
+        var hitTicks = this.overallDataSet.filter(function (x) { return x.targetHit; });
+        var missTicks = this.overallDataSet.filter(function (x) { return !x.targetHit; });
+        var verticalHits = hitTicks.filter(function (t) { return t.direction === Direction.Vertical; });
+        var verticalMisses = missTicks.filter(function (t) { return t.direction === Direction.Vertical; });
+        var horizontalHits = hitTicks.filter(function (t) { return t.direction === Direction.Horizontal; });
+        var horizontalMisses = missTicks.filter(function (t) { return t.direction === Direction.Horizontal; });
+        var otherHits = hitTicks.filter(function (t) { return t.direction === Direction.Other; });
+        var otherMisses = missTicks.filter(function (t) { return t.direction === Direction.Other; });
+        average.averageTicks = _.mean(hitTicks.map(function (t) { return t.ticks; }));
+        average.averageVerticalTicks = _.mean(verticalHits.map(function (t) { return t.ticks; }));
+        average.averageHorizontalTicks = _.mean(horizontalHits.map(function (t) { return t.ticks; }));
+        average.averageOtherTicks = _.mean(otherHits.map(function (t) { return t.ticks; }));
+        average.hits = hitTicks.length;
+        average.misses = missTicks.length;
+        average.verticalHits = verticalHits.length;
+        average.verticalMisses = verticalMisses.length;
+        average.horizontalHits = horizontalHits.length;
+        average.horizontalMisses = horizontalMisses.length;
+        average.otherHits = otherHits.length;
+        average.otherMisses = otherMisses.length;
+        average.hitPercentage = (hitTicks.length / (hitTicks.length + missTicks.length)) * 100;
+        average.missPercentage = (missTicks.length / (hitTicks.length + missTicks.length)) * 100;
+        average.verticalHitPecentage = (verticalHits.length / (verticalHits.length + verticalMisses.length)) * 100;
+        average.verticalMissPecentage = (verticalMisses.length / (verticalHits.length + verticalMisses.length)) * 100;
+        average.horizontalHitPecentage = (horizontalHits.length / (horizontalHits.length + horizontalMisses.length)) * 100;
+        average.horizontalMissPecentage = (horizontalMisses.length / (horizontalHits.length + horizontalMisses.length)) * 100;
+        average.otherDirectionHitPecentage = (otherHits.length / (otherHits.length + otherMisses.length)) * 100;
+        average.otherDirectionMissPecentage = (otherMisses.length / (otherHits.length + otherMisses.length)) * 100;
+        var averageObj = Object.assign({}, this.userInfo, {
+            averageTicks: average.averageTicks,
+            averageVerticalTicks: average.averageVerticalTicks,
+            averageHorizontalTicks: average.averageHorizontalTicks,
+            averageOtherTicks: average.averageOtherTicks,
+            hits: average.hits,
+            misses: average.misses,
+            verticalHits: average.verticalHits,
+            verticalMisses: average.verticalMisses,
+            horizontalHits: average.horizontalHits,
+            horizontalMisses: average.horizontalMisses,
+            otherHits: average.otherHits,
+            otherMisses: average.otherMisses,
+            hitPercentage: average.hitPercentage,
+            missPercentage: average.missPercentage,
+            verticalHitPecentage: average.verticalHitPecentage,
+            verticalMissPecentage: average.verticalMissPecentage,
+            horizontalHitPecentage: average.horizontalHitPecentage,
+            horizontalMissPecentage: average.horizontalMissPecentage,
+            otherDirectionHitPecentage: average.otherDirectionHitPecentage,
+            otherDirectionMissPecentage: average.otherDirectionMissPecentage
+        });
+        return averageObj;
     };
     FittsTestComponent.prototype.nextStepInTest = function () {
         this.showTestCompleteModal = false;
@@ -751,8 +906,13 @@ var FittsTestComponent = /** @class */ (function () {
             this.showActualTestModal = true;
         }
         else {
-            var data = this.getSheetTransform(this.overallDataSet);
-            this.appService.appendRowsToGoogleSheets(data);
+            var clickData = this.getSheetTransform(this.overallDataSet);
+            var runAverages = this.getSheetTransform(this.overallAverages);
+            var average = this.calculateOverallUserAverage();
+            var userAverage = this.getSheetTransform([average]);
+            this.appService.appendRowsToGoogleSheets(clickData);
+            this.appService.appendRunAveragesRowsToGoogleSheets(runAverages);
+            this.appService.appendUserAveragesRowsToGoogleSheets(userAverage);
             this.showAllDoneModal = true;
         }
     };
@@ -821,9 +981,7 @@ var FittsTestComponent = /** @class */ (function () {
     FittsTestComponent.prototype.processClick = function (isCorrectClick, lastCircleIndex, now, dir) {
         var ticks = now - this.currentPerformanceTick;
         var direction = Direction.None;
-        if (isCorrectClick) {
-            direction = this.getHitDirection(lastCircleIndex, dir);
-        }
+        direction = this.getHitDirection(lastCircleIndex, dir);
         var item = Object.assign({}, this.userInfo, {
             direction: direction,
             sourceIndex: lastCircleIndex,

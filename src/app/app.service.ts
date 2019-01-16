@@ -14,19 +14,46 @@ export class AppService {
     appendRowsToGoogleSheets(data) {
         gapi.client.sheets.spreadsheets.values.append({
             spreadsheetId: '1LN7pXxtIvvF2QgRfmj1i5owC0ygRIi2kqJb1nirk1bA',
-            range: 'Sheet1!A2:K',
+            range: 'Runs!A2:K',
             valueInputOption: 'USER_ENTERED',
             insertDataOption: 'INSERT_ROWS'
           }, {
             majorDimension: 'ROWS',
-            range: 'Sheet1!A2:K',
+            range: 'Runs!A2:K',
             values: data
           }).then(function (response) {
             const range = response.result;
-            console.log(range);
           }, function (response) {
-            console.log(response);
-            // appendPre('Error: ' + response.result.error.message);
+          });
+    }
+    appendRunAveragesRowsToGoogleSheets(data) {
+        gapi.client.sheets.spreadsheets.values.append({
+            spreadsheetId: '1LN7pXxtIvvF2QgRfmj1i5owC0ygRIi2kqJb1nirk1bA',
+            range: 'RunAverages!A2:AD',
+            valueInputOption: 'USER_ENTERED',
+            insertDataOption: 'INSERT_ROWS'
+          }, {
+            majorDimension: 'ROWS',
+            range: 'RunAverages!A2:AD',
+            values: data
+          }).then(function (response) {
+            const range = response.result;
+          }, function (response) {
+          });
+    }
+    appendUserAveragesRowsToGoogleSheets(data) {
+        gapi.client.sheets.spreadsheets.values.append({
+            spreadsheetId: '1LN7pXxtIvvF2QgRfmj1i5owC0ygRIi2kqJb1nirk1bA',
+            range: 'UserAverages!A2:AA',
+            valueInputOption: 'USER_ENTERED',
+            insertDataOption: 'INSERT_ROWS'
+          }, {
+            majorDimension: 'ROWS',
+            range: 'UserAverages!A2:AA',
+            values: data
+          }).then(function (response) {
+            const range = response.result;
+          }, function (response) {
           });
     }
     isMobile() {

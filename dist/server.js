@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("zone.js/dist/zone-node");
 var core_1 = require("@angular/core");
-var Sheet = require("./api/sheet");
 // Express Engine
 var express_engine_1 = require("@nguniversal/express-engine");
 // Import module map for lazy loading
@@ -10,6 +9,7 @@ var module_map_ngfactory_loader_1 = require("@nguniversal/module-map-ngfactory-l
 var express = require("express");
 var bodyParser = require("body-parser");
 var path_1 = require("path");
+var MS = require("./api/search");
 // Faster server renders w/ Prod mode (dev mode never needed)
 core_1.enableProdMode();
 // Express server
@@ -32,13 +32,12 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 app.get('/api/getRecords', function (req, res) {
-    // const id = req.params.id;
-    // MS.connectToDb(function (client) {
-    //     MS.getPrivacyRatingDistribution(client, id, function (data) {
-    //         res.json(data);
-    //     });
-    // });
-    Sheet.SheetGet();
+    var id = req.params.id;
+    MS.connectToDb(function (client) {
+        MS.getPrivacyRatingDistribution(client, id, function (data) {
+            res.json(data);
+        });
+    });
 });
 // Example Express Rest API endpoints
 // app.get('/api/**', (req, res) => { });
@@ -53,6 +52,5 @@ app.get('*', function (req, res) {
 // Start up the Node server
 app.listen(PORT, function () {
     console.log("Node Express server listening on http://localhost:" + PORT);
-    Sheet.SheetInit();
 });
 //# sourceMappingURL=server.js.map

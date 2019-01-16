@@ -331,6 +331,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var AppService = /** @class */ (function () {
     function AppService() {
         this.info = null;
+        this.md = null;
+        if (MobileDetect) {
+            this.md = new MobileDetect(window.navigator.userAgent);
+        }
     }
     AppService.prototype.appendRowsToGoogleSheets = function (data) {
         gapi.client.sheets.spreadsheets.values.append({
@@ -349,6 +353,17 @@ var AppService = /** @class */ (function () {
             console.log(response);
             // appendPre('Error: ' + response.result.error.message);
         });
+    };
+    AppService.prototype.isMobile = function () {
+        if (this.md) {
+            // tslint:disable-next-line:max-line-length
+            var value = this.md.mobile() || this.md.phone() || this.md.tablet() || this.md.is('iPhone') || this.md.is('Android') || this.md.is('android');
+            if (value) {
+                return true;
+            }
+            return false;
+        }
+        return false;
     };
     return AppService;
 }());
@@ -426,13 +441,15 @@ function View_FittsTestComponent_5(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0
         var pd_0 = (_co.startTest() !== false);
         ad = (pd_0 && ad);
     } return ad; }, null, null)), (_l()(), i1.ɵted(-1, null, ["Start"]))], null, function (_ck, _v) { var _co = _v.component; var currVal_0 = _co.currentTestCount; var currVal_1 = _co.maxTests; _ck(_v, 4, 0, currVal_0, currVal_1); }); }
-function View_FittsTestComponent_6(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 7, null, null, null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 6, "div", [["class", "practice-run-modal"]], null, null, null, null, null)), (_l()(), i1.ɵeld(2, 0, null, null, 1, "h2", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Thanks for taking the test !"])), (_l()(), i1.ɵeld(4, 0, null, null, 1, "button", [["class", "btn-main primary"]], null, [[null, "click"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("click" === en)) {
+function View_FittsTestComponent_7(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "button", [["class", "btn-main primary"]], null, [[null, "click"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("click" === en)) {
         var pd_0 = (_co.downloadData() !== false);
         ad = (pd_0 && ad);
-    } return ad; }, null, null)), (_l()(), i1.ɵted(-1, null, ["Download JSON Data"])), (_l()(), i1.ɵeld(6, 0, null, null, 1, "button", [["class", "btn-main primary"]], null, [[null, "click"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("click" === en)) {
+    } return ad; }, null, null)), (_l()(), i1.ɵted(-1, null, ["Download JSON Data"]))], null, null); }
+function View_FittsTestComponent_8(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "button", [["class", "btn-main primary"]], null, [[null, "click"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("click" === en)) {
         var pd_0 = (_co.downloadCSVData() !== false);
         ad = (pd_0 && ad);
     } return ad; }, null, null)), (_l()(), i1.ɵted(-1, null, ["Download CSV Data"]))], null, null); }
+function View_FittsTestComponent_6(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 7, null, null, null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 6, "div", [["class", "practice-run-modal"]], null, null, null, null, null)), (_l()(), i1.ɵeld(2, 0, null, null, 1, "h2", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Thanks for taking the test !"])), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_7)), i1.ɵdid(5, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_8)), i1.ɵdid(7, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null)], function (_ck, _v) { var _co = _v.component; var currVal_0 = !_co.isMobile; _ck(_v, 5, 0, currVal_0); var currVal_1 = !_co.isMobile; _ck(_v, 7, 0, currVal_1); }, null); }
 function View_FittsTestComponent_1(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 10, "div", [["class", "overlay"]], null, null, null, null, null)), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_2)), i1.ɵdid(2, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_3)), i1.ɵdid(4, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_4)), i1.ɵdid(6, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_5)), i1.ɵdid(8, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_6)), i1.ɵdid(10, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null)], function (_ck, _v) { var _co = _v.component; var currVal_0 = _co.showPracticeModal; _ck(_v, 2, 0, currVal_0); var currVal_1 = _co.showCountdownModal; _ck(_v, 4, 0, currVal_1); var currVal_2 = _co.showTestCompleteModal; _ck(_v, 6, 0, currVal_2); var currVal_3 = _co.showActualTestModal; _ck(_v, 8, 0, currVal_3); var currVal_4 = _co.showAllDoneModal; _ck(_v, 10, 0, currVal_4); }, null); }
 function View_FittsTestComponent_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "div", [["class", "work-area"]], [[1, "id", 0]], null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 0, ":svg:svg", [], [[1, "id", 0]], null, null, null, null)), (_l()(), i1.ɵeld(2, 0, null, null, 1, "span", [["class", "o-tester"]], [[1, "id", 0]], null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["o"])), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_1)), i1.ɵdid(5, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null)], function (_ck, _v) { var _co = _v.component; var currVal_3 = _co.showModal; _ck(_v, 5, 0, currVal_3); }, function (_ck, _v) { var _co = _v.component; var currVal_0 = _co.workAreaId; _ck(_v, 0, 0, currVal_0); var currVal_1 = _co.svgAreaId; _ck(_v, 1, 0, currVal_1); var currVal_2 = _co.oTesterId; _ck(_v, 2, 0, currVal_2); }); }
 exports.View_FittsTestComponent_0 = View_FittsTestComponent_0;
@@ -537,12 +554,13 @@ var FittsTestComponent = /** @class */ (function () {
         this.showActualTestModal = false;
         this.showAllDoneModal = false;
         this.showModal = true;
+        this.isMobile = false;
         this.currentPerformanceTick = null;
         this.currentDataSet = [];
         this.overallDataSet = [];
         this.countdownTickCount = -1;
         this.currentTestCount = -1;
-        this.maxTests = 1;
+        this.maxTests = 4;
         this.maxTicks = 4;
         this.countdownTick = this.maxTicks;
         this.listener = null;
@@ -566,6 +584,7 @@ var FittsTestComponent = /** @class */ (function () {
     };
     FittsTestComponent.prototype.ngOnInit = function () {
         var _this = this;
+        this.isMobile = this.appService.isMobile();
         this.userInfo = this.appService.info;
         this.listener = function (e) {
             var now = performance.now();
@@ -1211,7 +1230,7 @@ function View_InfoComponent_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, 
         ad = (pd_0 && ad);
     } return ad; }, null, null)), (_l()(), i1.ɵted(-1, null, ["Next"]))], function (_ck, _v) { var _co = _v.component; var currVal_15 = ""; _ck(_v, 13, 0, currVal_15); var currVal_16 = "name"; var currVal_17 = _co.info.name; _ck(_v, 16, 0, currVal_16, currVal_17); var currVal_26 = ""; _ck(_v, 24, 0, currVal_26); var currVal_27 = "alias"; var currVal_28 = _co.info.alias; _ck(_v, 27, 0, currVal_27, currVal_28); var currVal_37 = ""; _ck(_v, 35, 0, currVal_37); var currVal_38 = "type"; var currVal_39 = _co.info.type; _ck(_v, 38, 0, currVal_38, currVal_39); var currVal_40 = _co.participantTypes; _ck(_v, 42, 0, currVal_40); var currVal_49 = ""; _ck(_v, 48, 0, currVal_49); var currVal_50 = "device"; var currVal_51 = _co.info.device; _ck(_v, 51, 0, currVal_50, currVal_51); var currVal_52 = _co.deviceTypes; _ck(_v, 55, 0, currVal_52); var currVal_53 = (_co.info.device === "other"); _ck(_v, 59, 0, currVal_53); var currVal_62 = ""; _ck(_v, 66, 0, currVal_62); var currVal_63 = "deviceWidth"; var currVal_64 = _co.info.deviceWidth; _ck(_v, 69, 0, currVal_63, currVal_64); var currVal_73 = ""; _ck(_v, 78, 0, currVal_73); var currVal_74 = "deviceHeight"; var currVal_75 = _co.info.deviceHeight; _ck(_v, 81, 0, currVal_74, currVal_75); }, function (_ck, _v) { var currVal_0 = i1.ɵnov(_v, 7).ngClassUntouched; var currVal_1 = i1.ɵnov(_v, 7).ngClassTouched; var currVal_2 = i1.ɵnov(_v, 7).ngClassPristine; var currVal_3 = i1.ɵnov(_v, 7).ngClassDirty; var currVal_4 = i1.ɵnov(_v, 7).ngClassValid; var currVal_5 = i1.ɵnov(_v, 7).ngClassInvalid; var currVal_6 = i1.ɵnov(_v, 7).ngClassPending; _ck(_v, 3, 0, currVal_0, currVal_1, currVal_2, currVal_3, currVal_4, currVal_5, currVal_6); var currVal_7 = (i1.ɵnov(_v, 13).required ? "" : null); var currVal_8 = i1.ɵnov(_v, 18).ngClassUntouched; var currVal_9 = i1.ɵnov(_v, 18).ngClassTouched; var currVal_10 = i1.ɵnov(_v, 18).ngClassPristine; var currVal_11 = i1.ɵnov(_v, 18).ngClassDirty; var currVal_12 = i1.ɵnov(_v, 18).ngClassValid; var currVal_13 = i1.ɵnov(_v, 18).ngClassInvalid; var currVal_14 = i1.ɵnov(_v, 18).ngClassPending; _ck(_v, 11, 0, currVal_7, currVal_8, currVal_9, currVal_10, currVal_11, currVal_12, currVal_13, currVal_14); var currVal_18 = (i1.ɵnov(_v, 24).required ? "" : null); var currVal_19 = i1.ɵnov(_v, 29).ngClassUntouched; var currVal_20 = i1.ɵnov(_v, 29).ngClassTouched; var currVal_21 = i1.ɵnov(_v, 29).ngClassPristine; var currVal_22 = i1.ɵnov(_v, 29).ngClassDirty; var currVal_23 = i1.ɵnov(_v, 29).ngClassValid; var currVal_24 = i1.ɵnov(_v, 29).ngClassInvalid; var currVal_25 = i1.ɵnov(_v, 29).ngClassPending; _ck(_v, 22, 0, currVal_18, currVal_19, currVal_20, currVal_21, currVal_22, currVal_23, currVal_24, currVal_25); var currVal_29 = (i1.ɵnov(_v, 35).required ? "" : null); var currVal_30 = i1.ɵnov(_v, 40).ngClassUntouched; var currVal_31 = i1.ɵnov(_v, 40).ngClassTouched; var currVal_32 = i1.ɵnov(_v, 40).ngClassPristine; var currVal_33 = i1.ɵnov(_v, 40).ngClassDirty; var currVal_34 = i1.ɵnov(_v, 40).ngClassValid; var currVal_35 = i1.ɵnov(_v, 40).ngClassInvalid; var currVal_36 = i1.ɵnov(_v, 40).ngClassPending; _ck(_v, 33, 0, currVal_29, currVal_30, currVal_31, currVal_32, currVal_33, currVal_34, currVal_35, currVal_36); var currVal_41 = (i1.ɵnov(_v, 48).required ? "" : null); var currVal_42 = i1.ɵnov(_v, 53).ngClassUntouched; var currVal_43 = i1.ɵnov(_v, 53).ngClassTouched; var currVal_44 = i1.ɵnov(_v, 53).ngClassPristine; var currVal_45 = i1.ɵnov(_v, 53).ngClassDirty; var currVal_46 = i1.ɵnov(_v, 53).ngClassValid; var currVal_47 = i1.ɵnov(_v, 53).ngClassInvalid; var currVal_48 = i1.ɵnov(_v, 53).ngClassPending; _ck(_v, 46, 0, currVal_41, currVal_42, currVal_43, currVal_44, currVal_45, currVal_46, currVal_47, currVal_48); var currVal_54 = (i1.ɵnov(_v, 66).required ? "" : null); var currVal_55 = i1.ɵnov(_v, 71).ngClassUntouched; var currVal_56 = i1.ɵnov(_v, 71).ngClassTouched; var currVal_57 = i1.ɵnov(_v, 71).ngClassPristine; var currVal_58 = i1.ɵnov(_v, 71).ngClassDirty; var currVal_59 = i1.ɵnov(_v, 71).ngClassValid; var currVal_60 = i1.ɵnov(_v, 71).ngClassInvalid; var currVal_61 = i1.ɵnov(_v, 71).ngClassPending; _ck(_v, 63, 0, currVal_54, currVal_55, currVal_56, currVal_57, currVal_58, currVal_59, currVal_60, currVal_61); var currVal_65 = (i1.ɵnov(_v, 78).required ? "" : null); var currVal_66 = i1.ɵnov(_v, 83).ngClassUntouched; var currVal_67 = i1.ɵnov(_v, 83).ngClassTouched; var currVal_68 = i1.ɵnov(_v, 83).ngClassPristine; var currVal_69 = i1.ɵnov(_v, 83).ngClassDirty; var currVal_70 = i1.ɵnov(_v, 83).ngClassValid; var currVal_71 = i1.ɵnov(_v, 83).ngClassInvalid; var currVal_72 = i1.ɵnov(_v, 83).ngClassPending; _ck(_v, 75, 0, currVal_65, currVal_66, currVal_67, currVal_68, currVal_69, currVal_70, currVal_71, currVal_72); var currVal_76 = !i1.ɵnov(_v, 5).valid; _ck(_v, 84, 0, currVal_76); }); }
 exports.View_InfoComponent_0 = View_InfoComponent_0;
-function View_InfoComponent_Host_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "app-info", [], null, null, null, View_InfoComponent_0, RenderType_InfoComponent)), i1.ɵdid(1, 49152, null, 0, i4.InfoComponent, [i5.AppService, i6.Router], null, null)], null, null); }
+function View_InfoComponent_Host_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "app-info", [], null, null, null, View_InfoComponent_0, RenderType_InfoComponent)), i1.ɵdid(1, 114688, null, 0, i4.InfoComponent, [i5.AppService, i6.Router], null, null)], function (_ck, _v) { _ck(_v, 1, 0); }, null); }
 exports.View_InfoComponent_Host_0 = View_InfoComponent_Host_0;
 var InfoComponentNgFactory = i1.ɵccf("app-info", i4.InfoComponent, View_InfoComponent_Host_0, {}, {}, []);
 exports.InfoComponentNgFactory = InfoComponentNgFactory;
@@ -1251,6 +1270,7 @@ exports.styles = styles;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__(/*! @angular/core */ "@angular/core");
 var app_service_1 = __webpack_require__(/*! ../app.service */ "./src/app/app.service.ts");
 var router_1 = __webpack_require__(/*! @angular/router */ "@angular/router");
 var InfoComponent = /** @class */ (function () {
@@ -1281,6 +1301,9 @@ var InfoComponent = /** @class */ (function () {
             deviceHeight: ''
         };
     }
+    InfoComponent.prototype.ngOnInit = function () {
+        console.log(this.appService.isMobile());
+    };
     InfoComponent.prototype.next = function () {
         this.appService.info = this.info;
         this.router.navigate(['/test']);

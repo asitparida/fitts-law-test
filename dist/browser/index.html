@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600" rel="stylesheet">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
     crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.3/mobile-detect.min.js"></script>
   <style>
     /* You can add global styles to this file, and also import other style files */
     * {
@@ -103,28 +104,52 @@
       flex: 1;
       order: 2;
       width: 100%;
+      overflow: auto;
     }
     .google-bar .btn-main {
       margin: 0;
       height: 48px;
       line-height: 44px;
+      min-width: 80px;
+      border-radius: 30px;
     }
     .google-bar label {
       margin: 0;
       padding: 0;
       font-weight: 500;
       color: #909090;
-      line-height: 48px;
-      font-size: small;
+      line-height: normal;
+      font-size: 1em;
+      max-width: 60%;
+    }
+    @media only screen and (max-width: 768px) {
+      .google-bar label {
+        font-size: small;
+      }
+      .google-bar label.not-xs {
+        display: none;
+      }
+      .google-bar .btn-main {
+        font-size: small;
+        margin: 0;
+        height: 36px;
+        line-height: 32px;
+      }
+    }
+    @media only screen and (min-width: 768px) {
+      .google-bar label.xs {
+        display: none;
+      }
     }
   </style>
 <link rel="stylesheet" href="styles.3ff695c00d717f2d2a11.css"></head>
 
 <body>
   <div class="google-bar">
-      <label>We use Google Sheets to record the test results</label>
-      <button class="btn-main" id="authorize_button" style="display: none;">Authorize</button>
-      <button class="btn-main" id="signout_button" style="display: none;">Sign Out</button>
+    <label class="not-xs">We use Google Sheets to record the test results</label>
+    <label class="xs">Google Sheets Access</label>
+    <button class="btn-main" id="authorize_button" style="display: none;">Authorize</button>
+    <button class="btn-main" id="signout_button" style="display: none;">Sign Out</button>
   </div>
   <app-root class="root-holder"></app-root>
   <script type="text/javascript">
@@ -137,7 +162,7 @@
 
     // Authorization scopes required by the API; multiple scopes can be
     // included, separated by spaces.
-    var SCOPES = "https://www.googleapis.com/auth/spreadsheets" ;
+    var SCOPES = "https://www.googleapis.com/auth/spreadsheets";
 
     var authorizeButton = document.getElementById('authorize_button');
     var signoutButton = document.getElementById('signout_button');
@@ -230,6 +255,6 @@
   <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()"
     onreadystatechange="if (this.readyState === 'complete') this.onload()">
     </script>
-<script type="text/javascript" src="runtime.ec2944dd8b20ec099bf3.js"></script><script type="text/javascript" src="polyfills.39e6cfaf4ba205935ea7.js"></script><script type="text/javascript" src="main.6079aa05eb0c186a4e04.js"></script></body>
+<script type="text/javascript" src="runtime.ec2944dd8b20ec099bf3.js"></script><script type="text/javascript" src="polyfills.39e6cfaf4ba205935ea7.js"></script><script type="text/javascript" src="main.d9d63c2eb07de87df3c4.js"></script></body>
 
 </html>

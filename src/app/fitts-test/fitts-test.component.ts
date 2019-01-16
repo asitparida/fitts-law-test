@@ -70,12 +70,13 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
     showActualTestModal = false;
     showAllDoneModal = false;
     showModal = true;
+    isMobile = false;
     currentPerformanceTick = null;
     currentDataSet: Array<DataItem | any> = [];
     overallDataSet: Array<DataItem | any> = [];
     countdownTickCount = -1;
     currentTestCount = -1;
-    maxTests = 1;
+    maxTests = 4;
     maxTicks = 4;
     countdownTick = this.maxTicks;
     listener = null;
@@ -97,6 +98,7 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
         }
     }
     ngOnInit() {
+        this.isMobile = this.appService.isMobile();
         this.userInfo = this.appService.info;
         this.listener = (e: any) => {
             const now = performance.now();

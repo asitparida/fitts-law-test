@@ -6,6 +6,8 @@ declare var MobileDetect: any;
 export class AppService {
     info = null;
     md = null;
+    runAverages = [];
+    userAverages = [];
     constructor() {
         if (MobileDetect) {
             this.md = new MobileDetect(window.navigator.userAgent);

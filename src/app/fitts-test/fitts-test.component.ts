@@ -128,7 +128,7 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
     overallAverages: Array<DataAverage | any> = [];
     countdownTickCount = -1;
     currentTestCount = -1;
-    maxTests = 4;
+    maxTests = 1;
     maxTicks = 4;
     countdownTick = this.maxTicks;
     listener = null;
@@ -179,7 +179,6 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
                 this.checkForTestSession();
             }
         };
-
     }
     checkTouchSupport() {
         if (('ontouchstart' in window) || (window as any).DocumentTouch && document instanceof DocumentTouch) {
@@ -433,6 +432,10 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
             const runAverages = this.getSheetTransform(this.overallAverages);
             const average = this.calculateOverallUserAverage();
             const userAverage = this.getSheetTransform([average]);
+            this.appService.runAverages = this.overallAverages;
+            this.appService.userAverages = average;
+            console.log(JSON.stringify(this.overallAverages));
+            console.log(JSON.stringify(average));
             this.appService.appendRowsToGoogleSheets(clickData);
             this.appService.appendRunAveragesRowsToGoogleSheets(runAverages);
             this.appService.appendUserAveragesRowsToGoogleSheets(userAverage);

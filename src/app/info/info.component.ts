@@ -14,11 +14,22 @@ export class InfoComponent {
         { id: 'someone-like-you', text: 'Someone NOT like you' },
         { id: 'optional-particpant', text: 'Optional Particpant' }
     ];
+    deviceTypes = [
+        'mouse',
+        'touchpad',
+        'phone touchscreen',
+        'tablet touchscreen',
+        'laptop touchscreen',
+        'other'
+    ];
     info = {
         name: '',
+        alias: '',
         type: '',
         device: '',
-        alias: ''
+        deviceDetails: '',
+        deviceWidth: '',
+        deviceHeight: ''
     };
     constructor(private appService: AppService, private router: Router) {}
     next() {

@@ -3,11 +3,12 @@
     <form #infoForm="ngForm">
         <div class="form-group">
             <label for="namde">Your Name</label>
-            <input required type="text" name="name" [(ngModel)]="info.name" class="form-control" id="namde" aria-describedby="emailHelp" placeholder="Enter Name">
+            <input required type="text" name="name" [(ngModel)]="info.name" class="form-control" id="namde" placeholder="Enter Name">
         </div>
         <div class="form-group">
             <label for="andrewId">Your Andrew ID</label>
-            <input required type="email" name="alias" [(ngModel)]="info.alias" class="form-control" id="andrewId" aria-describedby="emailHelp" placeholder="Enter ANDREW ID">
+            <input required type="email" name="alias" [(ngModel)]="info.alias" class="form-control" id="andrewId"
+                placeholder="Enter ANDREW ID">
         </div>
         <div class="form-group">
             <label for="type">Participant Type</label>
@@ -17,8 +18,24 @@
         </div>
         <div class="form-group">
             <label for="device">Device</label>
-            <input required type="email" name="device" [(ngModel)]="info.device" class="form-control" id="device" aria-describedby="emailHelp" placeholder="Enter DEVICE information">
+            <select required class="form-control" [(ngModel)]="info.device" name="device">
+                <option *ngFor="let option of deviceTypes" [value]="option">{{option}}</option>
+            </select>
             <small id="emailHelp" class="form-text text-muted"> (i.e. touchpad, mouse...):</small>
+        </div>
+        <div class="form-group" *ngIf="info.device === 'other'">
+            <label for="deviceDetails">Device Details</label>
+            <input required type="email" name="alias" [(ngModel)]="info.deviceDetails" class="form-control" id="deviceDetails"
+                placeholder="Enter Details">
+            <small id="emailHelp" class="form-text text-muted">Add some more details for this device type</small>
+        </div>
+        <div class="form-group">
+            <label for="deviceWidth">Device Width (in cms)</label>
+            <input required type="number" name="deviceWidth" [(ngModel)]="info.deviceWidth" class="form-control" id="deviceWidth">
+        </div>
+        <div class="form-group">
+            <label for="deviceHeight">Device Height (in cms)</label>
+            <input required type="number" name="deviceHeight" [(ngModel)]="info.deviceHeight" class="form-control" id="deviceHeight">
         </div>
     </form>
     <button class="btn-main" [disabled]="!infoForm.valid" (click)="next()">Next</button>

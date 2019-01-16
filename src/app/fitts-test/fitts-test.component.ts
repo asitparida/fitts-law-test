@@ -46,6 +46,7 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
     svgAreaId = 'svg-work-area' + Math.floor(Math.random() * 10e6);
     oTesterId = 'o-test' + Math.floor(Math.random() * 10e6);
     currentRadius = 50;
+    currentDistance = null;
     baseRadius = null;
     maxRadius = null;
     minRadius = null;
@@ -74,7 +75,7 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
     overallDataSet: Array<DataItem | any> = [];
     countdownTickCount = -1;
     currentTestCount = -1;
-    maxTests = 4;
+    maxTests = 1;
     maxTicks = 4;
     countdownTick = this.maxTicks;
     listener = null;
@@ -104,21 +105,23 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
                 const lastCircleIndex = this.currentIndexActive;
                 let correctClick = false;
                 const elem = e.target as HTMLElement;
-                if (elem.classList.contains('fitt-circle')) {
+                if (elem.classList.contains('fitt-circle') && elem.classList.contains('active')) {
                     correctClick = true;
-                }
-                if (this.dir === 1 && (this.currentIndexActive + this.dir) > this.fittCircles.length - 1) {
-                    this.dir = -1;
-                    this.currentIndexActive += this.dir;
-                } else if (this.dir === -1 && (this.currentIndexActive + this.dir) < 0) {
-                    this.dir = 1;
-                    this.currentIndexActive += this.dir;
+                    if (this.dir === 1 && (this.currentIndexActive + this.dir) > this.fittCircles.length - 1) {
+                        this.dir = -1;
+                        this.currentIndexActive += this.dir;
+                    } else if (this.dir === -1 && (this.currentIndexActive + this.dir) < 0) {
+                        this.dir = 1;
+                        this.currentIndexActive += this.dir;
+                    } else {
+                        this.currentIndexActive += this.dir;
+                    }
+                    this.activateCircle(this.currentIndexActive);
+                    this.clickCounter += 1;
                 } else {
-                    this.currentIndexActive += this.dir;
+                    this.highlightCurrentCircleAsIncorrect();
                 }
                 this.processClick(correctClick, lastCircleIndex, now, dir);
-                this.activateCircle(this.currentIndexActive);
-                this.clickCounter += 1;
                 this.checkForTestSession();
             }
         };
@@ -159,7 +162,8 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
         this.layourtCurrentCircles();
     }
     pickRadius() {
-        this.currentRadius = _.sample(_.range(this.minRadius, this.maxRadius, 10));
+        const range = _.range(this.minRadius, this.maxRadius, 1);
+        this.currentRadius = _.sample(range);
         this.baseRadius = (this.dim - (this.currentRadius * 2)) * 0.5;
     }
     layoutCurrentRadiusBox() {
@@ -179,11 +183,17 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
                 .attr('stroke-width', '1px');
         }
     }
+    getDistance(a: Coordinate, b: Coordinate) {
+        const xDiff = a.x - b.x;
+        const yDiff = a.y - b.y;
+        return Math.sqrt(((xDiff * xDiff) + (yDiff * yDiff)));
+    }
     layourtCurrentCircles() {
         this.fittCircles.forEach(c => (c as d3.Selection<any, any, any, any>).remove());
         this.fittCircles = [];
         d3.select('.fitt-circle').remove();
         const circleCoordinates = this.getCurrentCircleCoordinates();
+        this.currentDistance = this.getDistance(circleCoordinates[0], circleCoordinates[1]);
         circleCoordinates.forEach((c, i) => {
             const circle = d3.select(this.svgElem)
                 .append('circle')
@@ -250,8 +260,21 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
         if (this.currentTestCount <= this.maxTests) {
             this.showActualTestModal = true;
         } else {
+            const data = this.getSheetTransform(this.overallDataSet);
+            this.appService.appendRowsToGoogleSheets(data);
             this.showAllDoneModal = true;
         }
+    }
+    getSheetTransform(data) {
+        const temp = [];
+        if (data && data.length > 0) {
+            const keys = Object.keys(data[0]);
+            data.forEach(d => {
+                const values = keys.map(k => d[k]);
+                temp.push(values);
+            });
+        }
+        return temp;
     }
     startTest() {
         this.isPracticeRun = false;
@@ -275,18 +298,31 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
         if (this.clickCounter > 28) {
             this.testInProgress = false;
             this.clearTest();
-        } else {
-            this.currentPerformanceTick = performance.now();
         }
     }
     activateCircle(index) {
+        const fitt = this.fittCircles[this.currentIndexActive];
+        if (fitt) {
+            fitt.transition();
+            fitt.attr('fill', 'rgba(0,0,0,0.05)');
+        }
         this.fittCircles.forEach((x, i) => {
             if (i === index) {
                 x.attr('fill', this.color);
+                x.attr('class', 'fitt-circle active');
             } else {
                 x.attr('fill', 'rgba(0,0,0,0.05)');
+                x.attr('class', 'fitt-circle');
             }
         });
+    }
+    highlightCurrentCircleAsIncorrect() {
+        const fitt = this.fittCircles[this.currentIndexActive];
+        if (fitt) {
+            fitt.attr('fill', '#e74c3c')
+            .transition()
+            .attr('fill', this.color);
+        }
     }
     processClick(isCorrectClick, lastCircleIndex, now, dir) {
         const ticks = now - this.currentPerformanceTick;
@@ -294,17 +330,21 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
         if (isCorrectClick) {
             direction = this.getHitDirection(lastCircleIndex, dir);
         }
-        const item: DataItem | any = Object.assign({}, {
+        const item: DataItem | any = Object.assign({}, this.userInfo, {
             direction: direction,
             sourceIndex: lastCircleIndex,
             ticks: ticks,
             targetHit: isCorrectClick,
             angle: dir === 1 ? Clock.clockwise : Clock.antiClockwise,
             timestamp: (new Date()).getTime(),
-            run: `RUN #${this.currentTestCount}`
-        }, this.userInfo);
+            run: `RUN #${this.currentTestCount}`,
+            radius: this.currentRadius,
+            distance: this.currentDistance
+        });
         this.currentDataSet.push(item);
-        this.currentPerformanceTick = performance.now();
+        if (isCorrectClick) {
+            this.currentPerformanceTick = performance.now();
+        }
     }
     getHitDirection(lastCircleIndex, dir) {
         let direction = Direction.Other;

@@ -128,7 +128,7 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
     overallAverages: Array<DataAverage | any> = [];
     countdownTickCount = -1;
     currentTestCount = -1;
-    maxTests = 2;
+    maxTests = 4;
     maxTicks = 4;
     countdownTick = this.maxTicks;
     listener = null;

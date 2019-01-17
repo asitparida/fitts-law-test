@@ -135,7 +135,7 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
     overallAverages: Array<DataAverage | any> = [];
     countdownTickCount = -1;
     currentTestCount = -1;
-    maxTicks = 4;
+    maxTicks = 3;
     countdownTick = this.maxTicks;
     listener = null;
     userInfo = null;
@@ -154,9 +154,9 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
     desktopDimensionsOptions = this.desktopDimensionsMeta.map(r => this.appService.getPixels(r));
     phoneDimensionsOptions = this.phoneDimensionsMeta.map(r => this.appService.getPixels(r));
     desktopConfigs = [[0.25, 8.5], [0.25, 10.5], [1, 10], [1, 12]];
-    phoneConfigs = [[0.25, 3.50], [0.25, 5.50], [0.50, 4], [0.50, 6]];
+    phoneConfigs = [[0.25, 3.50], [0.25, 4.50], [0.50, 4], [0.50, 5]];
     runConfigurations: Array<Config> = [];
-    defaultPraticeIndex = 0;
+    defaultPraticeIndex = 2;
     constructor(private appService: AppService) { }
     ngAfterViewInit() {
         this.dim = this.getSquareDimension();

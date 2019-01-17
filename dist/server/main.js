@@ -661,7 +661,7 @@ var FittsTestComponent = /** @class */ (function () {
         this.desktopDimensionsOptions = this.desktopDimensionsMeta.map(function (r) { return _this.appService.getPixels(r); });
         this.phoneDimensionsOptions = this.phoneDimensionsMeta.map(function (r) { return _this.appService.getPixels(r); });
         this.desktopConfigs = [[0.25, 8.5], [0.25, 10.5], [1, 10], [1, 12]];
-        this.phoneConfigs = [[0.125, 3.25], [0.125, 5.25], [0.33, 3.67], [0.33, 5.67]];
+        this.phoneConfigs = [[0.25, 3.50], [0.25, 5.50], [0.50, 4], [0.50, 6]];
         this.runConfigurations = [];
         this.defaultPraticeIndex = 0;
     }

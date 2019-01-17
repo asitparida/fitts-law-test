@@ -154,7 +154,7 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
     desktopDimensionsOptions = this.desktopDimensionsMeta.map(r => this.appService.getPixels(r));
     phoneDimensionsOptions = this.phoneDimensionsMeta.map(r => this.appService.getPixels(r));
     desktopConfigs = [[0.25, 8.5], [0.25, 10.5], [1, 10], [1, 12]];
-    phoneConfigs = [[0.125, 3.25], [0.125, 5.25], [0.33, 3.67], [0.33, 5.67]];
+    phoneConfigs = [[0.25, 3.50], [0.25, 5.50], [0.50, 4], [0.50, 6]];
     runConfigurations: Array<Config> = [];
     defaultPraticeIndex = 0;
     constructor(private appService: AppService) { }

@@ -661,7 +661,7 @@ var FittsTestComponent = /** @class */ (function () {
         this.desktopDimensionsOptions = this.desktopDimensionsMeta.map(function (r) { return _this.appService.getPixels(r); });
         this.phoneDimensionsOptions = this.phoneDimensionsMeta.map(function (r) { return _this.appService.getPixels(r); });
         this.desktopConfigs = [[0.25, 8.5], [0.25, 10.5], [1, 10], [1, 12]];
-        this.phoneConfigs = [[0.25, 3.50], [0.25, 4.50], [0.50, 4], [0.50, 5]];
+        this.phoneConfigs = [[0.25, 3.50], [0.25, 4.50], [0.50, 3.5], [0.50, 5]];
         this.runConfigurations = [];
         this.defaultPraticeIndex = 2;
     }
@@ -920,7 +920,7 @@ var FittsTestComponent = /** @class */ (function () {
         average.run = this.currentDataSet[0].run;
         var config = this.runConfigurations[this.dimIndex];
         average.radius = config.radiusCM * 2;
-        average.distance = config.distanceCM - 2 * (average.radius);
+        average.distance = config.distanceCM - (2 * config.radiusCM);
         var hitTicks = this.currentDataSet.filter(function (x) { return x.targetHit; });
         var missTicks = this.currentDataSet.filter(function (x) { return !x.targetHit; });
         var verticalHits = hitTicks.filter(function (t) { return t.direction === Direction.Vertical; });

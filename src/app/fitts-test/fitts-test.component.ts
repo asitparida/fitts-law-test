@@ -154,7 +154,7 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
     desktopDimensionsOptions = this.desktopDimensionsMeta.map(r => this.appService.getPixels(r));
     phoneDimensionsOptions = this.phoneDimensionsMeta.map(r => this.appService.getPixels(r));
     desktopConfigs = [[0.25, 8.5], [0.25, 10.5], [1, 10], [1, 12]];
-    phoneConfigs = [[0.25, 3.50], [0.25, 4.50], [0.50, 4], [0.50, 5]];
+    phoneConfigs = [[0.25, 3.50], [0.25, 4.50], [0.50, 3.5], [0.50, 5]];
     runConfigurations: Array<Config> = [];
     defaultPraticeIndex = 2;
     constructor(private appService: AppService) { }
@@ -405,7 +405,7 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
         average.run = (this.currentDataSet as Array<DataItem>)[0].run;
         const config = this.runConfigurations[this.dimIndex];
         average.radius = config.radiusCM * 2;
-        average.distance = config.distanceCM - 2 * (average.radius);
+        average.distance = config.distanceCM - (2 * config.radiusCM);
         const hitTicks = (this.currentDataSet as Array<DataItem>).filter(x => x.targetHit);
         const missTicks = (this.currentDataSet as Array<DataItem>).filter(x => !x.targetHit);
         const verticalHits = hitTicks.filter(t => t.direction === Direction.Vertical);

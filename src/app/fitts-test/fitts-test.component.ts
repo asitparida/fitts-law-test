@@ -19,7 +19,7 @@ export class DataItem {
     ticks: number;
     targetHit: boolean;
     angle: Clock;
-    timestamp: number;
+    timestamp: string;
     run: string;
     radius: number;
     distance: number;
@@ -86,6 +86,13 @@ export enum Clock {
     antiClockwise = 'Anti-Clockwise'
 }
 
+export class Config {
+    radiusCM;
+    distanceCM;
+    radiusPX;
+    distancePX;
+}
+
 @Component({
     selector: 'app-fitts-test',
     templateUrl: './fitts-test.component.html',
@@ -128,20 +135,35 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
     overallAverages: Array<DataAverage | any> = [];
     countdownTickCount = -1;
     currentTestCount = -1;
-    maxTests = 1;
     maxTicks = 4;
     countdownTick = this.maxTicks;
     listener = null;
     userInfo = null;
+    // desktopCircleRadiusMeta = [ 0.25, 0.50, 1, 1.25 ];
+    // phoneCircleRadiusMeta = [0.125, 0.25, 0.40 , 0.50];
+    // desktopDimensionsMeta = [4, 6, 8, 10];
+    // phoneDimensionsMeta = [2, 3, 4, 5];
+    desktopCircleRadiusMeta = [0.25, 1];
+    desktopDimensionsMeta = [8, 10];
+    phoneCircleRadiusMeta = [0.125, 0.33];
+    phoneDimensionsMeta = [3, 5];
+    maxTests = 0;
+    dimIndex = 0;
+    desktopCircleRadiusOptions = this.desktopCircleRadiusMeta.map(r => this.appService.getPixels(r));
+    phoneCircleRadiusOptions = this.phoneCircleRadiusMeta.map(r => this.appService.getPixels(r));
+    desktopDimensionsOptions = this.desktopDimensionsMeta.map(r => this.appService.getPixels(r));
+    phoneDimensionsOptions = this.phoneDimensionsMeta.map(r => this.appService.getPixels(r));
+    desktopConfigs = [[0.25, 8.5], [0.25, 10.5], [1, 10], [1, 12]];
+    phoneConfigs = [[0.125, 3.25], [0.125, 5.25], [0.33, 3.67], [0.33, 5.67]];
+    runConfigurations: Array<Config> = [];
+    defaultPraticeIndex = 0;
     constructor(private appService: AppService) { }
     ngAfterViewInit() {
         this.dim = this.getSquareDimension();
         this.maxRadius = this.dim / 6;
         this.minRadius = this.getMinRadius();
-        const width = this.dim;
-        const height = this.dim;
-        this.pageCenter = new Coordinate(width / 2, height / 2);
         this.processCurrentRadius();
+        this.checkDimensions();
         const supported = this.checkTouchSupport();
         if (supported) {
             document.addEventListener('touchstart', this.listener);
@@ -151,6 +173,46 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
     }
     ngOnInit() {
         this.isMobile = this.appService.isMobile();
+        if (this.isMobile) {
+            // this.phoneCircleRadiusMeta.forEach(r => {
+            //     this.phoneDimensionsMeta.forEach(d => {
+            //         this.runConfigurations.push({
+            //             radiusCM: r,
+            //             distanceCM: d,
+            //             radiusPX: this.appService.getPixels(r),
+            //             distancePX: this.appService.getPixels(d)
+            //         });
+            //     });
+            // });
+            this.runConfigurations = this.phoneConfigs.map(x => {
+                return {
+                    radiusCM: x[0],
+                    distanceCM: x[1],
+                    radiusPX: this.appService.getPixels(x[0]),
+                    distancePX: this.appService.getPixels(x[1])
+                };
+            });
+        } else {
+            // this.desktopCircleRadiusMeta.forEach(r => {
+            //     this.desktopDimensionsMeta.forEach(d => {
+            //         this.runConfigurations.push({
+            //             radiusCM: r,
+            //             distanceCM: d,
+            //             radiusPX: this.appService.getPixels(r),
+            //             distancePX: this.appService.getPixels(d)
+            //         });
+            //     });
+            // });
+            this.runConfigurations = this.desktopConfigs.map(x => {
+                return {
+                    radiusCM: x[0],
+                    distanceCM: x[1],
+                    radiusPX: this.appService.getPixels(x[0]),
+                    distancePX: this.appService.getPixels(x[1])
+                };
+            });
+        }
+        this.maxTests = this.runConfigurations.length;
         this.userInfo = this.appService.info;
         this.listener = (e: any) => {
             const now = performance.now();
@@ -205,19 +267,54 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
         }, 1000);
     }
     processCurrentRadius() {
-        const width = this.dim;
-        const height = this.dim;
         this.pickRadius();
         this.svgElem = document.getElementById(this.svgAreaId);
+        const width = this.dim;
+        const height = this.dim;
         d3.select(this.svgElem).attr('width', width);
         d3.select(this.svgElem).attr('height', height);
         this.layoutCurrentRadiusBox();
         this.layourtCurrentCircles();
     }
     pickRadius() {
-        const range = _.range(this.minRadius, this.maxRadius, 1);
-        this.currentRadius = _.sample(range);
+        if (this.isPracticeRun) {
+            this.dimIndex = this.defaultPraticeIndex;
+        } else {
+            this.dimIndex = this.currentTestCount - 1;
+        }
+        const config = this.runConfigurations[this.dimIndex];
+        this.currentRadius = config.radiusPX;
+        this.dim = config.distancePX;
         this.baseRadius = (this.dim - (this.currentRadius * 2)) * 0.5;
+        const width = this.dim;
+        const height = this.dim;
+        this.pageCenter = new Coordinate(width / 2, height / 2);
+    }
+    startTest() {
+        this.isPracticeRun = false;
+        this.showActualTestModal = false;
+        this.showCountdownModal = true;
+        this.countdownTick = this.maxTicks;
+        this.processCurrentRadius();
+        this.checkDimensions();
+        const interval = setInterval(() => {
+            this.countdownTick = this.countdownTick - 1;
+            if (this.countdownTick === 0) {
+                clearInterval(interval);
+                this.showCountdownModal = false;
+                this.showModal = false;
+                this.setupClickTest();
+            }
+        }, 1000);
+    }
+    checkDimensions() {
+        let works = true;
+        if (!this.isMobile) {
+            works = this.dim < window.innerHeight;
+        } else {
+            works = this.dim < window.innerWidth;
+        }
+        return works;
     }
     layoutCurrentRadiusBox() {
         if (this.fittRadiusCircle) {
@@ -306,8 +403,9 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
     calculateCurrentAverage() {
         const average = new DataAverage();
         average.run = (this.currentDataSet as Array<DataItem>)[0].run;
-        average.distance = (this.currentDataSet as Array<DataItem>)[0].distance;
-        average.radius = (this.currentDataSet as Array<DataItem>)[0].radius;
+        const config = this.runConfigurations[this.dimIndex];
+        average.radius = config.radiusCM * 2;
+        average.distance = config.distanceCM - 2 * (average.radius);
         const hitTicks = (this.currentDataSet as Array<DataItem>).filter(x => x.targetHit);
         const missTicks = (this.currentDataSet as Array<DataItem>).filter(x => !x.targetHit);
         const verticalHits = hitTicks.filter(t => t.direction === Direction.Vertical);
@@ -434,8 +532,6 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
             const userAverage = this.getSheetTransform([average]);
             this.appService.runAverages = this.overallAverages;
             this.appService.userAverages = average;
-            console.log(JSON.stringify(this.overallAverages));
-            console.log(JSON.stringify(average));
             this.appService.appendRowsToGoogleSheets(clickData);
             this.appService.appendRunAveragesRowsToGoogleSheets(runAverages);
             this.appService.appendUserAveragesRowsToGoogleSheets(userAverage);
@@ -452,24 +548,6 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
             });
         }
         return temp;
-    }
-    startTest() {
-        this.isPracticeRun = false;
-        this.showActualTestModal = false;
-        this.showCountdownModal = true;
-        this.countdownTick = this.maxTicks;
-        this.pickRadius();
-        this.layoutCurrentRadiusBox();
-        this.layourtCurrentCircles();
-        const interval = setInterval(() => {
-            this.countdownTick = this.countdownTick - 1;
-            if (this.countdownTick === 0) {
-                clearInterval(interval);
-                this.showCountdownModal = false;
-                this.showModal = false;
-                this.setupClickTest();
-            }
-        }, 1000);
     }
     checkForTestSession() {
         if (this.clickCounter > 28) {
@@ -505,16 +583,21 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
         const ticks = now - this.currentPerformanceTick;
         let direction = Direction.None;
         direction = this.getHitDirection(lastCircleIndex, dir);
+        const dt = new Date();
+        let radius = 0, distance = 0;
+        const config = this.runConfigurations[this.dimIndex];
+        radius = config.radiusCM;
+        distance = config.distanceCM - (2 * radius);
         const item: DataItem | any = Object.assign({}, this.userInfo, {
             direction: direction,
             sourceIndex: lastCircleIndex,
             ticks: ticks,
             targetHit: isCorrectClick,
             angle: dir === 1 ? Clock.clockwise : Clock.antiClockwise,
-            timestamp: (new Date()).getTime(),
+            timestamp: `${dt.toDateString()} ${dt.getHours()}:${dt.getMinutes()}:${dt.getSeconds()}:${dt.getMilliseconds()}`,
             run: `RUN #${this.currentTestCount}`,
-            radius: this.currentRadius,
-            distance: this.currentDistance
+            radius: radius * 2,
+            distance: distance
         });
         this.currentDataSet.push(item);
         if (isCorrectClick) {
@@ -550,11 +633,10 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
     getSquareDimension() {
         let dim = 0;
         if (window.innerHeight > window.innerWidth) {
-            dim = window.innerWidth - 60;
+            dim = window.innerWidth - 0;
         } else {
-            dim = window.innerHeight - 60;
+            dim = window.innerHeight - 120;
         }
-        dim = dim > 500 ? 500 : dim;
         return dim;
     }
     getMinRadius() {

@@ -28,14 +28,13 @@ export class InfoComponent implements OnInit {
         type: '',
         device: '',
         deviceDetails: '',
-        deviceWidth: '',
-        deviceHeight: ''
+        deviceDiagonal: ''
     };
     constructor(private appService: AppService, private router: Router) {}
     ngOnInit() {
-        console.log(this.appService.isMobile());
     }
     next() {
+        const dpi = this.appService.calculateDPI(this.info.deviceDiagonal);
         this.appService.info = this.info;
         this.router.navigate(['/test']);
     }

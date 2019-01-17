@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>NgUniversalDemo</title>
+  <title>Fitts Law Test</title>
   <base href="/">
 
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
@@ -94,11 +94,24 @@
       flex: initial;
       height: 60px;
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: center;
       width:100vw;
       background: #f1f3f5;
       padding: 0 15px;
+    }
+    .google-bar:not(.AUTHORIZED) {
+      height: 100vh;
+      width: 100vw;
+      flex-flow: column;
+      justify-content: center;
+    }
+    .google-bar:not(.AUTHORIZED) .google-img {
+      max-height: 33vh;
+    }
+    .google-bar:not(.AUTHORIZED) .btn-main {
+      margin-left: 0;
+      margin-top: 30px;
     }
     .root-holder {
       flex: 1;
@@ -112,6 +125,7 @@
       line-height: 44px;
       min-width: 80px;
       border-radius: 30px;
+      margin-left: auto;
     }
     .google-bar label {
       margin: 0;
@@ -121,7 +135,24 @@
       line-height: normal;
       font-size: 1em;
       max-width: 60%;
+      text-align: center;
     }
+    .google-bar label.bold {
+      color: #333;
+      font-weight: bold;
+      margin:15px 0;
+    }
+    .google-bar .google-img {
+      height: 100%;
+      margin-right: 30px;
+    }
+    .google-bar .google-img img {
+        height: 80%;
+        margin-top: 10%;
+      }
+      .google-bar.AUTHORIZED label.help {
+        display: none;
+      }
     @media only screen and (max-width: 768px) {
       .google-bar label {
         font-size: small;
@@ -145,8 +176,13 @@
 </head>
 
 <body>
-  <div class="google-bar">
-    <label class="not-xs">We use Google Sheets to record the test results</label>
+  <div class="google-bar" id="google-bar">
+    <div class="google-img">
+      <img src="assets/sheet-icon.png" alt="Google Sheets" />
+    </div>
+    <label class="help bold"><strong>Finding Google Sheet Authorization status ...</strong></label>
+    <label class="not-xs">We use Google Sheets to record the test results.</label>
+    <label class="not-xs help">Try refreshing the page after authorzing if you dont see 'Begin Test' button.</label>
     <label class="xs">Google Sheets Access</label>
     <button class="btn-main" id="authorize_button" style="display: none;">Authorize</button>
     <button class="btn-main" id="signout_button" style="display: none;">Sign Out</button>
@@ -154,7 +190,7 @@
   <app-root class="root-holder"></app-root>
   <script type="text/javascript">
     // Client ID and API key from the Developer Console
-    var CLIENT_ID = '69332637567-h4cnd3nhco7e9t94d325jt6jv0u4pc9i.apps.googleusercontent.com';
+    var CLIENT_ID = '69332637567-aap9bed9pet013v6n22pmlkbkcfmfpve.apps.googleusercontent.com';
     var API_KEY = 'AIzaSyCu7XtGmIHrrmKx-bczL8773fCsFSUPG0E';
 
     // Array of API discovery doc URLs for APIs used by the quickstart
@@ -166,6 +202,7 @@
 
     var authorizeButton = document.getElementById('authorize_button');
     var signoutButton = document.getElementById('signout_button');
+    var googleBarButton = document.getElementById('google-bar');
 
     /**
      *  On load, called to load the auth2 library and API client library.
@@ -205,10 +242,12 @@
       if (isSignedIn) {
         authorizeButton.style.display = 'none';
         signoutButton.style.display = 'block';
+        googleBarButton.classList.add('AUTHORIZED');
         listMajors();
       } else {
         authorizeButton.style.display = 'block';
         signoutButton.style.display = 'none';
+        googleBarButton.classList.remove('AUTHORIZED');
       }
     }
 

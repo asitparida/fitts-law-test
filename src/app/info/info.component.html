@@ -23,19 +23,15 @@
             </select>
             <small id="emailHelp" class="form-text text-muted"> (i.e. touchpad, mouse...):</small>
         </div>
-        <div class="form-group" *ngIf="info.device === 'other'">
+        <div class="form-group" >
             <label for="deviceDetails">Device Details</label>
             <input required type="email" name="alias" [(ngModel)]="info.deviceDetails" class="form-control" id="deviceDetails"
                 placeholder="Enter Details">
-            <small id="emailHelp" class="form-text text-muted">Add some more details for this device type</small>
+            <small id="emailHelp" class="form-text text-muted">Add some more details for this device type like make, model, size etc.</small>
         </div>
         <div class="form-group">
-            <label for="deviceWidth">Device Width (in cms)</label>
-            <input required type="number" name="deviceWidth" [(ngModel)]="info.deviceWidth" class="form-control" id="deviceWidth">
-        </div>
-        <div class="form-group">
-            <label for="deviceHeight">Device Height (in cms)</label>
-            <input required type="number" name="deviceHeight" [(ngModel)]="info.deviceHeight" class="form-control" id="deviceHeight">
+            <label for="deviceDiagonal">Screen Diagonal (in inches)</label>
+            <input required type="number" name="deviceDiagonal" [(ngModel)]="info.deviceDiagonal" class="form-control" id="deviceDiagonal">
         </div>
     </form>
     <button class="btn-main" [disabled]="!infoForm.valid" (click)="next()">Next</button>

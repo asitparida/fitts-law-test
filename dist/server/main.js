@@ -339,19 +339,27 @@ var AppService = /** @class */ (function () {
         this.md = null;
         this.runAverages = [];
         this.userAverages = [];
+        this.dpi = null;
         if (MobileDetect) {
             this.md = new MobileDetect(window.navigator.userAgent);
         }
     }
+    AppService.prototype.getPixels = function (cmValue) {
+        var inches = cmValue / 2.54;
+        return this.dpi * inches;
+    };
+    AppService.prototype.getCms = function (pixeslValue) {
+        return (pixeslValue * 2.54) / this.dpi;
+    };
     AppService.prototype.appendRowsToGoogleSheets = function (data) {
         gapi.client.sheets.spreadsheets.values.append({
             spreadsheetId: '1LN7pXxtIvvF2QgRfmj1i5owC0ygRIi2kqJb1nirk1bA',
-            range: 'Runs!A2:K',
+            range: 'Runs!A2:O',
             valueInputOption: 'USER_ENTERED',
             insertDataOption: 'INSERT_ROWS'
         }, {
             majorDimension: 'ROWS',
-            range: 'Runs!A2:K',
+            range: 'Runs!A2:O',
             values: data
         }).then(function (response) {
             var range = response.result;
@@ -361,12 +369,12 @@ var AppService = /** @class */ (function () {
     AppService.prototype.appendRunAveragesRowsToGoogleSheets = function (data) {
         gapi.client.sheets.spreadsheets.values.append({
             spreadsheetId: '1LN7pXxtIvvF2QgRfmj1i5owC0ygRIi2kqJb1nirk1bA',
-            range: 'RunAverages!A2:AD',
+            range: 'RunAverages!A2:AC',
             valueInputOption: 'USER_ENTERED',
             insertDataOption: 'INSERT_ROWS'
         }, {
             majorDimension: 'ROWS',
-            range: 'RunAverages!A2:AD',
+            range: 'RunAverages!A2:AC',
             values: data
         }).then(function (response) {
             var range = response.result;
@@ -376,12 +384,12 @@ var AppService = /** @class */ (function () {
     AppService.prototype.appendUserAveragesRowsToGoogleSheets = function (data) {
         gapi.client.sheets.spreadsheets.values.append({
             spreadsheetId: '1LN7pXxtIvvF2QgRfmj1i5owC0ygRIi2kqJb1nirk1bA',
-            range: 'UserAverages!A2:AA',
+            range: 'UserAverages!A2:Z',
             valueInputOption: 'USER_ENTERED',
             insertDataOption: 'INSERT_ROWS'
         }, {
             majorDimension: 'ROWS',
-            range: 'UserAverages!A2:AA',
+            range: 'UserAverages!A2:Z',
             values: data
         }).then(function (response) {
             var range = response.result;
@@ -399,9 +407,29 @@ var AppService = /** @class */ (function () {
         }
         return false;
     };
+    AppService.prototype.calculateDPI = function (diagonalWidth) {
+        var dppx = window.devicePixelRatio ||
+            // tslint:disable
+            (window.matchMedia && window.matchMedia("(min-resolution: 2dppx), (-webkit-min-device-pixel-ratio: 1.5),(-moz-min-device-pixel-ratio: 1.5),(min-device-pixel-ratio: 1.5)").matches ? 2 : 1) ||
+            1;
+        var width = screen.width * 1;
+        var height = screen.height * 1;
+        this.dpi = calcDpi(width, height, diagonalWidth, 'd');
+        ;
+        return this.dpi;
+        // tslint:enable
+    };
     return AppService;
 }());
 exports.AppService = AppService;
+function calcDpi(w, h, d, opt) {
+    // Calculate PPI/DPI
+    w = w > 0 ? w : 1;
+    h = h > 0 ? h : 1;
+    opt = opt ? opt : 'd';
+    var dpi = (opt === 'd' ? Math.sqrt(w * w + h * h) : opt === 'w' ? w : h) / d;
+    return dpi > 0 ? Math.round(dpi) : 0;
+}
 
 
 /***/ }),
@@ -572,8 +600,15 @@ var Clock;
     Clock["clockwise"] = "Clockwise";
     Clock["antiClockwise"] = "Anti-Clockwise";
 })(Clock = exports.Clock || (exports.Clock = {}));
+var Config = /** @class */ (function () {
+    function Config() {
+    }
+    return Config;
+}());
+exports.Config = Config;
 var FittsTestComponent = /** @class */ (function () {
     function FittsTestComponent(appService) {
+        var _this = this;
         this.appService = appService;
         this.title = 'fitts-law-tester';
         this.workAreaId = 'work-area' + Math.floor(Math.random() * 10e6);
@@ -607,20 +642,35 @@ var FittsTestComponent = /** @class */ (function () {
         this.overallAverages = [];
         this.countdownTickCount = -1;
         this.currentTestCount = -1;
-        this.maxTests = 1;
         this.maxTicks = 4;
         this.countdownTick = this.maxTicks;
         this.listener = null;
         this.userInfo = null;
+        // desktopCircleRadiusMeta = [ 0.25, 0.50, 1, 1.25 ];
+        // phoneCircleRadiusMeta = [0.125, 0.25, 0.40 , 0.50];
+        // desktopDimensionsMeta = [4, 6, 8, 10];
+        // phoneDimensionsMeta = [2, 3, 4, 5];
+        this.desktopCircleRadiusMeta = [0.25, 1];
+        this.desktopDimensionsMeta = [8, 10];
+        this.phoneCircleRadiusMeta = [0.125, 0.33];
+        this.phoneDimensionsMeta = [3, 5];
+        this.maxTests = 0;
+        this.dimIndex = 0;
+        this.desktopCircleRadiusOptions = this.desktopCircleRadiusMeta.map(function (r) { return _this.appService.getPixels(r); });
+        this.phoneCircleRadiusOptions = this.phoneCircleRadiusMeta.map(function (r) { return _this.appService.getPixels(r); });
+        this.desktopDimensionsOptions = this.desktopDimensionsMeta.map(function (r) { return _this.appService.getPixels(r); });
+        this.phoneDimensionsOptions = this.phoneDimensionsMeta.map(function (r) { return _this.appService.getPixels(r); });
+        this.desktopConfigs = [[0.25, 8.5], [0.25, 10.5], [1, 10], [1, 12]];
+        this.phoneConfigs = [[0.125, 3.25], [0.125, 5.25], [0.33, 3.67], [0.33, 5.67]];
+        this.runConfigurations = [];
+        this.defaultPraticeIndex = 0;
     }
     FittsTestComponent.prototype.ngAfterViewInit = function () {
         this.dim = this.getSquareDimension();
         this.maxRadius = this.dim / 6;
         this.minRadius = this.getMinRadius();
-        var width = this.dim;
-        var height = this.dim;
-        this.pageCenter = new Coordinate(width / 2, height / 2);
         this.processCurrentRadius();
+        this.checkDimensions();
         var supported = this.checkTouchSupport();
         if (supported) {
             document.addEventListener('touchstart', this.listener);
@@ -632,6 +682,47 @@ var FittsTestComponent = /** @class */ (function () {
     FittsTestComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.isMobile = this.appService.isMobile();
+        if (this.isMobile) {
+            // this.phoneCircleRadiusMeta.forEach(r => {
+            //     this.phoneDimensionsMeta.forEach(d => {
+            //         this.runConfigurations.push({
+            //             radiusCM: r,
+            //             distanceCM: d,
+            //             radiusPX: this.appService.getPixels(r),
+            //             distancePX: this.appService.getPixels(d)
+            //         });
+            //     });
+            // });
+            this.runConfigurations = this.phoneConfigs.map(function (x) {
+                return {
+                    radiusCM: x[0],
+                    distanceCM: x[1],
+                    radiusPX: _this.appService.getPixels(x[0]),
+                    distancePX: _this.appService.getPixels(x[1])
+                };
+            });
+        }
+        else {
+            // this.desktopCircleRadiusMeta.forEach(r => {
+            //     this.desktopDimensionsMeta.forEach(d => {
+            //         this.runConfigurations.push({
+            //             radiusCM: r,
+            //             distanceCM: d,
+            //             radiusPX: this.appService.getPixels(r),
+            //             distancePX: this.appService.getPixels(d)
+            //         });
+            //     });
+            // });
+            this.runConfigurations = this.desktopConfigs.map(function (x) {
+                return {
+                    radiusCM: x[0],
+                    distanceCM: x[1],
+                    radiusPX: _this.appService.getPixels(x[0]),
+                    distancePX: _this.appService.getPixels(x[1])
+                };
+            });
+        }
+        this.maxTests = this.runConfigurations.length;
         this.userInfo = this.appService.info;
         this.listener = function (e) {
             var now = performance.now();
@@ -690,19 +781,57 @@ var FittsTestComponent = /** @class */ (function () {
         }, 1000);
     };
     FittsTestComponent.prototype.processCurrentRadius = function () {
-        var width = this.dim;
-        var height = this.dim;
         this.pickRadius();
         this.svgElem = document.getElementById(this.svgAreaId);
+        var width = this.dim;
+        var height = this.dim;
         d3.select(this.svgElem).attr('width', width);
         d3.select(this.svgElem).attr('height', height);
         this.layoutCurrentRadiusBox();
         this.layourtCurrentCircles();
     };
     FittsTestComponent.prototype.pickRadius = function () {
-        var range = _.range(this.minRadius, this.maxRadius, 1);
-        this.currentRadius = _.sample(range);
+        if (this.isPracticeRun) {
+            this.dimIndex = this.defaultPraticeIndex;
+        }
+        else {
+            this.dimIndex = this.currentTestCount - 1;
+        }
+        var config = this.runConfigurations[this.dimIndex];
+        this.currentRadius = config.radiusPX;
+        this.dim = config.distancePX;
         this.baseRadius = (this.dim - (this.currentRadius * 2)) * 0.5;
+        var width = this.dim;
+        var height = this.dim;
+        this.pageCenter = new Coordinate(width / 2, height / 2);
+    };
+    FittsTestComponent.prototype.startTest = function () {
+        var _this = this;
+        this.isPracticeRun = false;
+        this.showActualTestModal = false;
+        this.showCountdownModal = true;
+        this.countdownTick = this.maxTicks;
+        this.processCurrentRadius();
+        this.checkDimensions();
+        var interval = setInterval(function () {
+            _this.countdownTick = _this.countdownTick - 1;
+            if (_this.countdownTick === 0) {
+                clearInterval(interval);
+                _this.showCountdownModal = false;
+                _this.showModal = false;
+                _this.setupClickTest();
+            }
+        }, 1000);
+    };
+    FittsTestComponent.prototype.checkDimensions = function () {
+        var works = true;
+        if (!this.isMobile) {
+            works = this.dim < window.innerHeight;
+        }
+        else {
+            works = this.dim < window.innerWidth;
+        }
+        return works;
     };
     FittsTestComponent.prototype.layoutCurrentRadiusBox = function () {
         if (this.fittRadiusCircle) {
@@ -789,8 +918,9 @@ var FittsTestComponent = /** @class */ (function () {
     FittsTestComponent.prototype.calculateCurrentAverage = function () {
         var average = new DataAverage();
         average.run = this.currentDataSet[0].run;
-        average.distance = this.currentDataSet[0].distance;
-        average.radius = this.currentDataSet[0].radius;
+        var config = this.runConfigurations[this.dimIndex];
+        average.radius = config.radiusCM * 2;
+        average.distance = config.distanceCM - 2 * (average.radius);
         var hitTicks = this.currentDataSet.filter(function (x) { return x.targetHit; });
         var missTicks = this.currentDataSet.filter(function (x) { return !x.targetHit; });
         var verticalHits = hitTicks.filter(function (t) { return t.direction === Direction.Vertical; });
@@ -919,8 +1049,6 @@ var FittsTestComponent = /** @class */ (function () {
             var userAverage = this.getSheetTransform([average]);
             this.appService.runAverages = this.overallAverages;
             this.appService.userAverages = average;
-            console.log(JSON.stringify(this.overallAverages));
-            console.log(JSON.stringify(average));
             this.appService.appendRowsToGoogleSheets(clickData);
             this.appService.appendRunAveragesRowsToGoogleSheets(runAverages);
             this.appService.appendUserAveragesRowsToGoogleSheets(userAverage);
@@ -937,25 +1065,6 @@ var FittsTestComponent = /** @class */ (function () {
             });
         }
         return temp;
-    };
-    FittsTestComponent.prototype.startTest = function () {
-        var _this = this;
-        this.isPracticeRun = false;
-        this.showActualTestModal = false;
-        this.showCountdownModal = true;
-        this.countdownTick = this.maxTicks;
-        this.pickRadius();
-        this.layoutCurrentRadiusBox();
-        this.layourtCurrentCircles();
-        var interval = setInterval(function () {
-            _this.countdownTick = _this.countdownTick - 1;
-            if (_this.countdownTick === 0) {
-                clearInterval(interval);
-                _this.showCountdownModal = false;
-                _this.showModal = false;
-                _this.setupClickTest();
-            }
-        }, 1000);
     };
     FittsTestComponent.prototype.checkForTestSession = function () {
         if (this.clickCounter > 28) {
@@ -993,16 +1102,21 @@ var FittsTestComponent = /** @class */ (function () {
         var ticks = now - this.currentPerformanceTick;
         var direction = Direction.None;
         direction = this.getHitDirection(lastCircleIndex, dir);
+        var dt = new Date();
+        var radius = 0, distance = 0;
+        var config = this.runConfigurations[this.dimIndex];
+        radius = config.radiusCM;
+        distance = config.distanceCM - (2 * radius);
         var item = Object.assign({}, this.userInfo, {
             direction: direction,
             sourceIndex: lastCircleIndex,
             ticks: ticks,
             targetHit: isCorrectClick,
             angle: dir === 1 ? Clock.clockwise : Clock.antiClockwise,
-            timestamp: (new Date()).getTime(),
+            timestamp: dt.toDateString() + " " + dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds() + ":" + dt.getMilliseconds(),
             run: "RUN #" + this.currentTestCount,
-            radius: this.currentRadius,
-            distance: this.currentDistance
+            radius: radius * 2,
+            distance: distance
         });
         this.currentDataSet.push(item);
         if (isCorrectClick) {
@@ -1080,12 +1194,11 @@ var FittsTestComponent = /** @class */ (function () {
     FittsTestComponent.prototype.getSquareDimension = function () {
         var dim = 0;
         if (window.innerHeight > window.innerWidth) {
-            dim = window.innerWidth - 60;
+            dim = window.innerWidth - 0;
         }
         else {
-            dim = window.innerHeight - 60;
+            dim = window.innerHeight - 120;
         }
-        dim = dim > 500 ? 500 : dim;
         return dim;
     };
     FittsTestComponent.prototype.getMinRadius = function () {
@@ -1276,23 +1389,7 @@ var RenderType_InfoComponent = i1.ɵcrt({ encapsulation: 0, styles: styles_InfoC
 exports.RenderType_InfoComponent = RenderType_InfoComponent;
 function View_InfoComponent_1(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 3, "option", [], null, null, null, null, null)), i1.ɵdid(1, 147456, null, 0, i2.NgSelectOption, [i1.ElementRef, i1.Renderer2, [2, i2.SelectControlValueAccessor]], { value: [0, "value"] }, null), i1.ɵdid(2, 147456, null, 0, i2.ɵangular_packages_forms_forms_s, [i1.ElementRef, i1.Renderer2, [8, null]], { value: [0, "value"] }, null), (_l()(), i1.ɵted(3, null, ["", ""]))], function (_ck, _v) { var currVal_0 = _v.context.$implicit.text; _ck(_v, 1, 0, currVal_0); var currVal_1 = _v.context.$implicit.text; _ck(_v, 2, 0, currVal_1); }, function (_ck, _v) { var currVal_2 = _v.context.$implicit.text; _ck(_v, 3, 0, currVal_2); }); }
 function View_InfoComponent_2(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 3, "option", [], null, null, null, null, null)), i1.ɵdid(1, 147456, null, 0, i2.NgSelectOption, [i1.ElementRef, i1.Renderer2, [2, i2.SelectControlValueAccessor]], { value: [0, "value"] }, null), i1.ɵdid(2, 147456, null, 0, i2.ɵangular_packages_forms_forms_s, [i1.ElementRef, i1.Renderer2, [8, null]], { value: [0, "value"] }, null), (_l()(), i1.ɵted(3, null, ["", ""]))], function (_ck, _v) { var currVal_0 = _v.context.$implicit; _ck(_v, 1, 0, currVal_0); var currVal_1 = _v.context.$implicit; _ck(_v, 2, 0, currVal_1); }, function (_ck, _v) { var currVal_2 = _v.context.$implicit; _ck(_v, 3, 0, currVal_2); }); }
-function View_InfoComponent_3(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 12, "div", [["class", "form-group"]], null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 1, "label", [["for", "deviceDetails"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Device Details"])), (_l()(), i1.ɵeld(3, 0, null, null, 7, "input", [["class", "form-control"], ["id", "deviceDetails"], ["name", "alias"], ["placeholder", "Enter Details"], ["required", ""], ["type", "email"]], [[1, "required", 0], [2, "ng-untouched", null], [2, "ng-touched", null], [2, "ng-pristine", null], [2, "ng-dirty", null], [2, "ng-valid", null], [2, "ng-invalid", null], [2, "ng-pending", null]], [[null, "ngModelChange"], [null, "input"], [null, "blur"], [null, "compositionstart"], [null, "compositionend"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("input" === en)) {
-        var pd_0 = (i1.ɵnov(_v, 4)._handleInput($event.target.value) !== false);
-        ad = (pd_0 && ad);
-    } if (("blur" === en)) {
-        var pd_1 = (i1.ɵnov(_v, 4).onTouched() !== false);
-        ad = (pd_1 && ad);
-    } if (("compositionstart" === en)) {
-        var pd_2 = (i1.ɵnov(_v, 4)._compositionStart() !== false);
-        ad = (pd_2 && ad);
-    } if (("compositionend" === en)) {
-        var pd_3 = (i1.ɵnov(_v, 4)._compositionEnd($event.target.value) !== false);
-        ad = (pd_3 && ad);
-    } if (("ngModelChange" === en)) {
-        var pd_4 = ((_co.info.deviceDetails = $event) !== false);
-        ad = (pd_4 && ad);
-    } return ad; }, null, null)), i1.ɵdid(4, 16384, null, 0, i2.DefaultValueAccessor, [i1.Renderer2, i1.ElementRef, [2, i2.COMPOSITION_BUFFER_MODE]], null, null), i1.ɵdid(5, 16384, null, 0, i2.RequiredValidator, [], { required: [0, "required"] }, null), i1.ɵprd(1024, null, i2.NG_VALIDATORS, function (p0_0) { return [p0_0]; }, [i2.RequiredValidator]), i1.ɵprd(1024, null, i2.NG_VALUE_ACCESSOR, function (p0_0) { return [p0_0]; }, [i2.DefaultValueAccessor]), i1.ɵdid(8, 671744, null, 0, i2.NgModel, [[2, i2.ControlContainer], [6, i2.NG_VALIDATORS], [8, null], [6, i2.NG_VALUE_ACCESSOR]], { name: [0, "name"], model: [1, "model"] }, { update: "ngModelChange" }), i1.ɵprd(2048, null, i2.NgControl, null, [i2.NgModel]), i1.ɵdid(10, 16384, null, 0, i2.NgControlStatus, [[4, i2.NgControl]], null, null), (_l()(), i1.ɵeld(11, 0, null, null, 1, "small", [["class", "form-text text-muted"], ["id", "emailHelp"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Add some more details for this device type"]))], function (_ck, _v) { var _co = _v.component; var currVal_8 = ""; _ck(_v, 5, 0, currVal_8); var currVal_9 = "alias"; var currVal_10 = _co.info.deviceDetails; _ck(_v, 8, 0, currVal_9, currVal_10); }, function (_ck, _v) { var currVal_0 = (i1.ɵnov(_v, 5).required ? "" : null); var currVal_1 = i1.ɵnov(_v, 10).ngClassUntouched; var currVal_2 = i1.ɵnov(_v, 10).ngClassTouched; var currVal_3 = i1.ɵnov(_v, 10).ngClassPristine; var currVal_4 = i1.ɵnov(_v, 10).ngClassDirty; var currVal_5 = i1.ɵnov(_v, 10).ngClassValid; var currVal_6 = i1.ɵnov(_v, 10).ngClassInvalid; var currVal_7 = i1.ɵnov(_v, 10).ngClassPending; _ck(_v, 3, 0, currVal_0, currVal_1, currVal_2, currVal_3, currVal_4, currVal_5, currVal_6, currVal_7); }); }
-function View_InfoComponent_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 85, "div", [["class", "info-page"]], null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 1, "h1", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Please fill in the following details"])), (_l()(), i1.ɵeld(3, 0, null, null, 80, "form", [["novalidate", ""]], [[2, "ng-untouched", null], [2, "ng-touched", null], [2, "ng-pristine", null], [2, "ng-dirty", null], [2, "ng-valid", null], [2, "ng-invalid", null], [2, "ng-pending", null]], [[null, "submit"], [null, "reset"]], function (_v, en, $event) { var ad = true; if (("submit" === en)) {
+function View_InfoComponent_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 84, "div", [["class", "info-page"]], null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 1, "h1", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Please fill in the following details"])), (_l()(), i1.ɵeld(3, 0, null, null, 79, "form", [["novalidate", ""]], [[2, "ng-untouched", null], [2, "ng-touched", null], [2, "ng-pristine", null], [2, "ng-dirty", null], [2, "ng-valid", null], [2, "ng-invalid", null], [2, "ng-pending", null]], [[null, "submit"], [null, "reset"]], function (_v, en, $event) { var ad = true; if (("submit" === en)) {
         var pd_0 = (i1.ɵnov(_v, 5).onSubmit($event) !== false);
         ad = (pd_0 && ad);
     } if (("reset" === en)) {
@@ -1346,58 +1443,49 @@ function View_InfoComponent_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, 
     } if (("ngModelChange" === en)) {
         var pd_2 = ((_co.info.device = $event) !== false);
         ad = (pd_2 && ad);
-    } return ad; }, null, null)), i1.ɵdid(47, 16384, null, 0, i2.SelectControlValueAccessor, [i1.Renderer2, i1.ElementRef], null, null), i1.ɵdid(48, 16384, null, 0, i2.RequiredValidator, [], { required: [0, "required"] }, null), i1.ɵprd(1024, null, i2.NG_VALIDATORS, function (p0_0) { return [p0_0]; }, [i2.RequiredValidator]), i1.ɵprd(1024, null, i2.NG_VALUE_ACCESSOR, function (p0_0) { return [p0_0]; }, [i2.SelectControlValueAccessor]), i1.ɵdid(51, 671744, null, 0, i2.NgModel, [[2, i2.ControlContainer], [6, i2.NG_VALIDATORS], [8, null], [6, i2.NG_VALUE_ACCESSOR]], { name: [0, "name"], model: [1, "model"] }, { update: "ngModelChange" }), i1.ɵprd(2048, null, i2.NgControl, null, [i2.NgModel]), i1.ɵdid(53, 16384, null, 0, i2.NgControlStatus, [[4, i2.NgControl]], null, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_InfoComponent_2)), i1.ɵdid(55, 278528, null, 0, i3.NgForOf, [i1.ViewContainerRef, i1.TemplateRef, i1.IterableDiffers], { ngForOf: [0, "ngForOf"] }, null), (_l()(), i1.ɵeld(56, 0, null, null, 1, "small", [["class", "form-text text-muted"], ["id", "emailHelp"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, [" (i.e. touchpad, mouse...):"])), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_InfoComponent_3)), i1.ɵdid(59, 16384, null, 0, i3.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵeld(60, 0, null, null, 11, "div", [["class", "form-group"]], null, null, null, null, null)), (_l()(), i1.ɵeld(61, 0, null, null, 1, "label", [["for", "deviceWidth"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Device Width (in cms)"])), (_l()(), i1.ɵeld(63, 0, null, null, 8, "input", [["class", "form-control"], ["id", "deviceWidth"], ["name", "deviceWidth"], ["required", ""], ["type", "number"]], [[1, "required", 0], [2, "ng-untouched", null], [2, "ng-touched", null], [2, "ng-pristine", null], [2, "ng-dirty", null], [2, "ng-valid", null], [2, "ng-invalid", null], [2, "ng-pending", null]], [[null, "ngModelChange"], [null, "input"], [null, "blur"], [null, "compositionstart"], [null, "compositionend"], [null, "change"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("input" === en)) {
-        var pd_0 = (i1.ɵnov(_v, 64)._handleInput($event.target.value) !== false);
+    } return ad; }, null, null)), i1.ɵdid(47, 16384, null, 0, i2.SelectControlValueAccessor, [i1.Renderer2, i1.ElementRef], null, null), i1.ɵdid(48, 16384, null, 0, i2.RequiredValidator, [], { required: [0, "required"] }, null), i1.ɵprd(1024, null, i2.NG_VALIDATORS, function (p0_0) { return [p0_0]; }, [i2.RequiredValidator]), i1.ɵprd(1024, null, i2.NG_VALUE_ACCESSOR, function (p0_0) { return [p0_0]; }, [i2.SelectControlValueAccessor]), i1.ɵdid(51, 671744, null, 0, i2.NgModel, [[2, i2.ControlContainer], [6, i2.NG_VALIDATORS], [8, null], [6, i2.NG_VALUE_ACCESSOR]], { name: [0, "name"], model: [1, "model"] }, { update: "ngModelChange" }), i1.ɵprd(2048, null, i2.NgControl, null, [i2.NgModel]), i1.ɵdid(53, 16384, null, 0, i2.NgControlStatus, [[4, i2.NgControl]], null, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_InfoComponent_2)), i1.ɵdid(55, 278528, null, 0, i3.NgForOf, [i1.ViewContainerRef, i1.TemplateRef, i1.IterableDiffers], { ngForOf: [0, "ngForOf"] }, null), (_l()(), i1.ɵeld(56, 0, null, null, 1, "small", [["class", "form-text text-muted"], ["id", "emailHelp"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, [" (i.e. touchpad, mouse...):"])), (_l()(), i1.ɵeld(58, 0, null, null, 12, "div", [["class", "form-group"]], null, null, null, null, null)), (_l()(), i1.ɵeld(59, 0, null, null, 1, "label", [["for", "deviceDetails"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Device Details"])), (_l()(), i1.ɵeld(61, 0, null, null, 7, "input", [["class", "form-control"], ["id", "deviceDetails"], ["name", "alias"], ["placeholder", "Enter Details"], ["required", ""], ["type", "email"]], [[1, "required", 0], [2, "ng-untouched", null], [2, "ng-touched", null], [2, "ng-pristine", null], [2, "ng-dirty", null], [2, "ng-valid", null], [2, "ng-invalid", null], [2, "ng-pending", null]], [[null, "ngModelChange"], [null, "input"], [null, "blur"], [null, "compositionstart"], [null, "compositionend"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("input" === en)) {
+        var pd_0 = (i1.ɵnov(_v, 62)._handleInput($event.target.value) !== false);
         ad = (pd_0 && ad);
     } if (("blur" === en)) {
-        var pd_1 = (i1.ɵnov(_v, 64).onTouched() !== false);
+        var pd_1 = (i1.ɵnov(_v, 62).onTouched() !== false);
         ad = (pd_1 && ad);
     } if (("compositionstart" === en)) {
-        var pd_2 = (i1.ɵnov(_v, 64)._compositionStart() !== false);
+        var pd_2 = (i1.ɵnov(_v, 62)._compositionStart() !== false);
         ad = (pd_2 && ad);
     } if (("compositionend" === en)) {
-        var pd_3 = (i1.ɵnov(_v, 64)._compositionEnd($event.target.value) !== false);
+        var pd_3 = (i1.ɵnov(_v, 62)._compositionEnd($event.target.value) !== false);
         ad = (pd_3 && ad);
-    } if (("change" === en)) {
-        var pd_4 = (i1.ɵnov(_v, 65).onChange($event.target.value) !== false);
-        ad = (pd_4 && ad);
-    } if (("input" === en)) {
-        var pd_5 = (i1.ɵnov(_v, 65).onChange($event.target.value) !== false);
-        ad = (pd_5 && ad);
-    } if (("blur" === en)) {
-        var pd_6 = (i1.ɵnov(_v, 65).onTouched() !== false);
-        ad = (pd_6 && ad);
     } if (("ngModelChange" === en)) {
-        var pd_7 = ((_co.info.deviceWidth = $event) !== false);
-        ad = (pd_7 && ad);
-    } return ad; }, null, null)), i1.ɵdid(64, 16384, null, 0, i2.DefaultValueAccessor, [i1.Renderer2, i1.ElementRef, [2, i2.COMPOSITION_BUFFER_MODE]], null, null), i1.ɵdid(65, 16384, null, 0, i2.ɵangular_packages_forms_forms_be, [i1.Renderer2, i1.ElementRef], null, null), i1.ɵdid(66, 16384, null, 0, i2.RequiredValidator, [], { required: [0, "required"] }, null), i1.ɵprd(1024, null, i2.NG_VALIDATORS, function (p0_0) { return [p0_0]; }, [i2.RequiredValidator]), i1.ɵprd(1024, null, i2.NG_VALUE_ACCESSOR, function (p0_0, p1_0) { return [p0_0, p1_0]; }, [i2.DefaultValueAccessor, i2.ɵangular_packages_forms_forms_be]), i1.ɵdid(69, 671744, null, 0, i2.NgModel, [[2, i2.ControlContainer], [6, i2.NG_VALIDATORS], [8, null], [6, i2.NG_VALUE_ACCESSOR]], { name: [0, "name"], model: [1, "model"] }, { update: "ngModelChange" }), i1.ɵprd(2048, null, i2.NgControl, null, [i2.NgModel]), i1.ɵdid(71, 16384, null, 0, i2.NgControlStatus, [[4, i2.NgControl]], null, null), (_l()(), i1.ɵeld(72, 0, null, null, 11, "div", [["class", "form-group"]], null, null, null, null, null)), (_l()(), i1.ɵeld(73, 0, null, null, 1, "label", [["for", "deviceHeight"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Device Height (in cms)"])), (_l()(), i1.ɵeld(75, 0, null, null, 8, "input", [["class", "form-control"], ["id", "deviceHeight"], ["name", "deviceHeight"], ["required", ""], ["type", "number"]], [[1, "required", 0], [2, "ng-untouched", null], [2, "ng-touched", null], [2, "ng-pristine", null], [2, "ng-dirty", null], [2, "ng-valid", null], [2, "ng-invalid", null], [2, "ng-pending", null]], [[null, "ngModelChange"], [null, "input"], [null, "blur"], [null, "compositionstart"], [null, "compositionend"], [null, "change"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("input" === en)) {
-        var pd_0 = (i1.ɵnov(_v, 76)._handleInput($event.target.value) !== false);
+        var pd_4 = ((_co.info.deviceDetails = $event) !== false);
+        ad = (pd_4 && ad);
+    } return ad; }, null, null)), i1.ɵdid(62, 16384, null, 0, i2.DefaultValueAccessor, [i1.Renderer2, i1.ElementRef, [2, i2.COMPOSITION_BUFFER_MODE]], null, null), i1.ɵdid(63, 16384, null, 0, i2.RequiredValidator, [], { required: [0, "required"] }, null), i1.ɵprd(1024, null, i2.NG_VALIDATORS, function (p0_0) { return [p0_0]; }, [i2.RequiredValidator]), i1.ɵprd(1024, null, i2.NG_VALUE_ACCESSOR, function (p0_0) { return [p0_0]; }, [i2.DefaultValueAccessor]), i1.ɵdid(66, 671744, null, 0, i2.NgModel, [[2, i2.ControlContainer], [6, i2.NG_VALIDATORS], [8, null], [6, i2.NG_VALUE_ACCESSOR]], { name: [0, "name"], model: [1, "model"] }, { update: "ngModelChange" }), i1.ɵprd(2048, null, i2.NgControl, null, [i2.NgModel]), i1.ɵdid(68, 16384, null, 0, i2.NgControlStatus, [[4, i2.NgControl]], null, null), (_l()(), i1.ɵeld(69, 0, null, null, 1, "small", [["class", "form-text text-muted"], ["id", "emailHelp"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Add some more details for this device type like make, model, size etc."])), (_l()(), i1.ɵeld(71, 0, null, null, 11, "div", [["class", "form-group"]], null, null, null, null, null)), (_l()(), i1.ɵeld(72, 0, null, null, 1, "label", [["for", "deviceDiagonal"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Screen Diagonal (in inches)"])), (_l()(), i1.ɵeld(74, 0, null, null, 8, "input", [["class", "form-control"], ["id", "deviceDiagonal"], ["name", "deviceDiagonal"], ["required", ""], ["type", "number"]], [[1, "required", 0], [2, "ng-untouched", null], [2, "ng-touched", null], [2, "ng-pristine", null], [2, "ng-dirty", null], [2, "ng-valid", null], [2, "ng-invalid", null], [2, "ng-pending", null]], [[null, "ngModelChange"], [null, "input"], [null, "blur"], [null, "compositionstart"], [null, "compositionend"], [null, "change"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("input" === en)) {
+        var pd_0 = (i1.ɵnov(_v, 75)._handleInput($event.target.value) !== false);
         ad = (pd_0 && ad);
     } if (("blur" === en)) {
-        var pd_1 = (i1.ɵnov(_v, 76).onTouched() !== false);
+        var pd_1 = (i1.ɵnov(_v, 75).onTouched() !== false);
         ad = (pd_1 && ad);
     } if (("compositionstart" === en)) {
-        var pd_2 = (i1.ɵnov(_v, 76)._compositionStart() !== false);
+        var pd_2 = (i1.ɵnov(_v, 75)._compositionStart() !== false);
         ad = (pd_2 && ad);
     } if (("compositionend" === en)) {
-        var pd_3 = (i1.ɵnov(_v, 76)._compositionEnd($event.target.value) !== false);
+        var pd_3 = (i1.ɵnov(_v, 75)._compositionEnd($event.target.value) !== false);
         ad = (pd_3 && ad);
     } if (("change" === en)) {
-        var pd_4 = (i1.ɵnov(_v, 77).onChange($event.target.value) !== false);
+        var pd_4 = (i1.ɵnov(_v, 76).onChange($event.target.value) !== false);
         ad = (pd_4 && ad);
     } if (("input" === en)) {
-        var pd_5 = (i1.ɵnov(_v, 77).onChange($event.target.value) !== false);
+        var pd_5 = (i1.ɵnov(_v, 76).onChange($event.target.value) !== false);
         ad = (pd_5 && ad);
     } if (("blur" === en)) {
-        var pd_6 = (i1.ɵnov(_v, 77).onTouched() !== false);
+        var pd_6 = (i1.ɵnov(_v, 76).onTouched() !== false);
         ad = (pd_6 && ad);
     } if (("ngModelChange" === en)) {
-        var pd_7 = ((_co.info.deviceHeight = $event) !== false);
+        var pd_7 = ((_co.info.deviceDiagonal = $event) !== false);
         ad = (pd_7 && ad);
-    } return ad; }, null, null)), i1.ɵdid(76, 16384, null, 0, i2.DefaultValueAccessor, [i1.Renderer2, i1.ElementRef, [2, i2.COMPOSITION_BUFFER_MODE]], null, null), i1.ɵdid(77, 16384, null, 0, i2.ɵangular_packages_forms_forms_be, [i1.Renderer2, i1.ElementRef], null, null), i1.ɵdid(78, 16384, null, 0, i2.RequiredValidator, [], { required: [0, "required"] }, null), i1.ɵprd(1024, null, i2.NG_VALIDATORS, function (p0_0) { return [p0_0]; }, [i2.RequiredValidator]), i1.ɵprd(1024, null, i2.NG_VALUE_ACCESSOR, function (p0_0, p1_0) { return [p0_0, p1_0]; }, [i2.DefaultValueAccessor, i2.ɵangular_packages_forms_forms_be]), i1.ɵdid(81, 671744, null, 0, i2.NgModel, [[2, i2.ControlContainer], [6, i2.NG_VALIDATORS], [8, null], [6, i2.NG_VALUE_ACCESSOR]], { name: [0, "name"], model: [1, "model"] }, { update: "ngModelChange" }), i1.ɵprd(2048, null, i2.NgControl, null, [i2.NgModel]), i1.ɵdid(83, 16384, null, 0, i2.NgControlStatus, [[4, i2.NgControl]], null, null), (_l()(), i1.ɵeld(84, 0, null, null, 1, "button", [["class", "btn-main"]], [[8, "disabled", 0]], [[null, "click"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("click" === en)) {
+    } return ad; }, null, null)), i1.ɵdid(75, 16384, null, 0, i2.DefaultValueAccessor, [i1.Renderer2, i1.ElementRef, [2, i2.COMPOSITION_BUFFER_MODE]], null, null), i1.ɵdid(76, 16384, null, 0, i2.ɵangular_packages_forms_forms_be, [i1.Renderer2, i1.ElementRef], null, null), i1.ɵdid(77, 16384, null, 0, i2.RequiredValidator, [], { required: [0, "required"] }, null), i1.ɵprd(1024, null, i2.NG_VALIDATORS, function (p0_0) { return [p0_0]; }, [i2.RequiredValidator]), i1.ɵprd(1024, null, i2.NG_VALUE_ACCESSOR, function (p0_0, p1_0) { return [p0_0, p1_0]; }, [i2.DefaultValueAccessor, i2.ɵangular_packages_forms_forms_be]), i1.ɵdid(80, 671744, null, 0, i2.NgModel, [[2, i2.ControlContainer], [6, i2.NG_VALIDATORS], [8, null], [6, i2.NG_VALUE_ACCESSOR]], { name: [0, "name"], model: [1, "model"] }, { update: "ngModelChange" }), i1.ɵprd(2048, null, i2.NgControl, null, [i2.NgModel]), i1.ɵdid(82, 16384, null, 0, i2.NgControlStatus, [[4, i2.NgControl]], null, null), (_l()(), i1.ɵeld(83, 0, null, null, 1, "button", [["class", "btn-main"]], [[8, "disabled", 0]], [[null, "click"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("click" === en)) {
         var pd_0 = (_co.next() !== false);
         ad = (pd_0 && ad);
-    } return ad; }, null, null)), (_l()(), i1.ɵted(-1, null, ["Next"]))], function (_ck, _v) { var _co = _v.component; var currVal_15 = ""; _ck(_v, 13, 0, currVal_15); var currVal_16 = "name"; var currVal_17 = _co.info.name; _ck(_v, 16, 0, currVal_16, currVal_17); var currVal_26 = ""; _ck(_v, 24, 0, currVal_26); var currVal_27 = "alias"; var currVal_28 = _co.info.alias; _ck(_v, 27, 0, currVal_27, currVal_28); var currVal_37 = ""; _ck(_v, 35, 0, currVal_37); var currVal_38 = "type"; var currVal_39 = _co.info.type; _ck(_v, 38, 0, currVal_38, currVal_39); var currVal_40 = _co.participantTypes; _ck(_v, 42, 0, currVal_40); var currVal_49 = ""; _ck(_v, 48, 0, currVal_49); var currVal_50 = "device"; var currVal_51 = _co.info.device; _ck(_v, 51, 0, currVal_50, currVal_51); var currVal_52 = _co.deviceTypes; _ck(_v, 55, 0, currVal_52); var currVal_53 = (_co.info.device === "other"); _ck(_v, 59, 0, currVal_53); var currVal_62 = ""; _ck(_v, 66, 0, currVal_62); var currVal_63 = "deviceWidth"; var currVal_64 = _co.info.deviceWidth; _ck(_v, 69, 0, currVal_63, currVal_64); var currVal_73 = ""; _ck(_v, 78, 0, currVal_73); var currVal_74 = "deviceHeight"; var currVal_75 = _co.info.deviceHeight; _ck(_v, 81, 0, currVal_74, currVal_75); }, function (_ck, _v) { var currVal_0 = i1.ɵnov(_v, 7).ngClassUntouched; var currVal_1 = i1.ɵnov(_v, 7).ngClassTouched; var currVal_2 = i1.ɵnov(_v, 7).ngClassPristine; var currVal_3 = i1.ɵnov(_v, 7).ngClassDirty; var currVal_4 = i1.ɵnov(_v, 7).ngClassValid; var currVal_5 = i1.ɵnov(_v, 7).ngClassInvalid; var currVal_6 = i1.ɵnov(_v, 7).ngClassPending; _ck(_v, 3, 0, currVal_0, currVal_1, currVal_2, currVal_3, currVal_4, currVal_5, currVal_6); var currVal_7 = (i1.ɵnov(_v, 13).required ? "" : null); var currVal_8 = i1.ɵnov(_v, 18).ngClassUntouched; var currVal_9 = i1.ɵnov(_v, 18).ngClassTouched; var currVal_10 = i1.ɵnov(_v, 18).ngClassPristine; var currVal_11 = i1.ɵnov(_v, 18).ngClassDirty; var currVal_12 = i1.ɵnov(_v, 18).ngClassValid; var currVal_13 = i1.ɵnov(_v, 18).ngClassInvalid; var currVal_14 = i1.ɵnov(_v, 18).ngClassPending; _ck(_v, 11, 0, currVal_7, currVal_8, currVal_9, currVal_10, currVal_11, currVal_12, currVal_13, currVal_14); var currVal_18 = (i1.ɵnov(_v, 24).required ? "" : null); var currVal_19 = i1.ɵnov(_v, 29).ngClassUntouched; var currVal_20 = i1.ɵnov(_v, 29).ngClassTouched; var currVal_21 = i1.ɵnov(_v, 29).ngClassPristine; var currVal_22 = i1.ɵnov(_v, 29).ngClassDirty; var currVal_23 = i1.ɵnov(_v, 29).ngClassValid; var currVal_24 = i1.ɵnov(_v, 29).ngClassInvalid; var currVal_25 = i1.ɵnov(_v, 29).ngClassPending; _ck(_v, 22, 0, currVal_18, currVal_19, currVal_20, currVal_21, currVal_22, currVal_23, currVal_24, currVal_25); var currVal_29 = (i1.ɵnov(_v, 35).required ? "" : null); var currVal_30 = i1.ɵnov(_v, 40).ngClassUntouched; var currVal_31 = i1.ɵnov(_v, 40).ngClassTouched; var currVal_32 = i1.ɵnov(_v, 40).ngClassPristine; var currVal_33 = i1.ɵnov(_v, 40).ngClassDirty; var currVal_34 = i1.ɵnov(_v, 40).ngClassValid; var currVal_35 = i1.ɵnov(_v, 40).ngClassInvalid; var currVal_36 = i1.ɵnov(_v, 40).ngClassPending; _ck(_v, 33, 0, currVal_29, currVal_30, currVal_31, currVal_32, currVal_33, currVal_34, currVal_35, currVal_36); var currVal_41 = (i1.ɵnov(_v, 48).required ? "" : null); var currVal_42 = i1.ɵnov(_v, 53).ngClassUntouched; var currVal_43 = i1.ɵnov(_v, 53).ngClassTouched; var currVal_44 = i1.ɵnov(_v, 53).ngClassPristine; var currVal_45 = i1.ɵnov(_v, 53).ngClassDirty; var currVal_46 = i1.ɵnov(_v, 53).ngClassValid; var currVal_47 = i1.ɵnov(_v, 53).ngClassInvalid; var currVal_48 = i1.ɵnov(_v, 53).ngClassPending; _ck(_v, 46, 0, currVal_41, currVal_42, currVal_43, currVal_44, currVal_45, currVal_46, currVal_47, currVal_48); var currVal_54 = (i1.ɵnov(_v, 66).required ? "" : null); var currVal_55 = i1.ɵnov(_v, 71).ngClassUntouched; var currVal_56 = i1.ɵnov(_v, 71).ngClassTouched; var currVal_57 = i1.ɵnov(_v, 71).ngClassPristine; var currVal_58 = i1.ɵnov(_v, 71).ngClassDirty; var currVal_59 = i1.ɵnov(_v, 71).ngClassValid; var currVal_60 = i1.ɵnov(_v, 71).ngClassInvalid; var currVal_61 = i1.ɵnov(_v, 71).ngClassPending; _ck(_v, 63, 0, currVal_54, currVal_55, currVal_56, currVal_57, currVal_58, currVal_59, currVal_60, currVal_61); var currVal_65 = (i1.ɵnov(_v, 78).required ? "" : null); var currVal_66 = i1.ɵnov(_v, 83).ngClassUntouched; var currVal_67 = i1.ɵnov(_v, 83).ngClassTouched; var currVal_68 = i1.ɵnov(_v, 83).ngClassPristine; var currVal_69 = i1.ɵnov(_v, 83).ngClassDirty; var currVal_70 = i1.ɵnov(_v, 83).ngClassValid; var currVal_71 = i1.ɵnov(_v, 83).ngClassInvalid; var currVal_72 = i1.ɵnov(_v, 83).ngClassPending; _ck(_v, 75, 0, currVal_65, currVal_66, currVal_67, currVal_68, currVal_69, currVal_70, currVal_71, currVal_72); var currVal_76 = !i1.ɵnov(_v, 5).valid; _ck(_v, 84, 0, currVal_76); }); }
+    } return ad; }, null, null)), (_l()(), i1.ɵted(-1, null, ["Next"]))], function (_ck, _v) { var _co = _v.component; var currVal_15 = ""; _ck(_v, 13, 0, currVal_15); var currVal_16 = "name"; var currVal_17 = _co.info.name; _ck(_v, 16, 0, currVal_16, currVal_17); var currVal_26 = ""; _ck(_v, 24, 0, currVal_26); var currVal_27 = "alias"; var currVal_28 = _co.info.alias; _ck(_v, 27, 0, currVal_27, currVal_28); var currVal_37 = ""; _ck(_v, 35, 0, currVal_37); var currVal_38 = "type"; var currVal_39 = _co.info.type; _ck(_v, 38, 0, currVal_38, currVal_39); var currVal_40 = _co.participantTypes; _ck(_v, 42, 0, currVal_40); var currVal_49 = ""; _ck(_v, 48, 0, currVal_49); var currVal_50 = "device"; var currVal_51 = _co.info.device; _ck(_v, 51, 0, currVal_50, currVal_51); var currVal_52 = _co.deviceTypes; _ck(_v, 55, 0, currVal_52); var currVal_61 = ""; _ck(_v, 63, 0, currVal_61); var currVal_62 = "alias"; var currVal_63 = _co.info.deviceDetails; _ck(_v, 66, 0, currVal_62, currVal_63); var currVal_72 = ""; _ck(_v, 77, 0, currVal_72); var currVal_73 = "deviceDiagonal"; var currVal_74 = _co.info.deviceDiagonal; _ck(_v, 80, 0, currVal_73, currVal_74); }, function (_ck, _v) { var currVal_0 = i1.ɵnov(_v, 7).ngClassUntouched; var currVal_1 = i1.ɵnov(_v, 7).ngClassTouched; var currVal_2 = i1.ɵnov(_v, 7).ngClassPristine; var currVal_3 = i1.ɵnov(_v, 7).ngClassDirty; var currVal_4 = i1.ɵnov(_v, 7).ngClassValid; var currVal_5 = i1.ɵnov(_v, 7).ngClassInvalid; var currVal_6 = i1.ɵnov(_v, 7).ngClassPending; _ck(_v, 3, 0, currVal_0, currVal_1, currVal_2, currVal_3, currVal_4, currVal_5, currVal_6); var currVal_7 = (i1.ɵnov(_v, 13).required ? "" : null); var currVal_8 = i1.ɵnov(_v, 18).ngClassUntouched; var currVal_9 = i1.ɵnov(_v, 18).ngClassTouched; var currVal_10 = i1.ɵnov(_v, 18).ngClassPristine; var currVal_11 = i1.ɵnov(_v, 18).ngClassDirty; var currVal_12 = i1.ɵnov(_v, 18).ngClassValid; var currVal_13 = i1.ɵnov(_v, 18).ngClassInvalid; var currVal_14 = i1.ɵnov(_v, 18).ngClassPending; _ck(_v, 11, 0, currVal_7, currVal_8, currVal_9, currVal_10, currVal_11, currVal_12, currVal_13, currVal_14); var currVal_18 = (i1.ɵnov(_v, 24).required ? "" : null); var currVal_19 = i1.ɵnov(_v, 29).ngClassUntouched; var currVal_20 = i1.ɵnov(_v, 29).ngClassTouched; var currVal_21 = i1.ɵnov(_v, 29).ngClassPristine; var currVal_22 = i1.ɵnov(_v, 29).ngClassDirty; var currVal_23 = i1.ɵnov(_v, 29).ngClassValid; var currVal_24 = i1.ɵnov(_v, 29).ngClassInvalid; var currVal_25 = i1.ɵnov(_v, 29).ngClassPending; _ck(_v, 22, 0, currVal_18, currVal_19, currVal_20, currVal_21, currVal_22, currVal_23, currVal_24, currVal_25); var currVal_29 = (i1.ɵnov(_v, 35).required ? "" : null); var currVal_30 = i1.ɵnov(_v, 40).ngClassUntouched; var currVal_31 = i1.ɵnov(_v, 40).ngClassTouched; var currVal_32 = i1.ɵnov(_v, 40).ngClassPristine; var currVal_33 = i1.ɵnov(_v, 40).ngClassDirty; var currVal_34 = i1.ɵnov(_v, 40).ngClassValid; var currVal_35 = i1.ɵnov(_v, 40).ngClassInvalid; var currVal_36 = i1.ɵnov(_v, 40).ngClassPending; _ck(_v, 33, 0, currVal_29, currVal_30, currVal_31, currVal_32, currVal_33, currVal_34, currVal_35, currVal_36); var currVal_41 = (i1.ɵnov(_v, 48).required ? "" : null); var currVal_42 = i1.ɵnov(_v, 53).ngClassUntouched; var currVal_43 = i1.ɵnov(_v, 53).ngClassTouched; var currVal_44 = i1.ɵnov(_v, 53).ngClassPristine; var currVal_45 = i1.ɵnov(_v, 53).ngClassDirty; var currVal_46 = i1.ɵnov(_v, 53).ngClassValid; var currVal_47 = i1.ɵnov(_v, 53).ngClassInvalid; var currVal_48 = i1.ɵnov(_v, 53).ngClassPending; _ck(_v, 46, 0, currVal_41, currVal_42, currVal_43, currVal_44, currVal_45, currVal_46, currVal_47, currVal_48); var currVal_53 = (i1.ɵnov(_v, 63).required ? "" : null); var currVal_54 = i1.ɵnov(_v, 68).ngClassUntouched; var currVal_55 = i1.ɵnov(_v, 68).ngClassTouched; var currVal_56 = i1.ɵnov(_v, 68).ngClassPristine; var currVal_57 = i1.ɵnov(_v, 68).ngClassDirty; var currVal_58 = i1.ɵnov(_v, 68).ngClassValid; var currVal_59 = i1.ɵnov(_v, 68).ngClassInvalid; var currVal_60 = i1.ɵnov(_v, 68).ngClassPending; _ck(_v, 61, 0, currVal_53, currVal_54, currVal_55, currVal_56, currVal_57, currVal_58, currVal_59, currVal_60); var currVal_64 = (i1.ɵnov(_v, 77).required ? "" : null); var currVal_65 = i1.ɵnov(_v, 82).ngClassUntouched; var currVal_66 = i1.ɵnov(_v, 82).ngClassTouched; var currVal_67 = i1.ɵnov(_v, 82).ngClassPristine; var currVal_68 = i1.ɵnov(_v, 82).ngClassDirty; var currVal_69 = i1.ɵnov(_v, 82).ngClassValid; var currVal_70 = i1.ɵnov(_v, 82).ngClassInvalid; var currVal_71 = i1.ɵnov(_v, 82).ngClassPending; _ck(_v, 74, 0, currVal_64, currVal_65, currVal_66, currVal_67, currVal_68, currVal_69, currVal_70, currVal_71); var currVal_75 = !i1.ɵnov(_v, 5).valid; _ck(_v, 83, 0, currVal_75); }); }
 exports.View_InfoComponent_0 = View_InfoComponent_0;
 function View_InfoComponent_Host_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "app-info", [], null, null, null, View_InfoComponent_0, RenderType_InfoComponent)), i1.ɵdid(1, 114688, null, 0, i4.InfoComponent, [i5.AppService, i6.Router], null, null)], function (_ck, _v) { _ck(_v, 1, 0); }, null); }
 exports.View_InfoComponent_Host_0 = View_InfoComponent_Host_0;
@@ -1466,14 +1554,13 @@ var InfoComponent = /** @class */ (function () {
             type: '',
             device: '',
             deviceDetails: '',
-            deviceWidth: '',
-            deviceHeight: ''
+            deviceDiagonal: ''
         };
     }
     InfoComponent.prototype.ngOnInit = function () {
-        console.log(this.appService.isMobile());
     };
     InfoComponent.prototype.next = function () {
+        var dpi = this.appService.calculateDPI(this.info.deviceDiagonal);
         this.appService.info = this.info;
         this.router.navigate(['/test']);
     };

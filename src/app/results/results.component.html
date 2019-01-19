@@ -1,0 +1,30 @@
+<div class="results-area">
+    <h1>Results</h1>
+    <div class="result">
+        <label class="title">User Information</label>
+        <div class="pair-wrapper">
+            <div class="key-value-pair" *ngFor="let pair of userInfoPairs">
+                <label class="key">{{pair.label}}</label>
+                <label class="value">{{pair.value}}</label>
+            </div>
+        </div>
+    </div>
+    <div class="result">
+        <label class="title">Average across all Runs</label>
+        <div class="pair-wrapper">
+            <div class="key-value-pair" *ngFor="let pair of userAveragePairs">
+                <label class="key">{{pair.label}}</label>
+                <label class="value">{{pair.value}}</label>
+            </div>
+        </div>
+    </div>
+    <div class="result">
+        <label class="title">Data for each Run</label>
+        <div class="pair-wrapper runPairWrapper" *ngFor="let run of runInfoPairs; let i = index">
+            <div class="key-value-pair" *ngFor="let pair of run">
+                <label class="key">{{pair.label}}</label>
+                <label class="value">{{pair.value}}</label>
+            </div>
+        </div>
+    </div>
+</div>

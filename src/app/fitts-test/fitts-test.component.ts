@@ -4,6 +4,9 @@ import * as _ from 'lodash';
 import { AppService } from '../app.service';
 declare var DocumentTouch: any;
 
+const WRITE_RUNS_TO_STORAGE = false;
+const WRITE_TO_STORAGE = true;
+
 export class Coordinate {
     x = 0;
     y = 0;
@@ -43,12 +46,12 @@ export class DataAverage {
     otherMisses;
     hitPercentage;
     missPercentage;
-    verticalHitPecentage;
-    verticalMissPecentage;
-    horizontalHitPecentage;
-    horizontalMissPecentage;
-    otherDirectionHitPecentage;
-    otherDirectionMissPecentage;
+    verticalHitPercentage;
+    verticalMissPercentage;
+    horizontalHitPercentage;
+    horizontalMissPercentage;
+    otherDirectionHitPercentage;
+    otherDirectionMissPercentage;
 }
 export class UserAverage {
     averageTicks: number;
@@ -65,12 +68,12 @@ export class UserAverage {
     otherMisses;
     hitPercentage;
     missPercentage;
-    verticalHitPecentage;
-    verticalMissPecentage;
-    horizontalHitPecentage;
-    horizontalMissPecentage;
-    otherDirectionHitPecentage;
-    otherDirectionMissPecentage;
+    verticalHitPercentage;
+    verticalMissPercentage;
+    horizontalHitPercentage;
+    horizontalMissPercentage;
+    otherDirectionHitPercentage;
+    otherDirectionMissPercentage;
 }
 
 export enum Direction {
@@ -139,10 +142,6 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
     countdownTick = this.maxTicks;
     listener = null;
     userInfo = null;
-    // desktopCircleRadiusMeta = [ 0.25, 0.50, 1, 1.25 ];
-    // phoneCircleRadiusMeta = [0.125, 0.25, 0.40 , 0.50];
-    // desktopDimensionsMeta = [4, 6, 8, 10];
-    // phoneDimensionsMeta = [2, 3, 4, 5];
     desktopCircleRadiusMeta = [0.25, 1];
     desktopDimensionsMeta = [8, 10];
     phoneCircleRadiusMeta = [0.125, 0.33];
@@ -153,10 +152,22 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
     phoneCircleRadiusOptions = this.phoneCircleRadiusMeta.map(r => this.appService.getPixels(r));
     desktopDimensionsOptions = this.desktopDimensionsMeta.map(r => this.appService.getPixels(r));
     phoneDimensionsOptions = this.phoneDimensionsMeta.map(r => this.appService.getPixels(r));
-    desktopConfigs = [[0.25, 8.5], [0.25, 10.5], [1, 10], [1, 12]];
-    phoneConfigs = [[0.25, 3.50], [0.25, 4.50], [0.50, 3.5], [0.50, 5]];
+    // desktopConfigs = [[0.25, 8.5], [0.25, 10.5], [1, 10], [1, 12]];
+    // phoneConfigs = [[0.25, 3.50], [0.25, 4.50], [0.50, 3.5], [0.50, 5]];
+    desktopConfigs = [
+        [0.25, 3.50], [0.25, 4.50], [0.25, 8.5], [0.25, 10.5],
+        [0.50, 4], [0.50, 5], [0.5, 9], [0.5, 11],
+        [0.75, 5.50], [0.75, 7.5], [0.75, 9.5], [0.75, 10.5],
+        [1, 8], [1, 9], [1, 10], [1, 12]
+    ];
+    phoneConfigs = [
+        [0.25, 2.50], [0.25, 3.50], [0.25, 4.00], [0.25, 4.50],
+        [0.33, 2.80], [0.33, 3.80], [0.33, 4.30], [0.33, 4.80],
+        [0.40, 2.80], [0.40, 3.80], [0.40, 4.30], [0.40, 4.80],
+        [0.50, 3.5], [0.50, 4], [0.50, 4.5], [0.50, 5]
+    ];
     runConfigurations: Array<Config> = [];
-    defaultPraticeIndex = 2;
+    defaultPraticeIndex = 7;
     constructor(private appService: AppService) { }
     ngAfterViewInit() {
         this.dim = this.getSquareDimension();
@@ -174,16 +185,6 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
     ngOnInit() {
         this.isMobile = this.appService.isMobile();
         if (this.isMobile) {
-            // this.phoneCircleRadiusMeta.forEach(r => {
-            //     this.phoneDimensionsMeta.forEach(d => {
-            //         this.runConfigurations.push({
-            //             radiusCM: r,
-            //             distanceCM: d,
-            //             radiusPX: this.appService.getPixels(r),
-            //             distancePX: this.appService.getPixels(d)
-            //         });
-            //     });
-            // });
             this.runConfigurations = this.phoneConfigs.map(x => {
                 return {
                     radiusCM: x[0],
@@ -193,16 +194,6 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
                 };
             });
         } else {
-            // this.desktopCircleRadiusMeta.forEach(r => {
-            //     this.desktopDimensionsMeta.forEach(d => {
-            //         this.runConfigurations.push({
-            //             radiusCM: r,
-            //             distanceCM: d,
-            //             radiusPX: this.appService.getPixels(r),
-            //             distancePX: this.appService.getPixels(d)
-            //         });
-            //     });
-            // });
             this.runConfigurations = this.desktopConfigs.map(x => {
                 return {
                     radiusCM: x[0],
@@ -212,7 +203,11 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
                 };
             });
         }
-        this.maxTests = this.runConfigurations.length;
+        if (this.appService.debugModeTurns) {
+            this.maxTests = this.appService.debugModeTurns;
+        } else {
+            this.maxTests = this.runConfigurations.length;
+        }
         this.userInfo = this.appService.info;
         this.listener = (e: any) => {
             const now = performance.now();
@@ -428,12 +423,12 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
         average.otherMisses = otherMisses.length;
         average.hitPercentage = (hitTicks.length / (hitTicks.length + missTicks.length)) * 100;
         average.missPercentage = (missTicks.length / (hitTicks.length + missTicks.length)) * 100;
-        average.verticalHitPecentage = (verticalHits.length / (verticalHits.length + verticalMisses.length)) * 100;
-        average.verticalMissPecentage = (verticalMisses.length / (verticalHits.length + verticalMisses.length)) * 100;
-        average.horizontalHitPecentage = (horizontalHits.length / (horizontalHits.length + horizontalMisses.length)) * 100;
-        average.horizontalMissPecentage = (horizontalMisses.length / (horizontalHits.length + horizontalMisses.length)) * 100;
-        average.otherDirectionHitPecentage = (otherHits.length / (otherHits.length + otherMisses.length)) * 100;
-        average.otherDirectionMissPecentage = (otherMisses.length / (otherHits.length + otherMisses.length)) * 100;
+        average.verticalHitPercentage = (verticalHits.length / (verticalHits.length + verticalMisses.length)) * 100;
+        average.verticalMissPercentage = (verticalMisses.length / (verticalHits.length + verticalMisses.length)) * 100;
+        average.horizontalHitPercentage = (horizontalHits.length / (horizontalHits.length + horizontalMisses.length)) * 100;
+        average.horizontalMissPercentage = (horizontalMisses.length / (horizontalHits.length + horizontalMisses.length)) * 100;
+        average.otherDirectionHitPercentage = (otherHits.length / (otherHits.length + otherMisses.length)) * 100;
+        average.otherDirectionMissPercentage = (otherMisses.length / (otherHits.length + otherMisses.length)) * 100;
         const averageObj = Object.assign({}, this.userInfo, {
             run: average.run,
             radius: average.radius,
@@ -452,12 +447,12 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
             otherMisses: average.otherMisses,
             hitPercentage: average.hitPercentage,
             missPercentage: average.missPercentage,
-            verticalHitPecentage: average.verticalHitPecentage,
-            verticalMissPecentage: average.verticalMissPecentage,
-            horizontalHitPecentage: average.horizontalHitPecentage,
-            horizontalMissPecentage: average.horizontalMissPecentage,
-            otherDirectionHitPecentage: average.otherDirectionHitPecentage,
-            otherDirectionMissPecentage: average.otherDirectionMissPecentage
+            verticalHitPercentage: average.verticalHitPercentage,
+            verticalMissPercentage: average.verticalMissPercentage,
+            horizontalHitPercentage: average.horizontalHitPercentage,
+            horizontalMissPercentage: average.horizontalMissPercentage,
+            otherDirectionHitPercentage: average.otherDirectionHitPercentage,
+            otherDirectionMissPercentage: average.otherDirectionMissPercentage
         });
         this.overallAverages.push(averageObj);
     }
@@ -485,12 +480,12 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
         average.otherMisses = otherMisses.length;
         average.hitPercentage = (hitTicks.length / (hitTicks.length + missTicks.length)) * 100;
         average.missPercentage = (missTicks.length / (hitTicks.length + missTicks.length)) * 100;
-        average.verticalHitPecentage = (verticalHits.length / (verticalHits.length + verticalMisses.length)) * 100;
-        average.verticalMissPecentage = (verticalMisses.length / (verticalHits.length + verticalMisses.length)) * 100;
-        average.horizontalHitPecentage = (horizontalHits.length / (horizontalHits.length + horizontalMisses.length)) * 100;
-        average.horizontalMissPecentage = (horizontalMisses.length / (horizontalHits.length + horizontalMisses.length)) * 100;
-        average.otherDirectionHitPecentage = (otherHits.length / (otherHits.length + otherMisses.length)) * 100;
-        average.otherDirectionMissPecentage = (otherMisses.length / (otherHits.length + otherMisses.length)) * 100;
+        average.verticalHitPercentage = (verticalHits.length / (verticalHits.length + verticalMisses.length)) * 100;
+        average.verticalMissPercentage = (verticalMisses.length / (verticalHits.length + verticalMisses.length)) * 100;
+        average.horizontalHitPercentage = (horizontalHits.length / (horizontalHits.length + horizontalMisses.length)) * 100;
+        average.horizontalMissPercentage = (horizontalMisses.length / (horizontalHits.length + horizontalMisses.length)) * 100;
+        average.otherDirectionHitPercentage = (otherHits.length / (otherHits.length + otherMisses.length)) * 100;
+        average.otherDirectionMissPercentage = (otherMisses.length / (otherHits.length + otherMisses.length)) * 100;
         const averageObj = Object.assign({}, this.userInfo, {
             averageTicks: average.averageTicks,
             averageVerticalTicks: average.averageVerticalTicks,
@@ -506,12 +501,12 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
             otherMisses: average.otherMisses,
             hitPercentage: average.hitPercentage,
             missPercentage: average.missPercentage,
-            verticalHitPecentage: average.verticalHitPecentage,
-            verticalMissPecentage: average.verticalMissPecentage,
-            horizontalHitPecentage: average.horizontalHitPecentage,
-            horizontalMissPecentage: average.horizontalMissPecentage,
-            otherDirectionHitPecentage: average.otherDirectionHitPecentage,
-            otherDirectionMissPecentage: average.otherDirectionMissPecentage
+            verticalHitPecentage: average.verticalHitPercentage,
+            verticalMissPecentage: average.verticalMissPercentage,
+            horizontalHitPecentage: average.horizontalHitPercentage,
+            horizontalMissPecentage: average.horizontalMissPercentage,
+            otherDirectionHitPecentage: average.otherDirectionHitPercentage,
+            otherDirectionMissPecentage: average.otherDirectionMissPercentage
         });
         return averageObj;
     }
@@ -531,10 +526,14 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
             const average = this.calculateOverallUserAverage();
             const userAverage = this.getSheetTransform([average]);
             this.appService.runAverages = this.overallAverages;
-            this.appService.userAverages = average;
-            this.appService.appendRowsToGoogleSheets(clickData);
-            this.appService.appendRunAveragesRowsToGoogleSheets(runAverages);
-            this.appService.appendUserAveragesRowsToGoogleSheets(userAverage);
+            this.appService.userAverage = average;
+            if (WRITE_TO_STORAGE) {
+                if (WRITE_RUNS_TO_STORAGE) {
+                    this.appService.appendRowsToGoogleSheets(clickData);
+                }
+                this.appService.appendRunAveragesRowsToGoogleSheets(runAverages);
+                this.appService.appendUserAveragesRowsToGoogleSheets(userAverage);
+            }
             this.showAllDoneModal = true;
         }
     }
@@ -550,7 +549,7 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
         return temp;
     }
     checkForTestSession() {
-        if (this.clickCounter > 28) {
+        if (this.clickCounter > 14) {
             this.testInProgress = false;
             this.clearTest();
         }

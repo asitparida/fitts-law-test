@@ -7,7 +7,8 @@ export class AppService {
     info = null;
     md = null;
     runAverages = [];
-    userAverages = [];
+    userAverage = {};
+    debugModeTurns = null;
     dpi = null;
     constructor() {
         if (MobileDetect) {

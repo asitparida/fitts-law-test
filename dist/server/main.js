@@ -338,7 +338,8 @@ var AppService = /** @class */ (function () {
         this.info = null;
         this.md = null;
         this.runAverages = [];
-        this.userAverages = [];
+        this.userAverage = {};
+        this.debugModeTurns = null;
         this.dpi = null;
         if (MobileDetect) {
             this.md = new MobileDetect(window.navigator.userAgent);
@@ -484,9 +485,10 @@ exports.AuthGuard = AuthGuard;
 Object.defineProperty(exports, "__esModule", { value: true });
 var i0 = __webpack_require__(/*! ./fitts-test.component.scss.shim.ngstyle */ "./src/app/fitts-test/fitts-test.component.scss.shim.ngstyle.js");
 var i1 = __webpack_require__(/*! @angular/core */ "@angular/core");
-var i2 = __webpack_require__(/*! @angular/common */ "@angular/common");
-var i3 = __webpack_require__(/*! ./fitts-test.component */ "./src/app/fitts-test/fitts-test.component.ts");
-var i4 = __webpack_require__(/*! ../app.service */ "./src/app/app.service.ts");
+var i2 = __webpack_require__(/*! @angular/router */ "@angular/router");
+var i3 = __webpack_require__(/*! @angular/common */ "@angular/common");
+var i4 = __webpack_require__(/*! ./fitts-test.component */ "./src/app/fitts-test/fitts-test.component.ts");
+var i5 = __webpack_require__(/*! ../app.service */ "./src/app/app.service.ts");
 var styles_FittsTestComponent = [i0.styles];
 var RenderType_FittsTestComponent = i1.ɵcrt({ encapsulation: 0, styles: styles_FittsTestComponent, data: {} });
 exports.RenderType_FittsTestComponent = RenderType_FittsTestComponent;
@@ -503,21 +505,24 @@ function View_FittsTestComponent_5(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0
         var pd_0 = (_co.startTest() !== false);
         ad = (pd_0 && ad);
     } return ad; }, null, null)), (_l()(), i1.ɵted(-1, null, ["Start"]))], null, function (_ck, _v) { var _co = _v.component; var currVal_0 = _co.currentTestCount; var currVal_1 = _co.maxTests; _ck(_v, 4, 0, currVal_0, currVal_1); }); }
-function View_FittsTestComponent_7(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "button", [["class", "btn-main primary"]], null, [[null, "click"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("click" === en)) {
+function View_FittsTestComponent_7(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "button", [["class", "btn-main"]], null, [[null, "click"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("click" === en)) {
         var pd_0 = (_co.downloadData() !== false);
         ad = (pd_0 && ad);
     } return ad; }, null, null)), (_l()(), i1.ɵted(-1, null, ["Download JSON Data"]))], null, null); }
-function View_FittsTestComponent_8(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "button", [["class", "btn-main primary"]], null, [[null, "click"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("click" === en)) {
+function View_FittsTestComponent_8(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "button", [["class", "btn-main"]], null, [[null, "click"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("click" === en)) {
         var pd_0 = (_co.downloadCSVData() !== false);
         ad = (pd_0 && ad);
     } return ad; }, null, null)), (_l()(), i1.ɵted(-1, null, ["Download CSV Data"]))], null, null); }
-function View_FittsTestComponent_6(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 7, null, null, null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 6, "div", [["class", "practice-run-modal"]], null, null, null, null, null)), (_l()(), i1.ɵeld(2, 0, null, null, 1, "h2", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Thanks for taking the test !"])), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_7)), i1.ɵdid(5, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_8)), i1.ɵdid(7, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null)], function (_ck, _v) { var _co = _v.component; var currVal_0 = !_co.isMobile; _ck(_v, 5, 0, currVal_0); var currVal_1 = !_co.isMobile; _ck(_v, 7, 0, currVal_1); }, null); }
-function View_FittsTestComponent_1(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 10, "div", [["class", "overlay"]], null, null, null, null, null)), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_2)), i1.ɵdid(2, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_3)), i1.ɵdid(4, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_4)), i1.ɵdid(6, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_5)), i1.ɵdid(8, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_6)), i1.ɵdid(10, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null)], function (_ck, _v) { var _co = _v.component; var currVal_0 = _co.showPracticeModal; _ck(_v, 2, 0, currVal_0); var currVal_1 = _co.showCountdownModal; _ck(_v, 4, 0, currVal_1); var currVal_2 = _co.showTestCompleteModal; _ck(_v, 6, 0, currVal_2); var currVal_3 = _co.showActualTestModal; _ck(_v, 8, 0, currVal_3); var currVal_4 = _co.showAllDoneModal; _ck(_v, 10, 0, currVal_4); }, null); }
-function View_FittsTestComponent_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "div", [["class", "work-area"]], [[1, "id", 0]], null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 0, ":svg:svg", [], [[1, "id", 0]], null, null, null, null)), (_l()(), i1.ɵeld(2, 0, null, null, 1, "span", [["class", "o-tester"]], [[1, "id", 0]], null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["o"])), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_1)), i1.ɵdid(5, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null)], function (_ck, _v) { var _co = _v.component; var currVal_3 = _co.showModal; _ck(_v, 5, 0, currVal_3); }, function (_ck, _v) { var _co = _v.component; var currVal_0 = _co.workAreaId; _ck(_v, 0, 0, currVal_0); var currVal_1 = _co.svgAreaId; _ck(_v, 1, 0, currVal_1); var currVal_2 = _co.oTesterId; _ck(_v, 2, 0, currVal_2); }); }
+function View_FittsTestComponent_6(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 11, null, null, null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 10, "div", [["class", "practice-run-modal"]], null, null, null, null, null)), (_l()(), i1.ɵeld(2, 0, null, null, 1, "h2", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Thanks for taking the test !"])), (_l()(), i1.ɵeld(4, 0, null, null, 3, "button", [["class", "btn-main primary"]], null, [[null, "click"]], function (_v, en, $event) { var ad = true; if (("click" === en)) {
+        var pd_0 = (i1.ɵnov(_v, 5).onClick() !== false);
+        ad = (pd_0 && ad);
+    } return ad; }, null, null)), i1.ɵdid(5, 16384, null, 0, i2.RouterLink, [i2.Router, i2.ActivatedRoute, [8, null], i1.Renderer2, i1.ElementRef], { routerLink: [0, "routerLink"] }, null), i1.ɵpad(6, 1), (_l()(), i1.ɵted(-1, null, ["View Results"])), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_7)), i1.ɵdid(9, 16384, null, 0, i3.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_8)), i1.ɵdid(11, 16384, null, 0, i3.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null)], function (_ck, _v) { var _co = _v.component; var currVal_0 = _ck(_v, 6, 0, "/results"); _ck(_v, 5, 0, currVal_0); var currVal_1 = !_co.isMobile; _ck(_v, 9, 0, currVal_1); var currVal_2 = !_co.isMobile; _ck(_v, 11, 0, currVal_2); }, null); }
+function View_FittsTestComponent_1(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 10, "div", [["class", "overlay"]], null, null, null, null, null)), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_2)), i1.ɵdid(2, 16384, null, 0, i3.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_3)), i1.ɵdid(4, 16384, null, 0, i3.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_4)), i1.ɵdid(6, 16384, null, 0, i3.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_5)), i1.ɵdid(8, 16384, null, 0, i3.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_6)), i1.ɵdid(10, 16384, null, 0, i3.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null)], function (_ck, _v) { var _co = _v.component; var currVal_0 = _co.showPracticeModal; _ck(_v, 2, 0, currVal_0); var currVal_1 = _co.showCountdownModal; _ck(_v, 4, 0, currVal_1); var currVal_2 = _co.showTestCompleteModal; _ck(_v, 6, 0, currVal_2); var currVal_3 = _co.showActualTestModal; _ck(_v, 8, 0, currVal_3); var currVal_4 = _co.showAllDoneModal; _ck(_v, 10, 0, currVal_4); }, null); }
+function View_FittsTestComponent_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "div", [["class", "work-area"]], [[1, "id", 0]], null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 0, ":svg:svg", [], [[1, "id", 0]], null, null, null, null)), (_l()(), i1.ɵeld(2, 0, null, null, 1, "span", [["class", "o-tester"]], [[1, "id", 0]], null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["o"])), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_1)), i1.ɵdid(5, 16384, null, 0, i3.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null)], function (_ck, _v) { var _co = _v.component; var currVal_3 = _co.showModal; _ck(_v, 5, 0, currVal_3); }, function (_ck, _v) { var _co = _v.component; var currVal_0 = _co.workAreaId; _ck(_v, 0, 0, currVal_0); var currVal_1 = _co.svgAreaId; _ck(_v, 1, 0, currVal_1); var currVal_2 = _co.oTesterId; _ck(_v, 2, 0, currVal_2); }); }
 exports.View_FittsTestComponent_0 = View_FittsTestComponent_0;
-function View_FittsTestComponent_Host_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "app-fitts-test", [], null, null, null, View_FittsTestComponent_0, RenderType_FittsTestComponent)), i1.ɵdid(1, 4308992, null, 0, i3.FittsTestComponent, [i4.AppService], null, null)], function (_ck, _v) { _ck(_v, 1, 0); }, null); }
+function View_FittsTestComponent_Host_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "app-fitts-test", [], null, null, null, View_FittsTestComponent_0, RenderType_FittsTestComponent)), i1.ɵdid(1, 4308992, null, 0, i4.FittsTestComponent, [i5.AppService], null, null)], function (_ck, _v) { _ck(_v, 1, 0); }, null); }
 exports.View_FittsTestComponent_Host_0 = View_FittsTestComponent_Host_0;
-var FittsTestComponentNgFactory = i1.ɵccf("app-fitts-test", i3.FittsTestComponent, View_FittsTestComponent_Host_0, {}, {}, []);
+var FittsTestComponentNgFactory = i1.ɵccf("app-fitts-test", i4.FittsTestComponent, View_FittsTestComponent_Host_0, {}, {}, []);
 exports.FittsTestComponentNgFactory = FittsTestComponentNgFactory;
 
 
@@ -559,6 +564,8 @@ var core_1 = __webpack_require__(/*! @angular/core */ "@angular/core");
 var d3 = __webpack_require__(/*! d3 */ "d3");
 var _ = __webpack_require__(/*! lodash */ "lodash");
 var app_service_1 = __webpack_require__(/*! ../app.service */ "./src/app/app.service.ts");
+var WRITE_RUNS_TO_STORAGE = false;
+var WRITE_TO_STORAGE = true;
 var Coordinate = /** @class */ (function () {
     function Coordinate(x, y) {
         this.x = 0;
@@ -646,10 +653,6 @@ var FittsTestComponent = /** @class */ (function () {
         this.countdownTick = this.maxTicks;
         this.listener = null;
         this.userInfo = null;
-        // desktopCircleRadiusMeta = [ 0.25, 0.50, 1, 1.25 ];
-        // phoneCircleRadiusMeta = [0.125, 0.25, 0.40 , 0.50];
-        // desktopDimensionsMeta = [4, 6, 8, 10];
-        // phoneDimensionsMeta = [2, 3, 4, 5];
         this.desktopCircleRadiusMeta = [0.25, 1];
         this.desktopDimensionsMeta = [8, 10];
         this.phoneCircleRadiusMeta = [0.125, 0.33];
@@ -660,10 +663,22 @@ var FittsTestComponent = /** @class */ (function () {
         this.phoneCircleRadiusOptions = this.phoneCircleRadiusMeta.map(function (r) { return _this.appService.getPixels(r); });
         this.desktopDimensionsOptions = this.desktopDimensionsMeta.map(function (r) { return _this.appService.getPixels(r); });
         this.phoneDimensionsOptions = this.phoneDimensionsMeta.map(function (r) { return _this.appService.getPixels(r); });
-        this.desktopConfigs = [[0.25, 8.5], [0.25, 10.5], [1, 10], [1, 12]];
-        this.phoneConfigs = [[0.25, 3.50], [0.25, 4.50], [0.50, 3.5], [0.50, 5]];
+        // desktopConfigs = [[0.25, 8.5], [0.25, 10.5], [1, 10], [1, 12]];
+        // phoneConfigs = [[0.25, 3.50], [0.25, 4.50], [0.50, 3.5], [0.50, 5]];
+        this.desktopConfigs = [
+            [0.25, 3.50], [0.25, 4.50], [0.25, 8.5], [0.25, 10.5],
+            [0.50, 4], [0.50, 5], [0.5, 9], [0.5, 11],
+            [0.75, 5.50], [0.75, 7.5], [0.75, 9.5], [0.75, 10.5],
+            [1, 8], [1, 9], [1, 10], [1, 12]
+        ];
+        this.phoneConfigs = [
+            [0.25, 2.50], [0.25, 3.50], [0.25, 4.00], [0.25, 4.50],
+            [0.33, 2.80], [0.33, 3.80], [0.33, 4.30], [0.33, 4.80],
+            [0.40, 2.80], [0.40, 3.80], [0.40, 4.30], [0.40, 4.80],
+            [0.50, 3.5], [0.50, 4], [0.50, 4.5], [0.50, 5]
+        ];
         this.runConfigurations = [];
-        this.defaultPraticeIndex = 2;
+        this.defaultPraticeIndex = 7;
     }
     FittsTestComponent.prototype.ngAfterViewInit = function () {
         this.dim = this.getSquareDimension();
@@ -683,16 +698,6 @@ var FittsTestComponent = /** @class */ (function () {
         var _this = this;
         this.isMobile = this.appService.isMobile();
         if (this.isMobile) {
-            // this.phoneCircleRadiusMeta.forEach(r => {
-            //     this.phoneDimensionsMeta.forEach(d => {
-            //         this.runConfigurations.push({
-            //             radiusCM: r,
-            //             distanceCM: d,
-            //             radiusPX: this.appService.getPixels(r),
-            //             distancePX: this.appService.getPixels(d)
-            //         });
-            //     });
-            // });
             this.runConfigurations = this.phoneConfigs.map(function (x) {
                 return {
                     radiusCM: x[0],
@@ -703,16 +708,6 @@ var FittsTestComponent = /** @class */ (function () {
             });
         }
         else {
-            // this.desktopCircleRadiusMeta.forEach(r => {
-            //     this.desktopDimensionsMeta.forEach(d => {
-            //         this.runConfigurations.push({
-            //             radiusCM: r,
-            //             distanceCM: d,
-            //             radiusPX: this.appService.getPixels(r),
-            //             distancePX: this.appService.getPixels(d)
-            //         });
-            //     });
-            // });
             this.runConfigurations = this.desktopConfigs.map(function (x) {
                 return {
                     radiusCM: x[0],
@@ -722,7 +717,12 @@ var FittsTestComponent = /** @class */ (function () {
                 };
             });
         }
-        this.maxTests = this.runConfigurations.length;
+        if (this.appService.debugModeTurns) {
+            this.maxTests = this.appService.debugModeTurns;
+        }
+        else {
+            this.maxTests = this.runConfigurations.length;
+        }
         this.userInfo = this.appService.info;
         this.listener = function (e) {
             var now = performance.now();
@@ -943,12 +943,12 @@ var FittsTestComponent = /** @class */ (function () {
         average.otherMisses = otherMisses.length;
         average.hitPercentage = (hitTicks.length / (hitTicks.length + missTicks.length)) * 100;
         average.missPercentage = (missTicks.length / (hitTicks.length + missTicks.length)) * 100;
-        average.verticalHitPecentage = (verticalHits.length / (verticalHits.length + verticalMisses.length)) * 100;
-        average.verticalMissPecentage = (verticalMisses.length / (verticalHits.length + verticalMisses.length)) * 100;
-        average.horizontalHitPecentage = (horizontalHits.length / (horizontalHits.length + horizontalMisses.length)) * 100;
-        average.horizontalMissPecentage = (horizontalMisses.length / (horizontalHits.length + horizontalMisses.length)) * 100;
-        average.otherDirectionHitPecentage = (otherHits.length / (otherHits.length + otherMisses.length)) * 100;
-        average.otherDirectionMissPecentage = (otherMisses.length / (otherHits.length + otherMisses.length)) * 100;
+        average.verticalHitPercentage = (verticalHits.length / (verticalHits.length + verticalMisses.length)) * 100;
+        average.verticalMissPercentage = (verticalMisses.length / (verticalHits.length + verticalMisses.length)) * 100;
+        average.horizontalHitPercentage = (horizontalHits.length / (horizontalHits.length + horizontalMisses.length)) * 100;
+        average.horizontalMissPercentage = (horizontalMisses.length / (horizontalHits.length + horizontalMisses.length)) * 100;
+        average.otherDirectionHitPercentage = (otherHits.length / (otherHits.length + otherMisses.length)) * 100;
+        average.otherDirectionMissPercentage = (otherMisses.length / (otherHits.length + otherMisses.length)) * 100;
         var averageObj = Object.assign({}, this.userInfo, {
             run: average.run,
             radius: average.radius,
@@ -967,12 +967,12 @@ var FittsTestComponent = /** @class */ (function () {
             otherMisses: average.otherMisses,
             hitPercentage: average.hitPercentage,
             missPercentage: average.missPercentage,
-            verticalHitPecentage: average.verticalHitPecentage,
-            verticalMissPecentage: average.verticalMissPecentage,
-            horizontalHitPecentage: average.horizontalHitPecentage,
-            horizontalMissPecentage: average.horizontalMissPecentage,
-            otherDirectionHitPecentage: average.otherDirectionHitPecentage,
-            otherDirectionMissPecentage: average.otherDirectionMissPecentage
+            verticalHitPercentage: average.verticalHitPercentage,
+            verticalMissPercentage: average.verticalMissPercentage,
+            horizontalHitPercentage: average.horizontalHitPercentage,
+            horizontalMissPercentage: average.horizontalMissPercentage,
+            otherDirectionHitPercentage: average.otherDirectionHitPercentage,
+            otherDirectionMissPercentage: average.otherDirectionMissPercentage
         });
         this.overallAverages.push(averageObj);
     };
@@ -1000,12 +1000,12 @@ var FittsTestComponent = /** @class */ (function () {
         average.otherMisses = otherMisses.length;
         average.hitPercentage = (hitTicks.length / (hitTicks.length + missTicks.length)) * 100;
         average.missPercentage = (missTicks.length / (hitTicks.length + missTicks.length)) * 100;
-        average.verticalHitPecentage = (verticalHits.length / (verticalHits.length + verticalMisses.length)) * 100;
-        average.verticalMissPecentage = (verticalMisses.length / (verticalHits.length + verticalMisses.length)) * 100;
-        average.horizontalHitPecentage = (horizontalHits.length / (horizontalHits.length + horizontalMisses.length)) * 100;
-        average.horizontalMissPecentage = (horizontalMisses.length / (horizontalHits.length + horizontalMisses.length)) * 100;
-        average.otherDirectionHitPecentage = (otherHits.length / (otherHits.length + otherMisses.length)) * 100;
-        average.otherDirectionMissPecentage = (otherMisses.length / (otherHits.length + otherMisses.length)) * 100;
+        average.verticalHitPercentage = (verticalHits.length / (verticalHits.length + verticalMisses.length)) * 100;
+        average.verticalMissPercentage = (verticalMisses.length / (verticalHits.length + verticalMisses.length)) * 100;
+        average.horizontalHitPercentage = (horizontalHits.length / (horizontalHits.length + horizontalMisses.length)) * 100;
+        average.horizontalMissPercentage = (horizontalMisses.length / (horizontalHits.length + horizontalMisses.length)) * 100;
+        average.otherDirectionHitPercentage = (otherHits.length / (otherHits.length + otherMisses.length)) * 100;
+        average.otherDirectionMissPercentage = (otherMisses.length / (otherHits.length + otherMisses.length)) * 100;
         var averageObj = Object.assign({}, this.userInfo, {
             averageTicks: average.averageTicks,
             averageVerticalTicks: average.averageVerticalTicks,
@@ -1021,12 +1021,12 @@ var FittsTestComponent = /** @class */ (function () {
             otherMisses: average.otherMisses,
             hitPercentage: average.hitPercentage,
             missPercentage: average.missPercentage,
-            verticalHitPecentage: average.verticalHitPecentage,
-            verticalMissPecentage: average.verticalMissPecentage,
-            horizontalHitPecentage: average.horizontalHitPecentage,
-            horizontalMissPecentage: average.horizontalMissPecentage,
-            otherDirectionHitPecentage: average.otherDirectionHitPecentage,
-            otherDirectionMissPecentage: average.otherDirectionMissPecentage
+            verticalHitPecentage: average.verticalHitPercentage,
+            verticalMissPecentage: average.verticalMissPercentage,
+            horizontalHitPecentage: average.horizontalHitPercentage,
+            horizontalMissPecentage: average.horizontalMissPercentage,
+            otherDirectionHitPecentage: average.otherDirectionHitPercentage,
+            otherDirectionMissPecentage: average.otherDirectionMissPercentage
         });
         return averageObj;
     };
@@ -1048,10 +1048,14 @@ var FittsTestComponent = /** @class */ (function () {
             var average = this.calculateOverallUserAverage();
             var userAverage = this.getSheetTransform([average]);
             this.appService.runAverages = this.overallAverages;
-            this.appService.userAverages = average;
-            this.appService.appendRowsToGoogleSheets(clickData);
-            this.appService.appendRunAveragesRowsToGoogleSheets(runAverages);
-            this.appService.appendUserAveragesRowsToGoogleSheets(userAverage);
+            this.appService.userAverage = average;
+            if (WRITE_TO_STORAGE) {
+                if (WRITE_RUNS_TO_STORAGE) {
+                    this.appService.appendRowsToGoogleSheets(clickData);
+                }
+                this.appService.appendRunAveragesRowsToGoogleSheets(runAverages);
+                this.appService.appendUserAveragesRowsToGoogleSheets(userAverage);
+            }
             this.showAllDoneModal = true;
         }
     };
@@ -1067,7 +1071,7 @@ var FittsTestComponent = /** @class */ (function () {
         return temp;
     };
     FittsTestComponent.prototype.checkForTestSession = function () {
-        if (this.clickCounter > 28) {
+        if (this.clickCounter > 14) {
             this.testInProgress = false;
             this.clearTest();
         }
@@ -1300,6 +1304,7 @@ var i0 = __webpack_require__(/*! ./home.component.scss.shim.ngstyle */ "./src/ap
 var i1 = __webpack_require__(/*! @angular/core */ "@angular/core");
 var i2 = __webpack_require__(/*! @angular/router */ "@angular/router");
 var i3 = __webpack_require__(/*! ./home.component */ "./src/app/home/home.component.ts");
+var i4 = __webpack_require__(/*! ../app.service */ "./src/app/app.service.ts");
 var styles_HomeComponent = [i0.styles];
 var RenderType_HomeComponent = i1.ɵcrt({ encapsulation: 0, styles: styles_HomeComponent, data: {} });
 exports.RenderType_HomeComponent = RenderType_HomeComponent;
@@ -1308,7 +1313,7 @@ function View_HomeComponent_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, 
         ad = (pd_0 && ad);
     } return ad; }, null, null)), i1.ɵdid(6, 16384, null, 0, i2.RouterLink, [i2.Router, i2.ActivatedRoute, [8, null], i1.Renderer2, i1.ElementRef], { routerLink: [0, "routerLink"] }, null), i1.ɵpad(7, 1), (_l()(), i1.ɵted(-1, null, ["Begin Test"]))], function (_ck, _v) { var currVal_0 = _ck(_v, 7, 0, "/info"); _ck(_v, 6, 0, currVal_0); }, null); }
 exports.View_HomeComponent_0 = View_HomeComponent_0;
-function View_HomeComponent_Host_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "app-home", [], null, null, null, View_HomeComponent_0, RenderType_HomeComponent)), i1.ɵdid(1, 114688, null, 0, i3.HomeComponent, [], null, null)], function (_ck, _v) { _ck(_v, 1, 0); }, null); }
+function View_HomeComponent_Host_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "app-home", [], null, null, null, View_HomeComponent_0, RenderType_HomeComponent)), i1.ɵdid(1, 114688, null, 0, i3.HomeComponent, [i4.AppService], null, null)], function (_ck, _v) { _ck(_v, 1, 0); }, null); }
 exports.View_HomeComponent_Host_0 = View_HomeComponent_Host_0;
 var HomeComponentNgFactory = i1.ɵccf("app-home", i3.HomeComponent, View_HomeComponent_Host_0, {}, {}, []);
 exports.HomeComponentNgFactory = HomeComponentNgFactory;
@@ -1349,14 +1354,37 @@ exports.styles = styles;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(/*! @angular/core */ "@angular/core");
+var _ = __webpack_require__(/*! lodash */ "lodash");
+var app_service_1 = __webpack_require__(/*! ../app.service */ "./src/app/app.service.ts");
 var HomeComponent = /** @class */ (function () {
-    function HomeComponent() {
+    function HomeComponent(appService) {
+        this.appService = appService;
     }
     HomeComponent.prototype.ngOnInit = function () {
+        if (!_.isEmpty(window.location.search)) {
+            var params = window.location.search;
+            if (params.indexOf('debugRun') !== -1) {
+                var queryVar = getQueryVariable('debugRun');
+                if (queryVar) {
+                    this.appService.debugModeTurns = parseInt(queryVar, 10);
+                }
+            }
+        }
     };
     return HomeComponent;
 }());
 exports.HomeComponent = HomeComponent;
+function getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split('&');
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split('=');
+        if (pair[0] === variable) {
+            return pair[1];
+        }
+    }
+    return null;
+}
 
 
 /***/ }),
@@ -1589,16 +1617,21 @@ exports.InfoComponent = InfoComponent;
 Object.defineProperty(exports, "__esModule", { value: true });
 var i0 = __webpack_require__(/*! ./results.component.scss.shim.ngstyle */ "./src/app/results/results.component.scss.shim.ngstyle.js");
 var i1 = __webpack_require__(/*! @angular/core */ "@angular/core");
-var i2 = __webpack_require__(/*! ./results.component */ "./src/app/results/results.component.ts");
-var i3 = __webpack_require__(/*! ../app.service */ "./src/app/app.service.ts");
+var i2 = __webpack_require__(/*! @angular/common */ "@angular/common");
+var i3 = __webpack_require__(/*! ./results.component */ "./src/app/results/results.component.ts");
+var i4 = __webpack_require__(/*! ../app.service */ "./src/app/app.service.ts");
 var styles_ResultsComponent = [i0.styles];
 var RenderType_ResultsComponent = i1.ɵcrt({ encapsulation: 0, styles: styles_ResultsComponent, data: {} });
 exports.RenderType_ResultsComponent = RenderType_ResultsComponent;
-function View_ResultsComponent_0(_l) { return i1.ɵvid(0, [], null, null); }
+function View_ResultsComponent_1(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 4, "div", [["class", "key-value-pair"]], null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 1, "label", [["class", "key"]], null, null, null, null, null)), (_l()(), i1.ɵted(2, null, ["", ""])), (_l()(), i1.ɵeld(3, 0, null, null, 1, "label", [["class", "value"]], null, null, null, null, null)), (_l()(), i1.ɵted(4, null, ["", ""]))], null, function (_ck, _v) { var currVal_0 = _v.context.$implicit.label; _ck(_v, 2, 0, currVal_0); var currVal_1 = _v.context.$implicit.value; _ck(_v, 4, 0, currVal_1); }); }
+function View_ResultsComponent_2(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 4, "div", [["class", "key-value-pair"]], null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 1, "label", [["class", "key"]], null, null, null, null, null)), (_l()(), i1.ɵted(2, null, ["", ""])), (_l()(), i1.ɵeld(3, 0, null, null, 1, "label", [["class", "value"]], null, null, null, null, null)), (_l()(), i1.ɵted(4, null, ["", ""]))], null, function (_ck, _v) { var currVal_0 = _v.context.$implicit.label; _ck(_v, 2, 0, currVal_0); var currVal_1 = _v.context.$implicit.value; _ck(_v, 4, 0, currVal_1); }); }
+function View_ResultsComponent_4(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 4, "div", [["class", "key-value-pair"]], null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 1, "label", [["class", "key"]], null, null, null, null, null)), (_l()(), i1.ɵted(2, null, ["", ""])), (_l()(), i1.ɵeld(3, 0, null, null, 1, "label", [["class", "value"]], null, null, null, null, null)), (_l()(), i1.ɵted(4, null, ["", ""]))], null, function (_ck, _v) { var currVal_0 = _v.context.$implicit.label; _ck(_v, 2, 0, currVal_0); var currVal_1 = _v.context.$implicit.value; _ck(_v, 4, 0, currVal_1); }); }
+function View_ResultsComponent_3(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 2, "div", [["class", "pair-wrapper runPairWrapper"]], null, null, null, null, null)), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_ResultsComponent_4)), i1.ɵdid(2, 278528, null, 0, i2.NgForOf, [i1.ViewContainerRef, i1.TemplateRef, i1.IterableDiffers], { ngForOf: [0, "ngForOf"] }, null)], function (_ck, _v) { var currVal_0 = _v.context.$implicit; _ck(_v, 2, 0, currVal_0); }, null); }
+function View_ResultsComponent_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 19, "div", [["class", "results-area"]], null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 1, "h1", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Results"])), (_l()(), i1.ɵeld(3, 0, null, null, 5, "div", [["class", "result"]], null, null, null, null, null)), (_l()(), i1.ɵeld(4, 0, null, null, 1, "label", [["class", "title"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["User Information"])), (_l()(), i1.ɵeld(6, 0, null, null, 2, "div", [["class", "pair-wrapper"]], null, null, null, null, null)), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_ResultsComponent_1)), i1.ɵdid(8, 278528, null, 0, i2.NgForOf, [i1.ViewContainerRef, i1.TemplateRef, i1.IterableDiffers], { ngForOf: [0, "ngForOf"] }, null), (_l()(), i1.ɵeld(9, 0, null, null, 5, "div", [["class", "result"]], null, null, null, null, null)), (_l()(), i1.ɵeld(10, 0, null, null, 1, "label", [["class", "title"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Average across all Runs"])), (_l()(), i1.ɵeld(12, 0, null, null, 2, "div", [["class", "pair-wrapper"]], null, null, null, null, null)), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_ResultsComponent_2)), i1.ɵdid(14, 278528, null, 0, i2.NgForOf, [i1.ViewContainerRef, i1.TemplateRef, i1.IterableDiffers], { ngForOf: [0, "ngForOf"] }, null), (_l()(), i1.ɵeld(15, 0, null, null, 4, "div", [["class", "result"]], null, null, null, null, null)), (_l()(), i1.ɵeld(16, 0, null, null, 1, "label", [["class", "title"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Data for each Run"])), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_ResultsComponent_3)), i1.ɵdid(19, 278528, null, 0, i2.NgForOf, [i1.ViewContainerRef, i1.TemplateRef, i1.IterableDiffers], { ngForOf: [0, "ngForOf"] }, null)], function (_ck, _v) { var _co = _v.component; var currVal_0 = _co.userInfoPairs; _ck(_v, 8, 0, currVal_0); var currVal_1 = _co.userAveragePairs; _ck(_v, 14, 0, currVal_1); var currVal_2 = _co.runInfoPairs; _ck(_v, 19, 0, currVal_2); }, null); }
 exports.View_ResultsComponent_0 = View_ResultsComponent_0;
-function View_ResultsComponent_Host_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "app-results", [], null, null, null, View_ResultsComponent_0, RenderType_ResultsComponent)), i1.ɵdid(1, 114688, null, 0, i2.ResultsComponent, [i3.AppService], null, null)], function (_ck, _v) { _ck(_v, 1, 0); }, null); }
+function View_ResultsComponent_Host_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "app-results", [], null, null, null, View_ResultsComponent_0, RenderType_ResultsComponent)), i1.ɵdid(1, 114688, null, 0, i3.ResultsComponent, [i4.AppService], null, null)], function (_ck, _v) { _ck(_v, 1, 0); }, null); }
 exports.View_ResultsComponent_Host_0 = View_ResultsComponent_Host_0;
-var ResultsComponentNgFactory = i1.ɵccf("app-results", i2.ResultsComponent, View_ResultsComponent_Host_0, {}, {}, []);
+var ResultsComponentNgFactory = i1.ɵccf("app-results", i3.ResultsComponent, View_ResultsComponent_Host_0, {}, {}, []);
 exports.ResultsComponentNgFactory = ResultsComponentNgFactory;
 
 
@@ -1620,7 +1653,7 @@ exports.ResultsComponentNgFactory = ResultsComponentNgFactory;
  * tslint:disable
  */ 
 Object.defineProperty(exports, "__esModule", { value: true });
-var styles = ["\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL3Jlc3VsdHMvcmVzdWx0cy5jb21wb25lbnQuc2NzcyJ9 */"];
+var styles = [".results-area[_ngcontent-%COMP%] {\n  margin-top: 60px;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: flex-start; }\n  .results-area[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n    margin-bottom: 30px; }\n  .results-area[_ngcontent-%COMP%]   label.title[_ngcontent-%COMP%] {\n    width: 100%;\n    text-align: left;\n    font-size: medium;\n    font-weight: bold;\n    color: #333;\n    padding: 0 15px; }\n  .results-area[_ngcontent-%COMP%]   .result[_ngcontent-%COMP%] {\n    width: 100%;\n    border-top: 1px solid rgba(0, 0, 0, 0.1);\n    padding: 30px 30px 15px 30px; }\n  .results-area[_ngcontent-%COMP%]   .result[_ngcontent-%COMP%]   .pair-wrapper[_ngcontent-%COMP%] {\n      width: 100%;\n      display: flex;\n      justify-content: flex-start;\n      align-items: flex-start;\n      flex-flow: row wrap; }\n  .results-area[_ngcontent-%COMP%]   .result[_ngcontent-%COMP%]   .pair-wrapper.runPairWrapper[_ngcontent-%COMP%] {\n        padding: 15px 0; }\n  .results-area[_ngcontent-%COMP%]   .result[_ngcontent-%COMP%]   .pair-wrapper.runPairWrapper[_ngcontent-%COMP%]:not(:last-child) {\n          border-bottom: 1px solid rgba(0, 0, 0, 0.1); }\n  .results-area[_ngcontent-%COMP%]   .result[_ngcontent-%COMP%]   .pair-wrapper.runPairWrapper[_ngcontent-%COMP%]:not(:first-child) {\n          border-bottom: 1px solid rgba(0, 0, 0, 0.1); }\n  .results-area[_ngcontent-%COMP%]   .result[_ngcontent-%COMP%]   .pair-wrapper[_ngcontent-%COMP%]   .key-value-pair[_ngcontent-%COMP%] {\n        padding: 15px 15px 5px 15px;\n        min-width: 20%;\n        flex: 1;\n        display: flex;\n        flex-flow: column; }\n  .results-area[_ngcontent-%COMP%]   .result[_ngcontent-%COMP%]   .pair-wrapper[_ngcontent-%COMP%]   .key-value-pair[_ngcontent-%COMP%]   .key[_ngcontent-%COMP%] {\n          font-weight: bold;\n          font-size: small;\n          margin: 0;\n          color: #707070; }\n  .results-area[_ngcontent-%COMP%]   .result[_ngcontent-%COMP%]   .pair-wrapper[_ngcontent-%COMP%]   .key-value-pair[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n          font-weight: 300;\n          font-size: large;\n          margin: 0; }\n  @media only screen and (max-width: 768px) {\n  .results-area[_ngcontent-%COMP%]   label.title[_ngcontent-%COMP%] {\n    padding: 0 5px;\n    margin: 10px 0; }\n  .results-area[_ngcontent-%COMP%]   .result[_ngcontent-%COMP%] {\n    padding: 15px 15px 15px 15px; }\n    .results-area[_ngcontent-%COMP%]   .result[_ngcontent-%COMP%]   .pair-wrapper[_ngcontent-%COMP%]   .key-value-pair[_ngcontent-%COMP%] {\n      padding: 10px 5px 5px 5px;\n      min-width: 50%; } }\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9hc2l0cGFyaWRhL0NvZGVzL3RlbXAyL2ZpdHRzLWxhdy10ZXN0LXVuaXYvc3JjL2FwcC9yZXN1bHRzL3Jlc3VsdHMuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxpQkFBZ0I7RUFDaEIsY0FBYTtFQUNiLHVCQUFzQjtFQUN0QixvQkFBbUI7RUFDbkIsNEJBQTJCLEVBcUQ5QjtFQTFERDtJQU9RLG9CQUFtQixFQUN0QjtFQVJMO0lBV1ksWUFBVztJQUNYLGlCQUFnQjtJQUNoQixrQkFBaUI7SUFDakIsa0JBQWlCO0lBQ2pCLFlBQVc7SUFDWCxnQkFBZSxFQUNsQjtFQWpCVDtJQW9CUSxZQUFXO0lBQ1gseUNBQXNDO0lBQ3RDLDZCQUE0QixFQW1DL0I7RUF6REw7TUF3QlksWUFBVztNQUNYLGNBQWE7TUFDYiw0QkFBMkI7TUFDM0Isd0JBQXVCO01BQ3ZCLG9CQUFtQixFQTRCdEI7RUF4RFQ7UUE4QmdCLGdCQUFlLEVBT2xCO0VBckNiO1VBZ0NvQiw0Q0FBeUMsRUFDNUM7RUFqQ2pCO1VBbUNvQiw0Q0FBeUMsRUFDNUM7RUFwQ2pCO1FBdUNnQiw0QkFBMkI7UUFDM0IsZUFBYztRQUNkLFFBQU87UUFDUCxjQUFhO1FBQ2Isa0JBQWlCLEVBWXBCO0VBdkRiO1VBNkNvQixrQkFBaUI7VUFDakIsaUJBQWdCO1VBQ2hCLFVBQVM7VUFDVCxlQUNKLEVBQUM7RUFqRGpCO1VBbURvQixpQkFBZ0I7VUFDaEIsaUJBQWdCO1VBQ2hCLFVBQVMsRUFDWjtFQU1qQjtFQUNJO0lBRVEsZUFBYztJQUNkLGVBQWMsRUFDakI7RUFKTDtJQU1RLDZCQUE0QixFQVMvQjtJQWZMO01BU2dCLDBCQUF5QjtNQUN6QixlQUFjLEVBR2pCLEVBQUEiLCJmaWxlIjoic3JjL2FwcC9yZXN1bHRzL3Jlc3VsdHMuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIucmVzdWx0cy1hcmVhIHtcbiAgICBtYXJnaW4tdG9wOiA2MHB4O1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgIGp1c3RpZnktY29udGVudDogZmxleC1zdGFydDtcbiAgICBoMSB7XG4gICAgICAgIG1hcmdpbi1ib3R0b206IDMwcHg7XG4gICAgfVxuICAgIGxhYmVsIHtcbiAgICAgICAgJi50aXRsZSB7XG4gICAgICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgICAgIHRleHQtYWxpZ246IGxlZnQ7XG4gICAgICAgICAgICBmb250LXNpemU6IG1lZGl1bTtcbiAgICAgICAgICAgIGZvbnQtd2VpZ2h0OiBib2xkO1xuICAgICAgICAgICAgY29sb3I6ICMzMzM7XG4gICAgICAgICAgICBwYWRkaW5nOiAwIDE1cHg7XG4gICAgICAgIH1cbiAgICB9XG4gICAgLnJlc3VsdCB7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBib3JkZXItdG9wOiAxcHggc29saWQgcmdiYSgwLDAsMCwwLjEwKTtcbiAgICAgICAgcGFkZGluZzogMzBweCAzMHB4IDE1cHggMzBweDtcbiAgICAgICAgLnBhaXItd3JhcHBlciB7XG4gICAgICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGZsZXgtc3RhcnQ7XG4gICAgICAgICAgICBhbGlnbi1pdGVtczogZmxleC1zdGFydDtcbiAgICAgICAgICAgIGZsZXgtZmxvdzogcm93IHdyYXA7XG4gICAgICAgICAgICAmLnJ1blBhaXJXcmFwcGVyIHtcbiAgICAgICAgICAgICAgICBwYWRkaW5nOiAxNXB4IDA7XG4gICAgICAgICAgICAgICAgJjpub3QoOmxhc3QtY2hpbGQpIHtcbiAgICAgICAgICAgICAgICAgICAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkIHJnYmEoMCwwLDAsMC4xMCk7XG4gICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICAgICY6bm90KDpmaXJzdC1jaGlsZCkge1xuICAgICAgICAgICAgICAgICAgICBib3JkZXItYm90dG9tOiAxcHggc29saWQgcmdiYSgwLDAsMCwwLjEwKTtcbiAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICB9XG4gICAgICAgICAgICAua2V5LXZhbHVlLXBhaXIge1xuICAgICAgICAgICAgICAgIHBhZGRpbmc6IDE1cHggMTVweCA1cHggMTVweDtcbiAgICAgICAgICAgICAgICBtaW4td2lkdGg6IDIwJTtcbiAgICAgICAgICAgICAgICBmbGV4OiAxO1xuICAgICAgICAgICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgICAgICAgICAgZmxleC1mbG93OiBjb2x1bW47XG4gICAgICAgICAgICAgICAgLmtleSB7XG4gICAgICAgICAgICAgICAgICAgIGZvbnQtd2VpZ2h0OiBib2xkO1xuICAgICAgICAgICAgICAgICAgICBmb250LXNpemU6IHNtYWxsO1xuICAgICAgICAgICAgICAgICAgICBtYXJnaW46IDA7XG4gICAgICAgICAgICAgICAgICAgIGNvbG9yOiAjNzA3MDcwXG4gICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICAgIC52YWx1ZSB7XG4gICAgICAgICAgICAgICAgICAgIGZvbnQtd2VpZ2h0OiAzMDA7XG4gICAgICAgICAgICAgICAgICAgIGZvbnQtc2l6ZTogbGFyZ2U7XG4gICAgICAgICAgICAgICAgICAgIG1hcmdpbjogMDtcbiAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICB9XG4gICAgICAgIH1cbiAgICB9XG59XG5cbkBtZWRpYSBvbmx5IHNjcmVlbiBhbmQgKG1heC13aWR0aDogNzY4cHgpIHtcbiAgICAucmVzdWx0cy1hcmVhIHtcbiAgICAgICAgbGFiZWwudGl0bGUge1xuICAgICAgICAgICAgcGFkZGluZzogMCA1cHg7XG4gICAgICAgICAgICBtYXJnaW46IDEwcHggMDtcbiAgICAgICAgfVxuICAgICAgICAucmVzdWx0IHtcbiAgICAgICAgICAgIHBhZGRpbmc6IDE1cHggMTVweCAxNXB4IDE1cHg7XG4gICAgICAgICAgICAucGFpci13cmFwcGVyIHtcbiAgICAgICAgICAgICAgICAua2V5LXZhbHVlLXBhaXIge1xuICAgICAgICAgICAgICAgICAgICBwYWRkaW5nOiAxMHB4IDVweCA1cHggNXB4O1xuICAgICAgICAgICAgICAgICAgICBtaW4td2lkdGg6IDUwJTtcbiAgICAgICAgICAgICAgICAgICAgLmtleSB7fVxuICAgICAgICAgICAgICAgICAgICAudmFsdWUge31cbiAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICB9XG4gICAgICAgIH1cbiAgICB9XG59Il19 */"];
 exports.styles = styles;
 
 
@@ -1638,17 +1671,75 @@ exports.styles = styles;
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(/*! @angular/core */ "@angular/core");
 var app_service_1 = __webpack_require__(/*! ../app.service */ "./src/app/app.service.ts");
+var _ = __webpack_require__(/*! lodash */ "lodash");
+var labelMaps = {
+    'type': 'Participant Type',
+    'radius': 'Size'
+};
 var ResultsComponent = /** @class */ (function () {
     function ResultsComponent(appService) {
         this.appService = appService;
         // tslint:disable 
-        this.runAverages = [
-            { "name": "Asit", "alias": "AKPARIDA", "type": "Someone like you", "device": "other", "deviceDetails": "device", "deviceWidth": 10, "deviceHeight": 12, "run": "RUN #1", "radius": 48.671875, "distance": 402.65625, "averageTicks": 605.2517241372823, "averageVerticalTicks": 519.3750000034925, "averageHorizontalTicks": 639.3749999988358, "averageOtherTicks": 617.3769230596148, "hits": 29, "misses": 0, "verticalHits": 4, "verticalMisses": 0, "horizontalHits": 4, "horizontalMisses": 0, "otherHits": 13, "otherMisses": 0, "hitPercentage": 100, "missPercentage": 0, "verticalHitPecentage": 100, "verticalMissPecentage": 0, "horizontalHitPecentage": 100, "horizontalMissPecentage": 0, "otherDirectionHitPecentage": 100, "otherDirectionMissPecentage": 0 },
-            { "name": "Asit", "alias": "AKPARIDA", "type": "Someone like you", "device": "other", "deviceDetails": "device", "deviceWidth": 10, "deviceHeight": 12, "run": "RUN #2", "radius": 24.671875, "distance": 450.65625, "averageTicks": 718.5482758675413, "averageVerticalTicks": 719.6500000136439, "averageHorizontalTicks": 653.775000013411, "averageOtherTicks": 752.8999999989397, "hits": 29, "misses": 0, "verticalHits": 4, "verticalMisses": 0, "horizontalHits": 4, "horizontalMisses": 0, "otherHits": 13, "otherMisses": 0, "hitPercentage": 100, "missPercentage": 0, "verticalHitPecentage": 100, "verticalMissPecentage": 0, "horizontalHitPecentage": 100, "horizontalMissPecentage": 0, "otherDirectionHitPecentage": 100, "otherDirectionMissPecentage": 0 }
-        ];
-        this.userAverage = { "name": "Asit", "alias": "AKPARIDA", "type": "Someone like you", 'device': "other", "deviceDetails": "device", "deviceWidth": 10, "deviceHeight": 12, "averageTicks": 661.9000000024118, "averageVerticalTicks": 619.5125000085682, "averageHorizontalTicks": 646.5750000061234, "averageOtherTicks": 685.1384615292773, "hits": 58, "misses": 0, "verticalHits": 8, "verticalMisses": 0, "horizontalHits": 8, "horizontalMisses": 0, "otherHits": 26, "otherMisses": 0, "hitPercentage": 100, "missPercentage": 0, "verticalHitPecentage": 100, "verticalMissPecentage": 0, "horizontalHitPecentage": 100, "horizontalMissPecentage": 0, "otherDirectionHitPecentage": 100, "otherDirectionMissPecentage": 0 };
+        this.runAverages = [];
+        this.userAverage = null;
+        this.userInfoPairs = [];
+        this.userAveragePairs = [];
+        this.runInfoPairs = [];
     }
     ResultsComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.runAverages = this.appService.runAverages;
+        this.userAverage = this.appService.userAverage;
+        var userAverageKeys = Object.keys(this.userAverage);
+        var userAverageData = userAverageKeys.map(function (key) {
+            var value = _this.userAverage[key];
+            if (key.indexOf('Percentage') !== -1) {
+                value = (Math.round(value * 100)) / 100;
+                value = value + " %";
+            }
+            if (key.indexOf('Ticks') !== -1) {
+                value = (Math.round(value * 100)) / 100;
+                value = value + " ms";
+            }
+            if (key.indexOf('radius') !== -1) {
+                value = value + " cm";
+            }
+            return {
+                key: key, value: value,
+                label: labelMaps[key] ? labelMaps[key] : _this.getLabel(key)
+            };
+        });
+        var userKeys = ['name', 'alias', 'type', 'device', 'deviceDetails', 'deviceDiagonal'];
+        this.userInfoPairs = userAverageData.filter(function (pair) { return _.indexOf(userKeys, pair.key) !== -1; });
+        this.userAveragePairs = userAverageData.filter(function (pair) { return _.indexOf(userKeys, pair.key) === -1; });
+        this.runAverages.forEach(function (run) {
+            var userRunKeys = Object.keys(run);
+            var userRunData = userRunKeys.map(function (key) {
+                var value = run[key];
+                if (key.indexOf('Percentage') !== -1) {
+                    value = (Math.round(value * 100)) / 100;
+                    value = value + " %";
+                }
+                if (key.indexOf('Ticks') !== -1) {
+                    value = (Math.round(value * 100)) / 100;
+                    value = value + " ms";
+                }
+                if (key.indexOf('radius') !== -1) {
+                    value = value + " cm";
+                }
+                return {
+                    key: key, value: value,
+                    label: labelMaps[key] ? labelMaps[key] : _this.getLabel(key)
+                };
+            });
+            var runData = userRunData.filter(function (pair) { return _.indexOf(userKeys, pair.key) === -1; });
+            _this.runInfoPairs.push(runData);
+        });
+        console.log(this.runInfoPairs);
+    };
+    ResultsComponent.prototype.getLabel = function (key) {
+        return key.replace(/([A-Z])/g, ' $1')
+            .replace(/^./, function (str) { return str.toUpperCase(); });
     };
     return ResultsComponent;
 }());

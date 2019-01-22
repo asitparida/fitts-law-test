@@ -341,6 +341,7 @@ var AppService = /** @class */ (function () {
         this.userAverage = {};
         this.debugModeTurns = null;
         this.dpi = null;
+        this.currentDataSet = null;
         if (MobileDetect) {
             this.md = new MobileDetect(window.navigator.userAgent);
         }
@@ -419,6 +420,67 @@ var AppService = /** @class */ (function () {
         ;
         return this.dpi;
         // tslint:enable
+    };
+    AppService.prototype.downloadData = function () {
+        var saveData = (function () {
+            var a = document.createElement('a');
+            document.body.appendChild(a);
+            a.style.display = 'none';
+            return function (data, fileName) {
+                var json = JSON.stringify(data), blob = new Blob([json], { type: 'octet/stream' }), url = window.URL.createObjectURL(blob);
+                a.href = url;
+                a.download = fileName;
+                a.click();
+                window.URL.revokeObjectURL(url);
+            };
+        }());
+        var obj = Object.assign({}, {
+            data: this.currentDataSet
+        });
+        saveData(obj, this.info.alias + "-data-json.json");
+    };
+    AppService.prototype.convertArrayOfObjectsToCSV = function (args) {
+        var result, ctr, keys, columnDelimiter, lineDelimiter, data;
+        data = args.data || null;
+        if (data == null || !data.length) {
+            return null;
+        }
+        columnDelimiter = args.columnDelimiter || ',';
+        lineDelimiter = args.lineDelimiter || '\n';
+        keys = Object.keys(data[0]);
+        result = '';
+        result += keys.join(columnDelimiter);
+        result += lineDelimiter;
+        data.forEach(function (item) {
+            ctr = 0;
+            keys.forEach(function (key) {
+                if (ctr > 0) {
+                    result += columnDelimiter;
+                }
+                result += item[key];
+                ctr++;
+            });
+            result += lineDelimiter;
+        });
+        return result;
+    };
+    AppService.prototype.downloadCSVData = function () {
+        var data, filename, link;
+        var csv = this.convertArrayOfObjectsToCSV({
+            data: this.currentDataSet
+        });
+        if (csv === null) {
+            return;
+        }
+        filename = this.info.alias + "-data-csv.csv";
+        if (!csv.match(/^data:text\/csv/i)) {
+            csv = 'data:text/csv;charset=utf-8,' + csv;
+        }
+        data = encodeURI(csv);
+        link = document.createElement('a');
+        link.setAttribute('href', data);
+        link.setAttribute('download', filename);
+        link.click();
     };
     return AppService;
 }());
@@ -513,7 +575,7 @@ function View_FittsTestComponent_8(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0
         var pd_0 = (_co.downloadCSVData() !== false);
         ad = (pd_0 && ad);
     } return ad; }, null, null)), (_l()(), i1.ɵted(-1, null, ["Download CSV Data"]))], null, null); }
-function View_FittsTestComponent_6(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 11, null, null, null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 10, "div", [["class", "practice-run-modal"]], null, null, null, null, null)), (_l()(), i1.ɵeld(2, 0, null, null, 1, "h2", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Thanks for taking the test !"])), (_l()(), i1.ɵeld(4, 0, null, null, 3, "button", [["class", "btn-main primary"]], null, [[null, "click"]], function (_v, en, $event) { var ad = true; if (("click" === en)) {
+function View_FittsTestComponent_6(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 11, null, null, null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 10, "div", [["class", "practice-run-modal"]], null, null, null, null, null)), (_l()(), i1.ɵeld(2, 0, null, null, 1, "h2", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Thanks for taking the test !"])), (_l()(), i1.ɵeld(4, 0, null, null, 3, "button", [["class", "btn-main primary"], ["target", "_blank"]], null, [[null, "click"]], function (_v, en, $event) { var ad = true; if (("click" === en)) {
         var pd_0 = (i1.ɵnov(_v, 5).onClick() !== false);
         ad = (pd_0 && ad);
     } return ad; }, null, null)), i1.ɵdid(5, 16384, null, 0, i2.RouterLink, [i2.Router, i2.ActivatedRoute, [8, null], i1.Renderer2, i1.ElementRef], { routerLink: [0, "routerLink"] }, null), i1.ɵpad(6, 1), (_l()(), i1.ɵted(-1, null, ["View Results"])), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_7)), i1.ɵdid(9, 16384, null, 0, i3.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_8)), i1.ɵdid(11, 16384, null, 0, i3.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null)], function (_ck, _v) { var _co = _v.component; var currVal_0 = _ck(_v, 6, 0, "/results"); _ck(_v, 5, 0, currVal_0); var currVal_1 = !_co.isMobile; _ck(_v, 9, 0, currVal_1); var currVal_2 = !_co.isMobile; _ck(_v, 11, 0, currVal_2); }, null); }
@@ -1217,65 +1279,11 @@ var FittsTestComponent = /** @class */ (function () {
         return angle * (Math.PI / 180);
     };
     FittsTestComponent.prototype.downloadData = function () {
-        var saveData = (function () {
-            var a = document.createElement('a');
-            document.body.appendChild(a);
-            a.style.display = 'none';
-            return function (data, fileName) {
-                var json = JSON.stringify(data), blob = new Blob([json], { type: 'octet/stream' }), url = window.URL.createObjectURL(blob);
-                a.href = url;
-                a.download = fileName;
-                a.click();
-                window.URL.revokeObjectURL(url);
-            };
-        }());
-        var obj = Object.assign({}, {
-            data: this.overallDataSet
-        });
-        saveData(obj, this.userInfo.alias + "-data-json.json");
+        this.appService.currentDataSet = this.overallDataSet;
+        this.appService.downloadData();
     };
     FittsTestComponent.prototype.downloadCSVData = function () {
-        var data, filename, link;
-        var csv = this.convertArrayOfObjectsToCSV({
-            data: this.overallDataSet
-        });
-        if (csv === null) {
-            return;
-        }
-        filename = this.userInfo.alias + "-data-csv.csv";
-        if (!csv.match(/^data:text\/csv/i)) {
-            csv = 'data:text/csv;charset=utf-8,' + csv;
-        }
-        data = encodeURI(csv);
-        link = document.createElement('a');
-        link.setAttribute('href', data);
-        link.setAttribute('download', filename);
-        link.click();
-    };
-    FittsTestComponent.prototype.convertArrayOfObjectsToCSV = function (args) {
-        var result, ctr, keys, columnDelimiter, lineDelimiter, data;
-        data = args.data || null;
-        if (data == null || !data.length) {
-            return null;
-        }
-        columnDelimiter = args.columnDelimiter || ',';
-        lineDelimiter = args.lineDelimiter || '\n';
-        keys = Object.keys(data[0]);
-        result = '';
-        result += keys.join(columnDelimiter);
-        result += lineDelimiter;
-        data.forEach(function (item) {
-            ctr = 0;
-            keys.forEach(function (key) {
-                if (ctr > 0) {
-                    result += columnDelimiter;
-                }
-                result += item[key];
-                ctr++;
-            });
-            result += lineDelimiter;
-        });
-        return result;
+        this.appService.downloadCSVData();
     };
     return FittsTestComponent;
 }());
@@ -1308,10 +1316,10 @@ var i4 = __webpack_require__(/*! ../app.service */ "./src/app/app.service.ts");
 var styles_HomeComponent = [i0.styles];
 var RenderType_HomeComponent = i1.ɵcrt({ encapsulation: 0, styles: styles_HomeComponent, data: {} });
 exports.RenderType_HomeComponent = RenderType_HomeComponent;
-function View_HomeComponent_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 8, "div", [["class", "home-page"]], null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 1, "h1", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Fitts Law Test"])), (_l()(), i1.ɵeld(3, 0, null, null, 1, "p", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."])), (_l()(), i1.ɵeld(5, 0, null, null, 3, "button", [["class", "btn-main primary"]], null, [[null, "click"]], function (_v, en, $event) { var ad = true; if (("click" === en)) {
-        var pd_0 = (i1.ɵnov(_v, 6).onClick() !== false);
+function View_HomeComponent_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 25, "div", [["class", "home-page"]], null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 1, "h1", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Fitts Law Test"])), (_l()(), i1.ɵeld(3, 0, null, null, 18, "p", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, [" This website runs a pointing device speed test, adapted from Fitts's Law and ISO standard 9241-9. It was developed by "])), (_l()(), i1.ɵeld(5, 0, null, null, 1, "a", [["href", "http://www.asitparida.com/"], ["target", "_blank"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Asit Parida"])), (_l()(), i1.ɵted(-1, null, [" for the CMU HCII class "])), (_l()(), i1.ɵeld(8, 0, null, null, 1, "a", [["href", "http://www.cs.cmu.edu/~bam/uicourse/05440inter2019/"], ["target", "_blank"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["05-640: Interaction Techniques"])), (_l()(), i1.ɵted(-1, null, [", Spring, 2019. "])), (_l()(), i1.ɵeld(11, 0, null, null, 0, "br", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, [" On the next page, please enter the details of the device you are testing. "])), (_l()(), i1.ɵeld(13, 0, null, null, 1, "strong", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Note that measuring the screen diagonal size accurately is important."])), (_l()(), i1.ɵeld(15, 0, null, null, 0, "br", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, [" Your goal is to tap or click the blue circles as QUICKLY and as ACCURATELY as possible. For consistency, be sure to interact the same way throughout the test. If you miss, the circle will turn red and wait for you to tap correctly. Please do not to change the orientation of the device or resize the window. If you are using a mobile device, be sure that the keyboard is closed before you press the \u201CStart Test\u201D button. "])), (_l()(), i1.ɵeld(17, 0, null, null, 0, "br", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, [" At the end of the test, you will be able to download your results in JSON or CSV format, and display them on the screen. Also, they will be copied into the class\u2019s Google Sheet for which please remember to sign in using your "])), (_l()(), i1.ɵeld(19, 0, null, null, 1, "strong", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["ANDREW"])), (_l()(), i1.ɵted(-1, null, [" account. Use the 'Authorize' button at the top for the same. "])), (_l()(), i1.ɵeld(22, 0, null, null, 3, "button", [["class", "btn-main primary"]], null, [[null, "click"]], function (_v, en, $event) { var ad = true; if (("click" === en)) {
+        var pd_0 = (i1.ɵnov(_v, 23).onClick() !== false);
         ad = (pd_0 && ad);
-    } return ad; }, null, null)), i1.ɵdid(6, 16384, null, 0, i2.RouterLink, [i2.Router, i2.ActivatedRoute, [8, null], i1.Renderer2, i1.ElementRef], { routerLink: [0, "routerLink"] }, null), i1.ɵpad(7, 1), (_l()(), i1.ɵted(-1, null, ["Begin Test"]))], function (_ck, _v) { var currVal_0 = _ck(_v, 7, 0, "/info"); _ck(_v, 6, 0, currVal_0); }, null); }
+    } return ad; }, null, null)), i1.ɵdid(23, 16384, null, 0, i2.RouterLink, [i2.Router, i2.ActivatedRoute, [8, null], i1.Renderer2, i1.ElementRef], { routerLink: [0, "routerLink"] }, null), i1.ɵpad(24, 1), (_l()(), i1.ɵted(-1, null, ["Next"]))], function (_ck, _v) { var currVal_0 = _ck(_v, 24, 0, "/info"); _ck(_v, 23, 0, currVal_0); }, null); }
 exports.View_HomeComponent_0 = View_HomeComponent_0;
 function View_HomeComponent_Host_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "app-home", [], null, null, null, View_HomeComponent_0, RenderType_HomeComponent)), i1.ɵdid(1, 114688, null, 0, i3.HomeComponent, [i4.AppService], null, null)], function (_ck, _v) { _ck(_v, 1, 0); }, null); }
 exports.View_HomeComponent_Host_0 = View_HomeComponent_Host_0;
@@ -1337,7 +1345,7 @@ exports.HomeComponentNgFactory = HomeComponentNgFactory;
  * tslint:disable
  */ 
 Object.defineProperty(exports, "__esModule", { value: true });
-var styles = [".home-page[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  width: 100%;\n  padding: 30px;\n  flex-direction: column; }\n  .home-page[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n    text-align: center; }\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9hc2l0cGFyaWRhL0NvZGVzL3RlbXAyL2ZpdHRzLWxhdy10ZXN0LXVuaXYvc3JjL2FwcC9ob21lL2hvbWUuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxjQUFhO0VBQ2Isd0JBQXVCO0VBQ3ZCLG9CQUFtQjtFQUNuQixZQUFXO0VBQ1gsY0FBYTtFQUNiLHVCQUFzQixFQUl6QjtFQVZEO0lBUVEsbUJBQWtCLEVBQ3JCIiwiZmlsZSI6InNyYy9hcHAvaG9tZS9ob21lLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmhvbWUtcGFnZSB7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgIHdpZHRoOiAxMDAlO1xuICAgIHBhZGRpbmc6IDMwcHg7XG4gICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICBwIHtcbiAgICAgICAgdGV4dC1hbGlnbjogY2VudGVyO1xuICAgIH1cbn0iXX0= */"];
+var styles = [".home-page[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  width: 100%;\n  padding: 30px;\n  flex-direction: column; }\n  .home-page[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n    padding: 30px 0 0 0;\n    text-align: left;\n    max-width: 1000px; }\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9hc2l0cGFyaWRhL0NvZGVzL3RlbXAyL2ZpdHRzLWxhdy10ZXN0LXVuaXYvc3JjL2FwcC9ob21lL2hvbWUuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxjQUFhO0VBQ2Isd0JBQXVCO0VBQ3ZCLG9CQUFtQjtFQUNuQixZQUFXO0VBQ1gsY0FBYTtFQUNiLHVCQUFzQixFQU16QjtFQVpEO0lBUVEsb0JBQW9CO0lBQ3BCLGlCQUFnQjtJQUNoQixrQkFBaUIsRUFDcEIiLCJmaWxlIjoic3JjL2FwcC9ob21lL2hvbWUuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuaG9tZS1wYWdlIHtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgcGFkZGluZzogMzBweDtcbiAgICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xuICAgIHAge1xuICAgICAgICBwYWRkaW5nOiAzMHB4IDAgMCAwIDtcbiAgICAgICAgdGV4dC1hbGlnbjogbGVmdDtcbiAgICAgICAgbWF4LXdpZHRoOiAxMDAwcHg7XG4gICAgfVxufSJdfQ== */"];
 exports.styles = styles;
 
 
@@ -1417,7 +1425,7 @@ var RenderType_InfoComponent = i1.ɵcrt({ encapsulation: 0, styles: styles_InfoC
 exports.RenderType_InfoComponent = RenderType_InfoComponent;
 function View_InfoComponent_1(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 3, "option", [], null, null, null, null, null)), i1.ɵdid(1, 147456, null, 0, i2.NgSelectOption, [i1.ElementRef, i1.Renderer2, [2, i2.SelectControlValueAccessor]], { value: [0, "value"] }, null), i1.ɵdid(2, 147456, null, 0, i2.ɵangular_packages_forms_forms_s, [i1.ElementRef, i1.Renderer2, [8, null]], { value: [0, "value"] }, null), (_l()(), i1.ɵted(3, null, ["", ""]))], function (_ck, _v) { var currVal_0 = _v.context.$implicit.text; _ck(_v, 1, 0, currVal_0); var currVal_1 = _v.context.$implicit.text; _ck(_v, 2, 0, currVal_1); }, function (_ck, _v) { var currVal_2 = _v.context.$implicit.text; _ck(_v, 3, 0, currVal_2); }); }
 function View_InfoComponent_2(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 3, "option", [], null, null, null, null, null)), i1.ɵdid(1, 147456, null, 0, i2.NgSelectOption, [i1.ElementRef, i1.Renderer2, [2, i2.SelectControlValueAccessor]], { value: [0, "value"] }, null), i1.ɵdid(2, 147456, null, 0, i2.ɵangular_packages_forms_forms_s, [i1.ElementRef, i1.Renderer2, [8, null]], { value: [0, "value"] }, null), (_l()(), i1.ɵted(3, null, ["", ""]))], function (_ck, _v) { var currVal_0 = _v.context.$implicit; _ck(_v, 1, 0, currVal_0); var currVal_1 = _v.context.$implicit; _ck(_v, 2, 0, currVal_1); }, function (_ck, _v) { var currVal_2 = _v.context.$implicit; _ck(_v, 3, 0, currVal_2); }); }
-function View_InfoComponent_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 84, "div", [["class", "info-page"]], null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 1, "h1", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Please fill in the following details"])), (_l()(), i1.ɵeld(3, 0, null, null, 79, "form", [["novalidate", ""]], [[2, "ng-untouched", null], [2, "ng-touched", null], [2, "ng-pristine", null], [2, "ng-dirty", null], [2, "ng-valid", null], [2, "ng-invalid", null], [2, "ng-pending", null]], [[null, "submit"], [null, "reset"]], function (_v, en, $event) { var ad = true; if (("submit" === en)) {
+function View_InfoComponent_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 84, "div", [["class", "info-page"]], null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 1, "h1", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Please fill in the following details"])), (_l()(), i1.ɵeld(3, 0, null, null, 79, "form", [["novalidate", ""], ["style", "padding-bottom: 0;"]], [[2, "ng-untouched", null], [2, "ng-touched", null], [2, "ng-pristine", null], [2, "ng-dirty", null], [2, "ng-valid", null], [2, "ng-invalid", null], [2, "ng-pending", null]], [[null, "submit"], [null, "reset"]], function (_v, en, $event) { var ad = true; if (("submit" === en)) {
         var pd_0 = (i1.ɵnov(_v, 5).onSubmit($event) !== false);
         ad = (pd_0 && ad);
     } if (("reset" === en)) {
@@ -1510,7 +1518,7 @@ function View_InfoComponent_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, 
     } if (("ngModelChange" === en)) {
         var pd_7 = ((_co.info.deviceDiagonal = $event) !== false);
         ad = (pd_7 && ad);
-    } return ad; }, null, null)), i1.ɵdid(75, 16384, null, 0, i2.DefaultValueAccessor, [i1.Renderer2, i1.ElementRef, [2, i2.COMPOSITION_BUFFER_MODE]], null, null), i1.ɵdid(76, 16384, null, 0, i2.ɵangular_packages_forms_forms_be, [i1.Renderer2, i1.ElementRef], null, null), i1.ɵdid(77, 16384, null, 0, i2.RequiredValidator, [], { required: [0, "required"] }, null), i1.ɵprd(1024, null, i2.NG_VALIDATORS, function (p0_0) { return [p0_0]; }, [i2.RequiredValidator]), i1.ɵprd(1024, null, i2.NG_VALUE_ACCESSOR, function (p0_0, p1_0) { return [p0_0, p1_0]; }, [i2.DefaultValueAccessor, i2.ɵangular_packages_forms_forms_be]), i1.ɵdid(80, 671744, null, 0, i2.NgModel, [[2, i2.ControlContainer], [6, i2.NG_VALIDATORS], [8, null], [6, i2.NG_VALUE_ACCESSOR]], { name: [0, "name"], model: [1, "model"] }, { update: "ngModelChange" }), i1.ɵprd(2048, null, i2.NgControl, null, [i2.NgModel]), i1.ɵdid(82, 16384, null, 0, i2.NgControlStatus, [[4, i2.NgControl]], null, null), (_l()(), i1.ɵeld(83, 0, null, null, 1, "button", [["class", "btn-main"]], [[8, "disabled", 0]], [[null, "click"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("click" === en)) {
+    } return ad; }, null, null)), i1.ɵdid(75, 16384, null, 0, i2.DefaultValueAccessor, [i1.Renderer2, i1.ElementRef, [2, i2.COMPOSITION_BUFFER_MODE]], null, null), i1.ɵdid(76, 16384, null, 0, i2.ɵangular_packages_forms_forms_be, [i1.Renderer2, i1.ElementRef], null, null), i1.ɵdid(77, 16384, null, 0, i2.RequiredValidator, [], { required: [0, "required"] }, null), i1.ɵprd(1024, null, i2.NG_VALIDATORS, function (p0_0) { return [p0_0]; }, [i2.RequiredValidator]), i1.ɵprd(1024, null, i2.NG_VALUE_ACCESSOR, function (p0_0, p1_0) { return [p0_0, p1_0]; }, [i2.DefaultValueAccessor, i2.ɵangular_packages_forms_forms_be]), i1.ɵdid(80, 671744, null, 0, i2.NgModel, [[2, i2.ControlContainer], [6, i2.NG_VALIDATORS], [8, null], [6, i2.NG_VALUE_ACCESSOR]], { name: [0, "name"], model: [1, "model"] }, { update: "ngModelChange" }), i1.ɵprd(2048, null, i2.NgControl, null, [i2.NgModel]), i1.ɵdid(82, 16384, null, 0, i2.NgControlStatus, [[4, i2.NgControl]], null, null), (_l()(), i1.ɵeld(83, 0, null, null, 1, "button", [["class", "btn-main"], ["style", "margin-top: 15px;"]], [[8, "disabled", 0]], [[null, "click"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("click" === en)) {
         var pd_0 = (_co.next() !== false);
         ad = (pd_0 && ad);
     } return ad; }, null, null)), (_l()(), i1.ɵted(-1, null, ["Next"]))], function (_ck, _v) { var _co = _v.component; var currVal_15 = ""; _ck(_v, 13, 0, currVal_15); var currVal_16 = "name"; var currVal_17 = _co.info.name; _ck(_v, 16, 0, currVal_16, currVal_17); var currVal_26 = ""; _ck(_v, 24, 0, currVal_26); var currVal_27 = "alias"; var currVal_28 = _co.info.alias; _ck(_v, 27, 0, currVal_27, currVal_28); var currVal_37 = ""; _ck(_v, 35, 0, currVal_37); var currVal_38 = "type"; var currVal_39 = _co.info.type; _ck(_v, 38, 0, currVal_38, currVal_39); var currVal_40 = _co.participantTypes; _ck(_v, 42, 0, currVal_40); var currVal_49 = ""; _ck(_v, 48, 0, currVal_49); var currVal_50 = "device"; var currVal_51 = _co.info.device; _ck(_v, 51, 0, currVal_50, currVal_51); var currVal_52 = _co.deviceTypes; _ck(_v, 55, 0, currVal_52); var currVal_61 = ""; _ck(_v, 63, 0, currVal_61); var currVal_62 = "alias"; var currVal_63 = _co.info.deviceDetails; _ck(_v, 66, 0, currVal_62, currVal_63); var currVal_72 = ""; _ck(_v, 77, 0, currVal_72); var currVal_73 = "deviceDiagonal"; var currVal_74 = _co.info.deviceDiagonal; _ck(_v, 80, 0, currVal_73, currVal_74); }, function (_ck, _v) { var currVal_0 = i1.ɵnov(_v, 7).ngClassUntouched; var currVal_1 = i1.ɵnov(_v, 7).ngClassTouched; var currVal_2 = i1.ɵnov(_v, 7).ngClassPristine; var currVal_3 = i1.ɵnov(_v, 7).ngClassDirty; var currVal_4 = i1.ɵnov(_v, 7).ngClassValid; var currVal_5 = i1.ɵnov(_v, 7).ngClassInvalid; var currVal_6 = i1.ɵnov(_v, 7).ngClassPending; _ck(_v, 3, 0, currVal_0, currVal_1, currVal_2, currVal_3, currVal_4, currVal_5, currVal_6); var currVal_7 = (i1.ɵnov(_v, 13).required ? "" : null); var currVal_8 = i1.ɵnov(_v, 18).ngClassUntouched; var currVal_9 = i1.ɵnov(_v, 18).ngClassTouched; var currVal_10 = i1.ɵnov(_v, 18).ngClassPristine; var currVal_11 = i1.ɵnov(_v, 18).ngClassDirty; var currVal_12 = i1.ɵnov(_v, 18).ngClassValid; var currVal_13 = i1.ɵnov(_v, 18).ngClassInvalid; var currVal_14 = i1.ɵnov(_v, 18).ngClassPending; _ck(_v, 11, 0, currVal_7, currVal_8, currVal_9, currVal_10, currVal_11, currVal_12, currVal_13, currVal_14); var currVal_18 = (i1.ɵnov(_v, 24).required ? "" : null); var currVal_19 = i1.ɵnov(_v, 29).ngClassUntouched; var currVal_20 = i1.ɵnov(_v, 29).ngClassTouched; var currVal_21 = i1.ɵnov(_v, 29).ngClassPristine; var currVal_22 = i1.ɵnov(_v, 29).ngClassDirty; var currVal_23 = i1.ɵnov(_v, 29).ngClassValid; var currVal_24 = i1.ɵnov(_v, 29).ngClassInvalid; var currVal_25 = i1.ɵnov(_v, 29).ngClassPending; _ck(_v, 22, 0, currVal_18, currVal_19, currVal_20, currVal_21, currVal_22, currVal_23, currVal_24, currVal_25); var currVal_29 = (i1.ɵnov(_v, 35).required ? "" : null); var currVal_30 = i1.ɵnov(_v, 40).ngClassUntouched; var currVal_31 = i1.ɵnov(_v, 40).ngClassTouched; var currVal_32 = i1.ɵnov(_v, 40).ngClassPristine; var currVal_33 = i1.ɵnov(_v, 40).ngClassDirty; var currVal_34 = i1.ɵnov(_v, 40).ngClassValid; var currVal_35 = i1.ɵnov(_v, 40).ngClassInvalid; var currVal_36 = i1.ɵnov(_v, 40).ngClassPending; _ck(_v, 33, 0, currVal_29, currVal_30, currVal_31, currVal_32, currVal_33, currVal_34, currVal_35, currVal_36); var currVal_41 = (i1.ɵnov(_v, 48).required ? "" : null); var currVal_42 = i1.ɵnov(_v, 53).ngClassUntouched; var currVal_43 = i1.ɵnov(_v, 53).ngClassTouched; var currVal_44 = i1.ɵnov(_v, 53).ngClassPristine; var currVal_45 = i1.ɵnov(_v, 53).ngClassDirty; var currVal_46 = i1.ɵnov(_v, 53).ngClassValid; var currVal_47 = i1.ɵnov(_v, 53).ngClassInvalid; var currVal_48 = i1.ɵnov(_v, 53).ngClassPending; _ck(_v, 46, 0, currVal_41, currVal_42, currVal_43, currVal_44, currVal_45, currVal_46, currVal_47, currVal_48); var currVal_53 = (i1.ɵnov(_v, 63).required ? "" : null); var currVal_54 = i1.ɵnov(_v, 68).ngClassUntouched; var currVal_55 = i1.ɵnov(_v, 68).ngClassTouched; var currVal_56 = i1.ɵnov(_v, 68).ngClassPristine; var currVal_57 = i1.ɵnov(_v, 68).ngClassDirty; var currVal_58 = i1.ɵnov(_v, 68).ngClassValid; var currVal_59 = i1.ɵnov(_v, 68).ngClassInvalid; var currVal_60 = i1.ɵnov(_v, 68).ngClassPending; _ck(_v, 61, 0, currVal_53, currVal_54, currVal_55, currVal_56, currVal_57, currVal_58, currVal_59, currVal_60); var currVal_64 = (i1.ɵnov(_v, 77).required ? "" : null); var currVal_65 = i1.ɵnov(_v, 82).ngClassUntouched; var currVal_66 = i1.ɵnov(_v, 82).ngClassTouched; var currVal_67 = i1.ɵnov(_v, 82).ngClassPristine; var currVal_68 = i1.ɵnov(_v, 82).ngClassDirty; var currVal_69 = i1.ɵnov(_v, 82).ngClassValid; var currVal_70 = i1.ɵnov(_v, 82).ngClassInvalid; var currVal_71 = i1.ɵnov(_v, 82).ngClassPending; _ck(_v, 74, 0, currVal_64, currVal_65, currVal_66, currVal_67, currVal_68, currVal_69, currVal_70, currVal_71); var currVal_75 = !i1.ɵnov(_v, 5).valid; _ck(_v, 83, 0, currVal_75); }); }
@@ -1624,10 +1632,18 @@ var styles_ResultsComponent = [i0.styles];
 var RenderType_ResultsComponent = i1.ɵcrt({ encapsulation: 0, styles: styles_ResultsComponent, data: {} });
 exports.RenderType_ResultsComponent = RenderType_ResultsComponent;
 function View_ResultsComponent_1(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 4, "div", [["class", "key-value-pair"]], null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 1, "label", [["class", "key"]], null, null, null, null, null)), (_l()(), i1.ɵted(2, null, ["", ""])), (_l()(), i1.ɵeld(3, 0, null, null, 1, "label", [["class", "value"]], null, null, null, null, null)), (_l()(), i1.ɵted(4, null, ["", ""]))], null, function (_ck, _v) { var currVal_0 = _v.context.$implicit.label; _ck(_v, 2, 0, currVal_0); var currVal_1 = _v.context.$implicit.value; _ck(_v, 4, 0, currVal_1); }); }
-function View_ResultsComponent_2(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 4, "div", [["class", "key-value-pair"]], null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 1, "label", [["class", "key"]], null, null, null, null, null)), (_l()(), i1.ɵted(2, null, ["", ""])), (_l()(), i1.ɵeld(3, 0, null, null, 1, "label", [["class", "value"]], null, null, null, null, null)), (_l()(), i1.ɵted(4, null, ["", ""]))], null, function (_ck, _v) { var currVal_0 = _v.context.$implicit.label; _ck(_v, 2, 0, currVal_0); var currVal_1 = _v.context.$implicit.value; _ck(_v, 4, 0, currVal_1); }); }
+function View_ResultsComponent_2(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "button", [["class", "btn-main"], ["style", "margin-top: 15px; margin-right: 15px;"]], null, [[null, "click"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("click" === en)) {
+        var pd_0 = (_co.downloadData() !== false);
+        ad = (pd_0 && ad);
+    } return ad; }, null, null)), (_l()(), i1.ɵted(-1, null, ["Download JSON Data"]))], null, null); }
+function View_ResultsComponent_3(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "button", [["class", "btn-main"]], null, [[null, "click"]], function (_v, en, $event) { var ad = true; var _co = _v.component; if (("click" === en)) {
+        var pd_0 = (_co.downloadCSVData() !== false);
+        ad = (pd_0 && ad);
+    } return ad; }, null, null)), (_l()(), i1.ɵted(-1, null, ["Download CSV Data"]))], null, null); }
 function View_ResultsComponent_4(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 4, "div", [["class", "key-value-pair"]], null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 1, "label", [["class", "key"]], null, null, null, null, null)), (_l()(), i1.ɵted(2, null, ["", ""])), (_l()(), i1.ɵeld(3, 0, null, null, 1, "label", [["class", "value"]], null, null, null, null, null)), (_l()(), i1.ɵted(4, null, ["", ""]))], null, function (_ck, _v) { var currVal_0 = _v.context.$implicit.label; _ck(_v, 2, 0, currVal_0); var currVal_1 = _v.context.$implicit.value; _ck(_v, 4, 0, currVal_1); }); }
-function View_ResultsComponent_3(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 2, "div", [["class", "pair-wrapper runPairWrapper"]], null, null, null, null, null)), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_ResultsComponent_4)), i1.ɵdid(2, 278528, null, 0, i2.NgForOf, [i1.ViewContainerRef, i1.TemplateRef, i1.IterableDiffers], { ngForOf: [0, "ngForOf"] }, null)], function (_ck, _v) { var currVal_0 = _v.context.$implicit; _ck(_v, 2, 0, currVal_0); }, null); }
-function View_ResultsComponent_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 19, "div", [["class", "results-area"]], null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 1, "h1", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Results"])), (_l()(), i1.ɵeld(3, 0, null, null, 5, "div", [["class", "result"]], null, null, null, null, null)), (_l()(), i1.ɵeld(4, 0, null, null, 1, "label", [["class", "title"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["User Information"])), (_l()(), i1.ɵeld(6, 0, null, null, 2, "div", [["class", "pair-wrapper"]], null, null, null, null, null)), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_ResultsComponent_1)), i1.ɵdid(8, 278528, null, 0, i2.NgForOf, [i1.ViewContainerRef, i1.TemplateRef, i1.IterableDiffers], { ngForOf: [0, "ngForOf"] }, null), (_l()(), i1.ɵeld(9, 0, null, null, 5, "div", [["class", "result"]], null, null, null, null, null)), (_l()(), i1.ɵeld(10, 0, null, null, 1, "label", [["class", "title"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Average across all Runs"])), (_l()(), i1.ɵeld(12, 0, null, null, 2, "div", [["class", "pair-wrapper"]], null, null, null, null, null)), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_ResultsComponent_2)), i1.ɵdid(14, 278528, null, 0, i2.NgForOf, [i1.ViewContainerRef, i1.TemplateRef, i1.IterableDiffers], { ngForOf: [0, "ngForOf"] }, null), (_l()(), i1.ɵeld(15, 0, null, null, 4, "div", [["class", "result"]], null, null, null, null, null)), (_l()(), i1.ɵeld(16, 0, null, null, 1, "label", [["class", "title"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Data for each Run"])), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_ResultsComponent_3)), i1.ɵdid(19, 278528, null, 0, i2.NgForOf, [i1.ViewContainerRef, i1.TemplateRef, i1.IterableDiffers], { ngForOf: [0, "ngForOf"] }, null)], function (_ck, _v) { var _co = _v.component; var currVal_0 = _co.userInfoPairs; _ck(_v, 8, 0, currVal_0); var currVal_1 = _co.userAveragePairs; _ck(_v, 14, 0, currVal_1); var currVal_2 = _co.runInfoPairs; _ck(_v, 19, 0, currVal_2); }, null); }
+function View_ResultsComponent_6(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 4, "div", [["class", "key-value-pair"]], null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 1, "label", [["class", "key"]], null, null, null, null, null)), (_l()(), i1.ɵted(2, null, ["", ""])), (_l()(), i1.ɵeld(3, 0, null, null, 1, "label", [["class", "value"]], null, null, null, null, null)), (_l()(), i1.ɵted(4, null, ["", ""]))], null, function (_ck, _v) { var currVal_0 = _v.context.$implicit.label; _ck(_v, 2, 0, currVal_0); var currVal_1 = _v.context.$implicit.value; _ck(_v, 4, 0, currVal_1); }); }
+function View_ResultsComponent_5(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 2, "div", [["class", "pair-wrapper runPairWrapper"]], null, null, null, null, null)), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_ResultsComponent_6)), i1.ɵdid(2, 278528, null, 0, i2.NgForOf, [i1.ViewContainerRef, i1.TemplateRef, i1.IterableDiffers], { ngForOf: [0, "ngForOf"] }, null)], function (_ck, _v) { var currVal_0 = _v.context.$implicit; _ck(_v, 2, 0, currVal_0); }, null); }
+function View_ResultsComponent_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 27, "div", [["class", "results-area"]], null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 1, "h1", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Results"])), (_l()(), i1.ɵeld(3, 0, null, null, 5, "div", [["class", "result"]], null, null, null, null, null)), (_l()(), i1.ɵeld(4, 0, null, null, 1, "label", [["class", "title"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["User Information"])), (_l()(), i1.ɵeld(6, 0, null, null, 2, "div", [["class", "pair-wrapper"]], null, null, null, null, null)), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_ResultsComponent_1)), i1.ɵdid(8, 278528, null, 0, i2.NgForOf, [i1.ViewContainerRef, i1.TemplateRef, i1.IterableDiffers], { ngForOf: [0, "ngForOf"] }, null), (_l()(), i1.ɵeld(9, 0, null, null, 7, "div", [["class", "result"]], null, null, null, null, null)), (_l()(), i1.ɵeld(10, 0, null, null, 1, "label", [["class", "title"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["All Runs"])), (_l()(), i1.ɵeld(12, 0, null, null, 4, "div", [["class", "pair-wrapper"]], null, null, null, null, null)), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_ResultsComponent_2)), i1.ɵdid(14, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_ResultsComponent_3)), i1.ɵdid(16, 16384, null, 0, i2.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵeld(17, 0, null, null, 5, "div", [["class", "result"]], null, null, null, null, null)), (_l()(), i1.ɵeld(18, 0, null, null, 1, "label", [["class", "title"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Average across all Runs"])), (_l()(), i1.ɵeld(20, 0, null, null, 2, "div", [["class", "pair-wrapper"]], null, null, null, null, null)), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_ResultsComponent_4)), i1.ɵdid(22, 278528, null, 0, i2.NgForOf, [i1.ViewContainerRef, i1.TemplateRef, i1.IterableDiffers], { ngForOf: [0, "ngForOf"] }, null), (_l()(), i1.ɵeld(23, 0, null, null, 4, "div", [["class", "result"]], null, null, null, null, null)), (_l()(), i1.ɵeld(24, 0, null, null, 1, "label", [["class", "title"]], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Data for each Run"])), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_ResultsComponent_5)), i1.ɵdid(27, 278528, null, 0, i2.NgForOf, [i1.ViewContainerRef, i1.TemplateRef, i1.IterableDiffers], { ngForOf: [0, "ngForOf"] }, null)], function (_ck, _v) { var _co = _v.component; var currVal_0 = _co.userInfoPairs; _ck(_v, 8, 0, currVal_0); var currVal_1 = !_co.isMobile; _ck(_v, 14, 0, currVal_1); var currVal_2 = !_co.isMobile; _ck(_v, 16, 0, currVal_2); var currVal_3 = _co.userAveragePairs; _ck(_v, 22, 0, currVal_3); var currVal_4 = _co.runInfoPairs; _ck(_v, 27, 0, currVal_4); }, null); }
 exports.View_ResultsComponent_0 = View_ResultsComponent_0;
 function View_ResultsComponent_Host_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "app-results", [], null, null, null, View_ResultsComponent_0, RenderType_ResultsComponent)), i1.ɵdid(1, 114688, null, 0, i3.ResultsComponent, [i4.AppService], null, null)], function (_ck, _v) { _ck(_v, 1, 0); }, null); }
 exports.View_ResultsComponent_Host_0 = View_ResultsComponent_Host_0;
@@ -1685,9 +1701,11 @@ var ResultsComponent = /** @class */ (function () {
         this.userInfoPairs = [];
         this.userAveragePairs = [];
         this.runInfoPairs = [];
+        this.isMobile = false;
     }
     ResultsComponent.prototype.ngOnInit = function () {
         var _this = this;
+        this.isMobile = this.appService.isMobile();
         this.runAverages = this.appService.runAverages;
         this.userAverage = this.appService.userAverage;
         var userAverageKeys = Object.keys(this.userAverage);
@@ -1740,6 +1758,12 @@ var ResultsComponent = /** @class */ (function () {
     ResultsComponent.prototype.getLabel = function (key) {
         return key.replace(/([A-Z])/g, ' $1')
             .replace(/^./, function (str) { return str.toUpperCase(); });
+    };
+    ResultsComponent.prototype.downloadData = function () {
+        this.appService.downloadData();
+    };
+    ResultsComponent.prototype.downloadCSVData = function () {
+        this.appService.downloadCSVData();
     };
     return ResultsComponent;
 }());

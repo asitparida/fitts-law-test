@@ -1,10 +1,13 @@
 <div class="home-page">
     <h1>Fitts Law Test</h1>
-    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry
-        standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to
-        make a type specimen book. It has survived not only five centuries, but also the leap into electronic
-        typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset
-        sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker
-        including versions of Lorem Ipsum.</p>
-    <button class="btn-main primary" [routerLink]="['/info']">Begin Test</button>
+    <p>
+            This website runs a pointing device speed test, adapted from Fitts's Law and ISO standard 9241-9. It was developed by <a href="http://www.asitparida.com/" target="_blank">Asit Parida</a> for the CMU HCII class <a href="http://www.cs.cmu.edu/~bam/uicourse/05440inter2019/" target="_blank">05-640: Interaction Techniques</a>, Spring, 2019.
+            <br />
+            On the next page, please enter the details of the device you are testing. <strong>Note that measuring the screen diagonal size accurately is important.</strong>
+            <br />
+            Your goal is to tap or click the blue circles as QUICKLY and as ACCURATELY as possible. For consistency, be sure to interact the same way throughout the test. If you miss, the circle will turn red and wait for you to tap correctly. Please do not to change the orientation of the device or resize the window. If you are using a mobile device, be sure that the keyboard is closed before you press the “Start Test” button.
+            <br />
+            At the end of the test, you will be able to download your results in JSON or CSV format, and display them on the screen. Also, they will be copied into the class’s Google Sheet for which please remember to sign in using your <strong>ANDREW</strong> account. Use the 'Authorize' button at the top for the same.
+    </p>
+    <button class="btn-main primary" [routerLink]="['/info']">Next</button>
 </div>

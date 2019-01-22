@@ -19,8 +19,10 @@ export class ResultsComponent implements OnInit {
     userInfoPairs = [];
     userAveragePairs = [];
     runInfoPairs = [];
+    isMobile = false;
     constructor(private appService: AppService) { }
     ngOnInit() {
+        this.isMobile = this.appService.isMobile();
         this.runAverages = this.appService.runAverages;
         this.userAverage = this.appService.userAverage;
         const userAverageKeys = Object.keys(this.userAverage);
@@ -74,5 +76,11 @@ export class ResultsComponent implements OnInit {
     getLabel(key: string) {
         return key.replace(/([A-Z])/g, ' $1')
         .replace(/^./, function(str){ return str.toUpperCase(); });
+    }
+    downloadData() {
+        this.appService.downloadData();
+    }
+    downloadCSVData() {
+        this.appService.downloadCSVData();
     }
 }

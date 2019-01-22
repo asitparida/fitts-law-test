@@ -1,6 +1,6 @@
 <div class="info-page">
     <h1>Please fill in the following details</h1>
-    <form #infoForm="ngForm">
+    <form #infoForm="ngForm" style="padding-bottom: 0;">
         <div class="form-group">
             <label for="namde">Your Name</label>
             <input required type="text" name="name" [(ngModel)]="info.name" class="form-control" id="namde" placeholder="Enter Name">
@@ -34,5 +34,5 @@
             <input required type="number" name="deviceDiagonal" [(ngModel)]="info.deviceDiagonal" class="form-control" id="deviceDiagonal">
         </div>
     </form>
-    <button class="btn-main" [disabled]="!infoForm.valid" (click)="next()">Next</button>
+    <button style="margin-top: 15px;" class="btn-main" [disabled]="!infoForm.valid" (click)="next()">Next</button>
 </div>

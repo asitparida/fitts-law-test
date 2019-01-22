@@ -185,15 +185,16 @@
     </div>
     <label class="help bold"><strong>Finding Google Sheet Authorization status ...</strong></label>
     <label class="not-xs">We use Google Sheets to record the test results.</label>
-    <label class="not-xs help">Try refreshing the page after authorzing if you dont see 'Begin Test' button.</label>
+    <label class="not-xs help">Try refreshing the page after authorzing if you dont see 'Next' button.</label>
     <label class="xs">Google Sheets Access</label>
+    <button class="btn-main" id="skip_btn" style="display: none;min-width: 100px;">Skip</button>
     <button class="btn-main" id="authorize_button" style="display: none;">Authorize</button>
     <button class="btn-main" id="signout_button" style="display: none;">Sign Out</button>
   </div>
   <app-root class="root-holder"></app-root>
   <script type="text/javascript">
     // Client ID and API key from the Developer Console
-    var CLIENT_ID = '69332637567-aap9bed9pet013v6n22pmlkbkcfmfpve.apps.googleusercontent.com';
+    var CLIENT_ID = '69332637567-eobt5vc1ad7k85n7dm8g1i8hnehh9gqe.apps.googleusercontent.com';
     var API_KEY = 'AIzaSyCu7XtGmIHrrmKx-bczL8773fCsFSUPG0E';
 
     // Array of API discovery doc URLs for APIs used by the quickstart
@@ -206,6 +207,7 @@
     var authorizeButton = document.getElementById('authorize_button');
     var signoutButton = document.getElementById('signout_button');
     var googleBarButton = document.getElementById('google-bar');
+    var skipButton = document.getElementById('skip_btn');
 
     /**
      *  On load, called to load the auth2 library and API client library.
@@ -213,6 +215,11 @@
     function handleClientLoad() {
       gapi.load('client:auth2', initClient);
     }
+    function handleLocationLoad() {
+      skipButton.style.display = 'none';
+      googleBarButton.classList.add('AUTHORIZED');
+    }
+    skipButton.onclick = handleLocationLoad;
 
     /**
      *  Initializes the API client library and sets up sign-in state
@@ -234,6 +241,8 @@
         signoutButton.onclick = handleSignoutClick;
       }, function (error) {
         console.log(error);
+        // skipButton.style.display = 'block';
+        googleBarButton.classList.add('AUTHORIZED');
       });
     }
 
@@ -246,11 +255,13 @@
         authorizeButton.style.display = 'none';
         signoutButton.style.display = 'block';
         googleBarButton.classList.add('AUTHORIZED');
-        listMajors();
+        skipButton.style.display = 'none';
       } else {
         authorizeButton.style.display = 'block';
+        skipButton.style.display = 'block';
         signoutButton.style.display = 'none';
         googleBarButton.classList.remove('AUTHORIZED');
+        // skipButton.style.display = 'block';
       }
     }
 

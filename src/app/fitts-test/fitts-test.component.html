@@ -28,7 +28,7 @@
     <ng-container *ngIf="showAllDoneModal">
         <div class="practice-run-modal">
             <h2>Thanks for taking the test !</h2>
-            <button class="btn-main primary" [routerLink]="['/results']">View Results</button>
+            <button class="btn-main primary" target="_blank" [routerLink]="['/results']">View Results</button>
             <button class="btn-main" *ngIf="!isMobile" (click)="downloadData()">Download JSON Data</button>
             <button class="btn-main" *ngIf="!isMobile" (click)="downloadCSVData()">Download CSV Data</button>
         </div>

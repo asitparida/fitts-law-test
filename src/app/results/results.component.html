@@ -10,6 +10,13 @@
         </div>
     </div>
     <div class="result">
+        <label class="title">All Runs</label>
+        <div class="pair-wrapper">
+            <button class="btn-main" style="margin-top: 15px; margin-right: 15px;" *ngIf="!isMobile" (click)="downloadData()">Download JSON Data</button>
+            <button class="btn-main" *ngIf="!isMobile" (click)="downloadCSVData()">Download CSV Data</button>
+        </div>
+    </div>
+    <div class="result">
         <label class="title">Average across all Runs</label>
         <div class="pair-wrapper">
             <div class="key-value-pair" *ngFor="let pair of userAveragePairs">

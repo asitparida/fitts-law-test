@@ -10,6 +10,7 @@ export class AppService {
     userAverage = {};
     debugModeTurns = null;
     dpi = null;
+    currentDataSet = null;
     constructor() {
         if (MobileDetect) {
             this.md = new MobileDetect(window.navigator.userAgent);
@@ -88,6 +89,79 @@ export class AppService {
         this.dpi = calcDpi(width, height, diagonalWidth, 'd');;
         return this.dpi;
         // tslint:enable
+    }
+    downloadData() {
+        const saveData = (function () {
+            const a: any = document.createElement('a');
+            document.body.appendChild(a);
+            a.style.display = 'none';
+            return function (data, fileName) {
+                const json = JSON.stringify(data),
+                    blob = new Blob([json], { type: 'octet/stream' }),
+                    url = window.URL.createObjectURL(blob);
+                a.href = url;
+                a.download = fileName;
+                a.click();
+                window.URL.revokeObjectURL(url);
+            };
+        }());
+        const obj = Object.assign({}, {
+            data: this.currentDataSet
+        });
+        saveData(obj, `${this.info.alias}-data-json.json`);
+    }
+    convertArrayOfObjectsToCSV(args) {
+        let result, ctr, keys, columnDelimiter, lineDelimiter, data;
+
+        data = args.data || null;
+        if (data == null || !data.length) {
+            return null;
+        }
+
+        columnDelimiter = args.columnDelimiter || ',';
+        lineDelimiter = args.lineDelimiter || '\n';
+
+        keys = Object.keys(data[0]);
+
+        result = '';
+        result += keys.join(columnDelimiter);
+        result += lineDelimiter;
+
+        data.forEach(function (item) {
+            ctr = 0;
+            keys.forEach(function (key) {
+                if (ctr > 0) {
+                    result += columnDelimiter;
+                }
+
+                result += item[key];
+                ctr++;
+            });
+            result += lineDelimiter;
+        });
+
+        return result;
+    }
+    downloadCSVData() {
+        let data, filename, link;
+        let csv = this.convertArrayOfObjectsToCSV({
+            data: this.currentDataSet
+        });
+        if (csv === null) {
+            return;
+        }
+
+        filename = `${this.info.alias}-data-csv.csv`;
+
+        if (!csv.match(/^data:text\/csv/i)) {
+            csv = 'data:text/csv;charset=utf-8,' + csv;
+        }
+        data = encodeURI(csv);
+
+        link = document.createElement('a');
+        link.setAttribute('href', data);
+        link.setAttribute('download', filename);
+        link.click();
     }
 }
 

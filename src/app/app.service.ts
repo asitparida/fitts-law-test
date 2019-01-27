@@ -106,7 +106,9 @@ export class AppService {
             };
         }());
         const obj = Object.assign({}, {
-            data: this.currentDataSet
+            clicks: this.currentDataSet,
+            runs: this.runAverages,
+            userAverage: this.userAverage
         });
         saveData(obj, `${this.info.alias}-data-json.json`);
     }
@@ -144,12 +146,19 @@ export class AppService {
     }
     downloadCSVData() {
         let data, filename, link;
-        let csv = this.convertArrayOfObjectsToCSV({
+        const clicksCsv = this.convertArrayOfObjectsToCSV({
             data: this.currentDataSet
         });
-        if (csv === null) {
+        const runsCsv = this.convertArrayOfObjectsToCSV({
+            data: this.runAverages
+        });
+        const userCsv = this.convertArrayOfObjectsToCSV({
+            data: [this.userAverage]
+        });
+        if (clicksCsv === null || runsCsv === null || userCsv === null) {
             return;
         }
+        let csv = `${clicksCsv}\n${runsCsv}\n${userCsv}`;
 
         filename = `${this.info.alias}-data-csv.csv`;
 

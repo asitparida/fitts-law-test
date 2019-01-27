@@ -435,7 +435,9 @@ var AppService = /** @class */ (function () {
             };
         }());
         var obj = Object.assign({}, {
-            data: this.currentDataSet
+            clicks: this.currentDataSet,
+            runs: this.runAverages,
+            userAverage: this.userAverage
         });
         saveData(obj, this.info.alias + "-data-json.json");
     };
@@ -466,12 +468,19 @@ var AppService = /** @class */ (function () {
     };
     AppService.prototype.downloadCSVData = function () {
         var data, filename, link;
-        var csv = this.convertArrayOfObjectsToCSV({
+        var clicksCsv = this.convertArrayOfObjectsToCSV({
             data: this.currentDataSet
         });
-        if (csv === null) {
+        var runsCsv = this.convertArrayOfObjectsToCSV({
+            data: this.runAverages
+        });
+        var userCsv = this.convertArrayOfObjectsToCSV({
+            data: [this.userAverage]
+        });
+        if (clicksCsv === null || runsCsv === null || userCsv === null) {
             return;
         }
+        var csv = clicksCsv + "\n" + runsCsv + "\n" + userCsv;
         filename = this.info.alias + "-data-csv.csv";
         if (!csv.match(/^data:text\/csv/i)) {
             csv = 'data:text/csv;charset=utf-8,' + csv;
@@ -578,7 +587,7 @@ function View_FittsTestComponent_8(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0
 function View_FittsTestComponent_6(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 11, null, null, null, null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 10, "div", [["class", "practice-run-modal"]], null, null, null, null, null)), (_l()(), i1.ɵeld(2, 0, null, null, 1, "h2", [], null, null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["Thanks for taking the test !"])), (_l()(), i1.ɵeld(4, 0, null, null, 3, "button", [["class", "btn-main primary"], ["target", "_blank"]], null, [[null, "click"]], function (_v, en, $event) { var ad = true; if (("click" === en)) {
         var pd_0 = (i1.ɵnov(_v, 5).onClick() !== false);
         ad = (pd_0 && ad);
-    } return ad; }, null, null)), i1.ɵdid(5, 16384, null, 0, i2.RouterLink, [i2.Router, i2.ActivatedRoute, [8, null], i1.Renderer2, i1.ElementRef], { routerLink: [0, "routerLink"] }, null), i1.ɵpad(6, 1), (_l()(), i1.ɵted(-1, null, ["View Results"])), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_7)), i1.ɵdid(9, 16384, null, 0, i3.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_8)), i1.ɵdid(11, 16384, null, 0, i3.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null)], function (_ck, _v) { var _co = _v.component; var currVal_0 = _ck(_v, 6, 0, "/results"); _ck(_v, 5, 0, currVal_0); var currVal_1 = !_co.isMobile; _ck(_v, 9, 0, currVal_1); var currVal_2 = !_co.isMobile; _ck(_v, 11, 0, currVal_2); }, null); }
+    } return ad; }, null, null)), i1.ɵdid(5, 16384, null, 0, i2.RouterLink, [i2.Router, i2.ActivatedRoute, [8, null], i1.Renderer2, i1.ElementRef], { routerLink: [0, "routerLink"] }, null), i1.ɵpad(6, 1), (_l()(), i1.ɵted(-1, null, ["View Summary"])), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_7)), i1.ɵdid(9, 16384, null, 0, i3.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_8)), i1.ɵdid(11, 16384, null, 0, i3.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null)], function (_ck, _v) { var _co = _v.component; var currVal_0 = _ck(_v, 6, 0, "/results"); _ck(_v, 5, 0, currVal_0); var currVal_1 = !_co.isMobile; _ck(_v, 9, 0, currVal_1); var currVal_2 = !_co.isMobile; _ck(_v, 11, 0, currVal_2); }, null); }
 function View_FittsTestComponent_1(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 10, "div", [["class", "overlay"]], null, null, null, null, null)), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_2)), i1.ɵdid(2, 16384, null, 0, i3.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_3)), i1.ɵdid(4, 16384, null, 0, i3.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_4)), i1.ɵdid(6, 16384, null, 0, i3.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_5)), i1.ɵdid(8, 16384, null, 0, i3.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_6)), i1.ɵdid(10, 16384, null, 0, i3.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null)], function (_ck, _v) { var _co = _v.component; var currVal_0 = _co.showPracticeModal; _ck(_v, 2, 0, currVal_0); var currVal_1 = _co.showCountdownModal; _ck(_v, 4, 0, currVal_1); var currVal_2 = _co.showTestCompleteModal; _ck(_v, 6, 0, currVal_2); var currVal_3 = _co.showActualTestModal; _ck(_v, 8, 0, currVal_3); var currVal_4 = _co.showAllDoneModal; _ck(_v, 10, 0, currVal_4); }, null); }
 function View_FittsTestComponent_0(_l) { return i1.ɵvid(0, [(_l()(), i1.ɵeld(0, 0, null, null, 1, "div", [["class", "work-area"]], [[1, "id", 0]], null, null, null, null)), (_l()(), i1.ɵeld(1, 0, null, null, 0, ":svg:svg", [], [[1, "id", 0]], null, null, null, null)), (_l()(), i1.ɵeld(2, 0, null, null, 1, "span", [["class", "o-tester"]], [[1, "id", 0]], null, null, null, null)), (_l()(), i1.ɵted(-1, null, ["o"])), (_l()(), i1.ɵand(16777216, null, null, 1, null, View_FittsTestComponent_1)), i1.ɵdid(5, 16384, null, 0, i3.NgIf, [i1.ViewContainerRef, i1.TemplateRef], { ngIf: [0, "ngIf"] }, null)], function (_ck, _v) { var _co = _v.component; var currVal_3 = _co.showModal; _ck(_v, 5, 0, currVal_3); }, function (_ck, _v) { var _co = _v.component; var currVal_0 = _co.workAreaId; _ck(_v, 0, 0, currVal_0); var currVal_1 = _co.svgAreaId; _ck(_v, 1, 0, currVal_1); var currVal_2 = _co.oTesterId; _ck(_v, 2, 0, currVal_2); }); }
 exports.View_FittsTestComponent_0 = View_FittsTestComponent_0;

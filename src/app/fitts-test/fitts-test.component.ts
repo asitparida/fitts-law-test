@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 import { AppService } from '../app.service';
 declare var DocumentTouch: any;
 
-const WRITE_RUNS_TO_STORAGE = false;
+const WRITE_RUNS_TO_STORAGE = true;
 const WRITE_TO_STORAGE = true;
 
 export class Coordinate {
@@ -525,14 +525,15 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
             const runAverages = this.getSheetTransform(this.overallAverages);
             const average = this.calculateOverallUserAverage();
             const userAverage = this.getSheetTransform([average]);
+            this.appService.currentDataSet = this.overallDataSet;
             this.appService.runAverages = this.overallAverages;
             this.appService.userAverage = average;
             if (WRITE_TO_STORAGE) {
+                this.appService.appendRunAveragesRowsToGoogleSheets(runAverages);
+                this.appService.appendUserAveragesRowsToGoogleSheets(userAverage);
                 if (WRITE_RUNS_TO_STORAGE) {
                     this.appService.appendRowsToGoogleSheets(clickData);
                 }
-                this.appService.appendRunAveragesRowsToGoogleSheets(runAverages);
-                this.appService.appendUserAveragesRowsToGoogleSheets(userAverage);
             }
             this.showAllDoneModal = true;
         }
@@ -654,6 +655,7 @@ export class FittsTestComponent implements AfterViewInit, OnInit {
         this.appService.downloadData();
     }
     downloadCSVData() {
+        this.appService.currentDataSet = this.overallDataSet;
         this.appService.downloadCSVData();
     }
 }

@@ -71,7 +71,6 @@ export class ResultsComponent implements OnInit {
             const runData = userRunData.filter(pair => _.indexOf(userKeys, pair.key) === -1);
             this.runInfoPairs.push(runData);
         })
-        console.log(this.runInfoPairs);
     }
     getLabel(key: string) {
         return key.replace(/([A-Z])/g, ' $1')

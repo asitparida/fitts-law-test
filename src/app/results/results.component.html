@@ -13,7 +13,7 @@
         <label class="title">All Runs</label>
         <div class="pair-wrapper">
             <button class="btn-main" style="margin-top: 15px; margin-right: 15px;" *ngIf="!isMobile" (click)="downloadData()">Download JSON Data</button>
-            <button class="btn-main" *ngIf="!isMobile" (click)="downloadCSVData()">Download CSV Data</button>
+            <button class="btn-main" (click)="downloadCSVData()">Download CSV Data</button>
         </div>
     </div>
     <div class="result">

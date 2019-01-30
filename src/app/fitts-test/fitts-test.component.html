@@ -30,7 +30,7 @@
             <h2>Thanks for taking the test !</h2>
             <button class="btn-main primary" target="_blank" [routerLink]="['/results']">View Summary</button>
             <button class="btn-main" *ngIf="!isMobile" (click)="downloadData()">Download JSON Data</button>
-            <button class="btn-main" *ngIf="!isMobile" (click)="downloadCSVData()">Download CSV Data</button>
+            <button class="btn-main" (click)="downloadCSVData()">Download CSV Data</button>
         </div>
     </ng-container>
 </div>

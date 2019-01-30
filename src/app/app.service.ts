@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { saveAs } from 'file-saver';
 declare var gapi: any;
 declare var MobileDetect: any;
 
@@ -10,7 +11,7 @@ export class AppService {
     userAverage = {};
     debugModeTurns = null;
     dpi = null;
-    currentDataSet = null;
+    currentDataSet = [];
     constructor() {
         if (MobileDetect) {
             this.md = new MobileDetect(window.navigator.userAgent);
@@ -110,7 +111,13 @@ export class AppService {
             runs: this.runAverages,
             userAverage: this.userAverage
         });
-        saveData(obj, `${this.info.alias}-data-json.json`);
+        if (!this.isMobile) {
+            saveData(obj, `${this.info.alias}-data-json.json`);
+        } else {
+            const json = JSON.stringify(obj);
+            const blob = new Blob([json], { type: 'octet/stream' });
+            saveAs(blob, `${this.info.alias}-data-json.json`);
+        }
     }
     convertArrayOfObjectsToCSV(args) {
         let result, ctr, keys, columnDelimiter, lineDelimiter, data;
@@ -147,30 +154,32 @@ export class AppService {
     downloadCSVData() {
         let data, filename, link;
         const clicksCsv = this.convertArrayOfObjectsToCSV({
-            data: this.currentDataSet
+            data: this.currentDataSet || []
         });
         const runsCsv = this.convertArrayOfObjectsToCSV({
-            data: this.runAverages
+            data: this.runAverages || []
         });
         const userCsv = this.convertArrayOfObjectsToCSV({
-            data: [this.userAverage]
+            data: [this.userAverage] || []
         });
         if (clicksCsv === null || runsCsv === null || userCsv === null) {
             return;
         }
         let csv = `${clicksCsv}\n${runsCsv}\n${userCsv}`;
-
         filename = `${this.info.alias}-data-csv.csv`;
-
-        if (!csv.match(/^data:text\/csv/i)) {
-            csv = 'data:text/csv;charset=utf-8,' + csv;
+        if (!this.isMobile) {
+            if (!csv.match(/^data:text\/csv/i)) {
+                csv = 'data:text/csv;charset=utf-8,' + csv;
+            }
+            data = encodeURI(csv);
+            link = document.createElement('a');
+            link.setAttribute('href', data);
+            link.setAttribute('download', filename);
+            link.click();
+        } else {
+            const file = new File([csv], filename, { type: 'text/csv' });
+            saveAs(file, filename);
         }
-        data = encodeURI(csv);
-
-        link = document.createElement('a');
-        link.setAttribute('href', data);
-        link.setAttribute('download', filename);
-        link.click();
     }
 }
 
